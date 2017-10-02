@@ -45,7 +45,7 @@ public class ListActivity extends Activity {
 
             HttpClient httpclient = new DefaultHttpClient();
 
-            HttpGet httpget = new HttpGet("http://drupalservices.developdigitally.com/patwa/node");
+            HttpGet httpget = new HttpGet("http://collegerailroad.com/api/basic_post");
             //set header to tell REST endpoint the request and response content types
             httpget.setHeader("Accept", "application/json");
             httpget.setHeader("Content-type", "application/json");

@@ -56,7 +56,7 @@ public class AddArticle extends Activity {
 
 
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://drupalservices.developdigitally.com/patwa/node");
+            HttpPost httppost = new HttpPost("http://collegerailroad.com/api/basic_post");
 
 
 

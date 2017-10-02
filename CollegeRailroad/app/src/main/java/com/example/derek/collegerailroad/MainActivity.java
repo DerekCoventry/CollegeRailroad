@@ -18,11 +18,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button yourButton = (Button) findViewById(R.id.log_but);
+        Button loginButton = (Button) findViewById(R.id.log_but);
 
-        yourButton.setOnClickListener(new OnClickListener(){
+        loginButton.setOnClickListener(new OnClickListener(){
             public void onClick(View v){
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            }
+        });
+        Button listButton = (Button) findViewById(R.id.list_but);
+
+        listButton.setOnClickListener(new OnClickListener(){
+            public void onClick(View v){
+                startActivity(new Intent(MainActivity.this, ListActivity.class));
+            }
+        });
+        Button webButton = (Button) findViewById(R.id.web_but);
+
+        webButton.setOnClickListener(new OnClickListener(){
+            public void onClick(View v){
+                startActivity(new Intent(MainActivity.this, web.class));
             }
         });
     }
