@@ -45,10 +45,10 @@ public class ListActivity extends Activity {
 
             HttpClient httpclient = new DefaultHttpClient();
 
-            HttpGet httpget = new HttpGet("http://collegerailroad.com/api/basic_post");
+            HttpGet httpget = new HttpGet("http://collegerailroad.com/appview?_format=json");
             //set header to tell REST endpoint the request and response content types
-            httpget.setHeader("Accept", "application/json");
-            httpget.setHeader("Content-type", "application/json");
+            //httpget.setHeader("Accept", "application/json");
+            //httpget.setHeader("Content-type", "application/json");
 
             JSONArray json = new JSONArray();
 
