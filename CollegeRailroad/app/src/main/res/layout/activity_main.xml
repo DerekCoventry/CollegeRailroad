@@ -28,4 +28,10 @@
         android:text="web"
         android:id="@+id/web_but"
         />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Map"
+        android:id="@+id/map_but"
+        />
 </LinearLayout>
