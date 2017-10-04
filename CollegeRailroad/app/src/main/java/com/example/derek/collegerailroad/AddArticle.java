@@ -56,7 +56,7 @@ public class AddArticle extends Activity {
 
 
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://collegerailroad.com/entity/node");
+            HttpPost httppost = new HttpPost("http://collegerailroad.com/entity/node?_format=hal_json");
 
 
 
@@ -72,9 +72,31 @@ public class AddArticle extends Activity {
                 String body=txtBody.getText().toString().trim();
                 String email=txtEmail.getText().toString().trim();
                 //add raw json to be sent along with the HTTP POST request
-                StringEntity se = new StringEntity( "{\"_links\": {\"type\":{"+
-                        "\"href\": \"http://collegerailroad.com/rest/type/node/basic_post\"}},\"title\": [{\"value\": \""+ title + "\""+
-                        "}],\"type\": [{\"target_id\": \"basic_post\"}],\"field_email\": [{\"value\": \""+email+"\"}]}");
+                //StringEntity se = new StringEntity( "{\"_links\": {\"type\":{"+
+                //        "\"href\": \"http://collegerailroad.com/rest/type/node/basic_post\"}},\"title\": [{\"value\": \""+ title + "\""+
+                //        "}],\"type\": [{\"target_id\": \"basic_post\"}],\"field_email\": [{\"value\": \""+email+"\"}]}");
+                StringEntity se = new StringEntity("{\n" +
+                        "\t\"_links\": {\n" +
+                        "\t\t\"type\":{\n" +
+                        "\t\t\t\"href\": \"http://collegerailroad.com/rest/type/node/basic_post\"\n" +
+                        "\t\t}\n" +
+                        "\t},\n" +
+                        "\t\"title\": [\n" +
+                        "\t\t{\n" +
+                        "\t\t\t\"value\": \"test post12\"\n" +
+                        "\t\t}\n" +
+                        "\t],\n" +
+                        "\t\"type\": [\n" +
+                        "\t\t{\n" +
+                        "\t\t\t\"target_id\": \"basic_post\"\n" +
+                        "\t\t}\n" +
+                        "\t],\n" +
+                        "\t\"field_email\": [\n" +
+                        "\t\t{\n" +
+                        "\t\t\t\"value\": \"test@gmail.com\"\n" +
+                        "\t\t}\n" +
+                        "\t]\n" +
+                        "}");
                 httppost.setEntity(se);
                 httppost.setHeader("Accept", "application/hal+json");
                 httppost.setHeader("Content-Type", "application/hal+json");
