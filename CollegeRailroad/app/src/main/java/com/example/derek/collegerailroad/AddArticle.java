@@ -56,7 +56,7 @@ public class AddArticle extends Activity {
 
 
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://collegerailroad.com/api/basic_post");
+            HttpPost httppost = new HttpPost("http://collegerailroad.com/entity/node");
 
 
 
@@ -64,17 +64,21 @@ public class AddArticle extends Activity {
 
                 //get title and body UI elements
                 TextView txtTitle = (TextView) findViewById(R.id.editTitle);
+                TextView txtEmail = (TextView) findViewById(R.id.editEmail);
                 TextView txtBody = (TextView) findViewById(R.id.editBody);
 
                 //extract text from UI elements and remove extra spaces
                 String title=txtTitle.getText().toString().trim();
                 String body=txtBody.getText().toString().trim();
-
-
+                String email=txtEmail.getText().toString().trim();
                 //add raw json to be sent along with the HTTP POST request
-                StringEntity se = new StringEntity( " { \"title\":\""+title+"\",\"type\":\"article\",\"body\":{\"und\":[{ \"value\":\""+body+"\"}]}}");
-                se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+                StringEntity se = new StringEntity( "{\"_links\": {\"type\":{"+
+                        "\"href\": \"http://collegerailroad.com/rest/type/node/basic_post\"}},\"title\": [{\"value\": \""+ title + "\""+
+                        "}],\"type\": [{\"target_id\": \"basic_post\"}],\"field_email\": [{\"value\": \""+email+"\"}]}");
                 httppost.setEntity(se);
+                httppost.setHeader("Accept", "application/hal+json");
+                httppost.setHeader("Content-Type", "application/hal+json");
+
 
 
                 BasicHttpContext mHttpContext = new BasicHttpContext();
@@ -83,15 +87,14 @@ public class AddArticle extends Activity {
                 //create the session cookie
                 BasicClientCookie cookie = new BasicClientCookie(session_name, session_id);
                 cookie.setVersion(0);
-                cookie.setDomain(".drupalservices.developdigitally.com");
+                cookie.setDomain(".collegerailroad.com");
                 cookie.setPath("/");
                 mCookieStore.addCookie(cookie);
                 cookie = new BasicClientCookie("has_js", "1");
                 mCookieStore.addCookie(cookie);
                 mHttpContext.setAttribute(ClientContext.COOKIE_STORE, mCookieStore);
-
-                httpclient.execute(httppost,mHttpContext);
-
+                httpclient.execute(httppost);
+                //httpclient.execute(httppost,mHttpContext);
                 return 0;
 
             }catch (Exception e) {
@@ -106,8 +109,8 @@ public class AddArticle extends Activity {
 
             //start the List Activity and pass back the session_id and session_name
             Intent intent = new Intent(AddArticle.this, ListActivity.class);
-            intent.putExtra("SESSION_ID", session_id);
-            intent.putExtra("SESSION_NAME", session_name);
+            //intent.putExtra("SESSION_ID", session_id);
+            //intent.putExtra("SESSION_NAME", session_name);
             startActivity(intent);
 
             //stop the current activity

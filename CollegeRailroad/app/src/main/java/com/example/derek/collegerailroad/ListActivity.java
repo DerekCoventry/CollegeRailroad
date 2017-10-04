@@ -33,7 +33,13 @@ public class ListActivity extends Activity {
             session_id = extras.getString("SESSION_ID");
             session_name = extras.getString("SESSION_NAME");
         }
+        Button addButton = (Button) findViewById(R.id.add_but);
 
+        addButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                startActivity(new Intent(ListActivity.this, AddArticle.class));
+            }
+        });
         //initiate the background process to fetch the latest items on Drupal site
         new FetchItems().execute();
     }
