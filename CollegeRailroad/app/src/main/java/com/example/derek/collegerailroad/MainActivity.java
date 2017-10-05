@@ -47,6 +47,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, MapsActivity.class));
             }
         });
+
+        Button cameraButton = (Button) findViewById(R.id.camera_but);
+
+        cameraButton.setOnClickListener(new OnClickListener(){
+            public void onClick(View v){
+                startActivity(new Intent(MainActivity.this, CameraActivity.class));
+            }
+        });
     }
 
 }
