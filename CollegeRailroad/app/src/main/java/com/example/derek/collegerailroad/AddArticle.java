@@ -83,7 +83,7 @@ public class AddArticle extends Activity {
                         "\t},\n" +
                         "\t\"title\": [\n" +
                         "\t\t{\n" +
-                        "\t\t\t\"value\": \"test post12\"\n" +
+                        "\t\t\t\"value\": \""+title+"\"\n" +
                         "\t\t}\n" +
                         "\t],\n" +
                         "\t\"type\": [\n" +
@@ -93,7 +93,7 @@ public class AddArticle extends Activity {
                         "\t],\n" +
                         "\t\"field_email\": [\n" +
                         "\t\t{\n" +
-                        "\t\t\t\"value\": \"test@gmail.com\"\n" +
+                        "\t\t\t\"value\": \""+email+"\"\n" +
                         "\t\t}\n" +
                         "\t]\n" +
                         "}");
@@ -107,14 +107,14 @@ public class AddArticle extends Activity {
                 CookieStore mCookieStore      = new BasicCookieStore();
 
                 //create the session cookie
-                BasicClientCookie cookie = new BasicClientCookie(session_name, session_id);
+                /*BasicClientCookie cookie = new BasicClientCookie(session_name, session_id);
                 cookie.setVersion(0);
                 cookie.setDomain(".collegerailroad.com");
                 cookie.setPath("/");
                 mCookieStore.addCookie(cookie);
                 cookie = new BasicClientCookie("has_js", "1");
                 mCookieStore.addCookie(cookie);
-                mHttpContext.setAttribute(ClientContext.COOKIE_STORE, mCookieStore);
+                mHttpContext.setAttribute(ClientContext.COOKIE_STORE, mCookieStore);*/
                 httpclient.execute(httppost);
                 //httpclient.execute(httppost,mHttpContext);
                 return 0;

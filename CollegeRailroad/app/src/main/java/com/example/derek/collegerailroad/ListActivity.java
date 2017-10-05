@@ -15,7 +15,9 @@ import org.apache.http.client.methods.*;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class ListActivity extends Activity {
@@ -91,7 +93,10 @@ public class ListActivity extends Activity {
             //iterate through JSON to read the title of nodes
             for(int i=0;i<result.length();i++){
                 try {
-                    listItems.add(result.getJSONObject(i).getString("title").toString());
+                    JSONObject item = (JSONObject) result.get(i);
+                    JSONArray title = (JSONArray) item.get("title");
+                    JSONObject value = (JSONObject) title.get(0);
+                    listItems.add(value.get("value").toString());
                 } catch (Exception e) {
                     Log.v("Error adding article", e.getMessage());
                 }
