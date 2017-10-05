@@ -4,17 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.example.derek.collegerailroad.CameraActivity">
-    
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_weight="9"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"/>
 
     <Button
+        android:id="@+id/camera_but2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Take Picture"
-        android:id="@+id/camera_but2" />
+        android:text="Take Picture" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="center"/>
+
 </LinearLayout>
