@@ -51,9 +51,9 @@
             android:label="@string/title_activity_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".web" />
-        <activity android:name=".CameraActivity"/>
         <activity android:name=".BookListActivity">
         </activity>
+        <activity android:name=".CameraActivity" />
     </application>
 
 </manifest>

@@ -6,6 +6,7 @@ import android.graphics.Matrix;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,6 +18,7 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i("CameraActivity", "onCreate() method triggered");
         setContentView(R.layout.activity_camera2);
         Button cameraButton = (Button) findViewById(R.id.camera_but2);
         imageView = (ImageView)findViewById(R.id.imageView);
@@ -28,8 +30,19 @@ public class CameraActivity extends AppCompatActivity {
                 startActivityForResult(intent, 0);
             }
         });
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        Log.i("CameraActivity", "onStart() method triggered");
+    }
 
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+        Log.i("CameraActivity", "onResume() method triggered");
     }
 
     @Override
@@ -42,4 +55,29 @@ public class CameraActivity extends AppCompatActivity {
         Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
         imageView.setImageBitmap(rotatedBitmap);
     }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        Log.i("CameraActivity", "onPause() method triggered");
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        Log.i("CameraActivity", "onStop() method triggered");
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        Log.i("CameraActivity", "onDestroy() method triggered");
+    }
+
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        Log.i("CameraActivity", "onRestart() method triggered");
+    }
+
 }
