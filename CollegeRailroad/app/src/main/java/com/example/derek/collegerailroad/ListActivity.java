@@ -1,7 +1,11 @@
 package com.example.derek.collegerailroad;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.os.*;
 import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.*;
@@ -20,31 +24,44 @@ import org.json.JSONObject;
 import java.lang.reflect.Array;
 import java.util.*;
 
-public class ListActivity extends Activity {
+public class ListActivity extends  SingleFragmentActivity {
 
     public String session_id;
     public String session_name;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected Fragment createFragment() {
+        return new BookListFragment();
+    }
+    /*protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
+        //setContentView(R.layout.activity_list);
+        setContentView(R.layout.activity_fragment);
+
         Bundle extras = getIntent().getExtras();
 
         //read the session_id and session_name variables
-        if (extras != null) {
+        *//*if (extras != null) {
             session_id = extras.getString("SESSION_ID");
             session_name = extras.getString("SESSION_NAME");
         }
         Button addButton = (Button) findViewById(R.id.add_but);
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
+        if (fragment == null) {
+            fragment = new ListFragment();
+            fm.beginTransaction()
+                    .add(R.id.fragment_container, fragment)
+                    .commit();
+        }
         addButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 startActivity(new Intent(ListActivity.this, AddArticle.class));
             }
         });
         //initiate the background process to fetch the latest items on Drupal site
-        new FetchItems().execute();
-    }
+        new FetchItems().execute();*//*
+    }*/
 
     private class FetchItems extends AsyncTask<String, Void, JSONArray> {
 
@@ -83,9 +100,13 @@ public class ListActivity extends Activity {
 
         //executed after the background nodes fetching process is complete
         protected void onPostExecute(JSONArray result) {
-
+            List<BookPost> books = new ArrayList<BookPost>();
+            BookPost currentBook;
+            String curId;
+            String curTitle;
+            String curEmail;
             //get the ListView UI element
-            ListView lst = (ListView)  findViewById(R.id.listView);
+            //ListView lst = (ListView)  findViewById(R.id.listView);
 
             //create the ArrayList to store the titles of nodes
             ArrayList<String> listItems=new ArrayList<String>();
@@ -95,8 +116,18 @@ public class ListActivity extends Activity {
                 try {
                     JSONObject item = (JSONObject) result.get(i);
                     JSONArray title = (JSONArray) item.get("title");
-                    JSONObject value = (JSONObject) title.get(0);
-                    listItems.add(value.get("value").toString());
+                    JSONArray vid = (JSONArray) item.get("vid");
+                    JSONArray email = (JSONArray) item.get("field_email");
+                    JSONObject valueVid = (JSONObject) vid.get(0);
+                    JSONObject valueTitle = (JSONObject) title.get(0);
+                    JSONObject valueEmail = (JSONObject) email.get(0);
+                    curId = valueVid.get("value").toString();
+                    curTitle = valueTitle.get("value").toString();
+                    curEmail = valueEmail.get("value").toString();
+                    currentBook = new BookPost(curId, curTitle, curEmail);
+                    listItems.add(curTitle);
+
+                    books.add(currentBook);
                 } catch (Exception e) {
                     Log.v("Error adding article", e.getMessage());
                 }
@@ -106,7 +137,7 @@ public class ListActivity extends Activity {
             ArrayAdapter ad= new ArrayAdapter(ListActivity.this, android.R.layout.simple_list_item_1,listItems);
 
             //give adapter to ListView UI element to render
-            lst.setAdapter(ad);
+            //lst.setAdapter(ad);
         }
     }
 

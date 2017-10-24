@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         listButton.setOnClickListener(new OnClickListener(){
             public void onClick(View v){
-                startActivity(new Intent(MainActivity.this, ListActivity.class));
+                startActivity(new Intent(MainActivity.this, BookListActivity.class));
             }
         });
         Button webButton = (Button) findViewById(R.id.web_but);
