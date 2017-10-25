@@ -25,6 +25,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
             }
         });
+        Button bookButton = (Button) findViewById(R.id.book_but);
+
+        bookButton.setOnClickListener(new OnClickListener(){
+            public void onClick(View v){
+                startActivity(new Intent(MainActivity.this, BookDisplayActivity.class));
+            }
+        });
         Button listButton = (Button) findViewById(R.id.list_but);
 
         listButton.setOnClickListener(new OnClickListener(){

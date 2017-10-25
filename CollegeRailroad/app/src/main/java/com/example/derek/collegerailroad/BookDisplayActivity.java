@@ -1,8 +1,16 @@
 package com.example.derek.collegerailroad;
-
-import android.content.Context;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.Intent.*;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -13,60 +21,45 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 /**
- * Created by derek on 10/24/17.
+ * Created by derek on 10/25/17.
  */
 
-public class BookLab {
-    private static BookLab sBookLab;
-    private List<BookPost> mBooks;
+public class BookDisplayActivity extends Activity {
+    public String book_id = "26";
 
-    public static BookLab get(Context context) {
-        if (sBookLab == null) {
-            sBookLab = new BookLab(context);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.book_display);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            book_id = extras.getString("BOOK_ID");
+            //The key argument here must match that used in the other activity
         }
-        return sBookLab;
+        new FetchBook().execute();
     }
+    private class FetchBook extends AsyncTask<String, Void, JSONObject> {
 
-    private BookLab(Context context) {
-    }
-
-    public List<BookPost> getBooks() {
-        return mBooks;
-    }
-
-    public BookPost getBook(UUID id) {
-        for (BookPost book : mBooks) {
-            if (book.getId().equals(id)) {
-                return book;
-            }
-        }
-
-        return null;
-    }
-    private class FetchBooks extends AsyncTask<String, Void, JSONArray> {
-
-        protected JSONArray doInBackground(String... params) {
+        protected JSONObject doInBackground(String... params) {
 
 
             HttpClient httpclient = new DefaultHttpClient();
 
-            HttpGet httpget = new HttpGet("http://collegerailroad.com/appview?_format=json");
+            HttpGet httpget = new HttpGet("http://collegerailroad.com/node/"+book_id+"?_format=json");
             //set header to tell REST endpoint the request and response content types
             //httpget.setHeader("Accept", "application/json");
             //httpget.setHeader("Content-type", "application/json");
 
-            JSONArray json = new JSONArray();
+            JSONObject json = new JSONObject();
 
             try {
 
                 HttpResponse response = httpclient.execute(httpget);
 
                 //read the response and convert it into JSON array
-                json = new JSONArray(EntityUtils.toString(response.getEntity()));
+                json = new JSONObject(EntityUtils.toString(response.getEntity()));
                 //return the JSON array for post processing to onPostExecute function
                 return json;
 
@@ -83,8 +76,11 @@ public class BookLab {
 
 
         //executed after the background nodes fetching process is complete
-        protected void onPostExecute(JSONArray result) {
-            mBooks = new ArrayList<BookPost>();
+        protected void onPostExecute(JSONObject result) {
+            TextView mTitleTextView;
+            TextView mEmailTextView;
+            TextView mLocationTextView;
+
             BookPost currentBook;
             String curId;
             String curTitle;
@@ -93,7 +89,7 @@ public class BookLab {
             //iterate through JSON to read the title of nodes
             for(int i=0;i<result.length();i++){
                 try {
-                    JSONObject item = (JSONObject) result.get(i);
+                    JSONObject item = result;
                     JSONArray title = (JSONArray) item.get("title");
                     JSONArray vid = (JSONArray) item.get("vid");
                     JSONArray email = (JSONArray) item.get("field_email");
@@ -104,8 +100,12 @@ public class BookLab {
                     curTitle = valueTitle.get("value").toString();
                     curEmail = valueEmail.get("value").toString();
                     currentBook = new BookPost(curId, curTitle, curEmail);
+                    mTitleTextView = (TextView) findViewById(R.id.book_title);
+                    mEmailTextView = (TextView) findViewById(R.id.book_email);
+                    mTitleTextView.setText(curTitle);
+                    mEmailTextView.setText(curEmail);
 
-                    mBooks.add(currentBook);
+
                 } catch (Exception e) {
                     Log.v("Error adding database", e.getMessage());
                 }
@@ -113,4 +113,6 @@ public class BookLab {
 
         }
     }
+
+
 }
