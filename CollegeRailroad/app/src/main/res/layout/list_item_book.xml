@@ -6,15 +6,18 @@
     android:padding="8dp">
 
     <TextView
+        android:id="@+id/book_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Book Title"
-        android:id="@+id/book_title"/>
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Email"
-        android:id="@+id/book_email"/>
+        android:id="@+id/book_email"
+        android:padding="8dp"/>
 
 </LinearLayout>
