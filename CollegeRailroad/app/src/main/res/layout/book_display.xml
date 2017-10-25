@@ -2,27 +2,70 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <TextView
+        android:id="@+id/bookLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Book Title:"
-        android:id="@+id/bookLabel"/>
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
     <TextView
+        android:id="@+id/book_title"
         android:layout_width="234dp"
         android:layout_height="wrap_content"
-        android:text="Book Title"
-        android:id="@+id/book_title"
-        android:paddingLeft="8dp"/>
+        android:paddingLeft="8dp"
+        android:text="N/A"
+        android:textSize="18sp" />
+
     <TextView
+        android:id="@+id/emailLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Email:"
-        android:id="@+id/emailLabel"/>
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/book_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Email"
-        android:id="@+id/book_email"
-        android:paddingLeft="8dp"/>
+        android:paddingLeft="8dp"
+        android:text="N/A"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/conditionLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Condition:"
+        android:textAlignment="textStart"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/book_condition"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:text="N/A"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/subjectLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="Subject:"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/book_subject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:text="N/A"
+        android:textSize="18sp" />
 </LinearLayout>

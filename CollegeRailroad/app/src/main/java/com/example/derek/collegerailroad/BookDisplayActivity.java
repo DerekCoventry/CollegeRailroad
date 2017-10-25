@@ -80,11 +80,15 @@ public class BookDisplayActivity extends Activity {
             TextView mTitleTextView;
             TextView mEmailTextView;
             TextView mLocationTextView;
+            TextView mSubjectTextView;
+            TextView mConditionTextView;
 
             BookPost currentBook;
             String curId;
             String curTitle;
             String curEmail;
+            String curCondition;
+            String curSubject;
 
             //iterate through JSON to read the title of nodes
             for(int i=0;i<result.length();i++){
@@ -93,17 +97,47 @@ public class BookDisplayActivity extends Activity {
                     JSONArray title = (JSONArray) item.get("title");
                     JSONArray vid = (JSONArray) item.get("vid");
                     JSONArray email = (JSONArray) item.get("field_email");
+                    JSONArray condition = (JSONArray) item.get("field_condition");
+                    JSONArray subject = (JSONArray) item.get("field_subject");
                     JSONObject valueVid = (JSONObject) vid.get(0);
-                    JSONObject valueTitle = (JSONObject) title.get(0);
-                    JSONObject valueEmail = (JSONObject) email.get(0);
+                    if (title.length() > 0){
+                        JSONObject valueTitle = (JSONObject) title.get(0);
+                        curTitle = valueTitle.get("value").toString();
+                        mTitleTextView = (TextView) findViewById(R.id.book_title);
+                        if(curTitle.length() > 0 ){
+                            mTitleTextView.setText(curTitle);
+                        }
+                    }
+                    if (email.length() > 0 ){
+                        JSONObject valueEmail = (JSONObject) email.get(0);
+                        curEmail = valueEmail.get("value").toString();
+                        mEmailTextView = (TextView) findViewById(R.id.book_email);
+                        if(curEmail.length() > 0 ) {
+                            mEmailTextView.setText(curEmail);
+                        }
+
+                    }
+                    if (condition.length() > 0) {
+                        JSONObject valueCondition = (JSONObject) condition.get(0);
+                        curCondition = valueCondition.get("value").toString();
+                        if(curCondition.length() > 0 ) {
+                            mConditionTextView = (TextView) findViewById(R.id.book_condition);
+                            mConditionTextView.setText(curCondition);
+                        }
+                    }
+                    if (subject.length() > 0) {
+                        JSONObject valueSubject = (JSONObject) subject.get(0);
+                        curSubject = valueSubject.get("value").toString();
+                        if(curSubject.length() > 0 ) {
+                            mSubjectTextView = (TextView) findViewById(R.id.book_subject);
+                            mSubjectTextView.setText(curSubject);
+                        }
+
+                    }
                     curId = valueVid.get("value").toString();
-                    curTitle = valueTitle.get("value").toString();
-                    curEmail = valueEmail.get("value").toString();
-                    currentBook = new BookPost(curId, curTitle, curEmail);
-                    mTitleTextView = (TextView) findViewById(R.id.book_title);
-                    mEmailTextView = (TextView) findViewById(R.id.book_email);
-                    mTitleTextView.setText(curTitle);
-                    mEmailTextView.setText(curEmail);
+
+
+
 
 
                 } catch (Exception e) {
