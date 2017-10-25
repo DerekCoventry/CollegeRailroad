@@ -52,22 +52,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     11 );
         }
         Location coordinates = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        // Add a marker in Sydney and move the camera
         double lat = coordinates.getLatitude();
         double lng = coordinates.getLongitude();
         LatLng location = new LatLng(lat, lng);
 
         Geocoder gcd = new Geocoder(getApplicationContext(), Locale.getDefault());
         List<Address> addresses = null;
+        String city = null;
+        String state = null;
         String currentLocation = "Current Location";
         try {
             addresses = gcd.getFromLocation(lat, lng, 1);
             if (addresses.size() > 0) {
                 // Get the current city
-                currentLocation = addresses.get(0).getLocality();
+                city = addresses.get(0).getLocality();
+                state = addresses.get(0).getAdminArea();
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        if(city == null){
+            if(state != null){
+                currentLocation = state;
+            }
+        }else{
+            if (state == null) {
+                currentLocation = city;
+            } else {
+                currentLocation = city + ", " + state;
+            }
         }
         mMap.addMarker(new MarkerOptions().position(location).title(currentLocation));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
