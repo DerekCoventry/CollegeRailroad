@@ -47,23 +47,34 @@ public class SearchISBNActivity extends AppCompatActivity {
                     Element error = doc.select("#bd").first();
                     if(error == null) {
                         Elements titleAuthor = doc.select("div.attributes strong span");
-                        builder.append("Title: ").append(titleAuthor.get(0).text()).append("\n");
-                        builder.append("Author: ").append(titleAuthor.get(1).text()).append("\n");
-                        String ISBN = doc.select("div.attributes h1").text();
-                        if (ISBN.contains("/")) {
-                            String ISBN13 = ISBN.substring(0, ISBN.lastIndexOf("/")).replaceAll("\\s+", "");
-                            String ISBN10 = ISBN.substring(ISBN.lastIndexOf("/") + 1).replaceAll("\\s+", "");
-                            if (ISBN13.length() == 13) {
-                                builder.append("ISBN13: ").append(ISBN13).append("\n");
-                            }
-                            if (ISBN10.length() == 10) {
-                                builder.append("ISBN10: ").append(ISBN10).append("\n");
+                        if(titleAuthor != null) {
+                            builder.append("Title: ").append(titleAuthor.get(0).text()).append("\n");
+                            builder.append("Author: ").append(titleAuthor.get(1).text()).append("\n");
+                        }
+                        Elements ISBNelts = doc.select("div.attributes h1") ;
+                        if(ISBNelts != null) {
+                            String ISBN = ISBNelts.text();
+                            if (ISBN.contains("/")) {
+                                String ISBN13 = ISBN.substring(0, ISBN.lastIndexOf("/")).replaceAll("\\s+", "");
+                                String ISBN10 = ISBN.substring(ISBN.lastIndexOf("/") + 1).replaceAll("\\s+", "");
+                                if (ISBN13.length() == 13) {
+                                    builder.append("ISBN13: ").append(ISBN13).append("\n");
+                                }
+                                if (ISBN10.length() == 10) {
+                                    builder.append("ISBN10: ").append(ISBN10).append("\n");
+                                }
                             }
                         }
                         Elements pubEditLang = doc.select("div.attributes p span.describe-isbn");
-                        builder.append("Publisher: ").append(pubEditLang.get(0).text()).append("\n");
-                        builder.append("Edition: ").append(pubEditLang.get(1).text()).append("\n");
-                        builder.append("Language: ").append(pubEditLang.get(2).text());
+                        if(pubEditLang != null) {
+                            builder.append("Publisher: ").append(pubEditLang.get(0).text()).append("\n");
+                            if(pubEditLang.size() > 1) {
+                                builder.append("Edition: ").append(pubEditLang.get(1).text()).append("\n");
+                                if(pubEditLang.size() > 2) {
+                                    builder.append("Language: ").append(pubEditLang.get(2).text());
+                                }
+                            }
+                        }
                     }else{
                         builder.append("No Results Found");
                     }
