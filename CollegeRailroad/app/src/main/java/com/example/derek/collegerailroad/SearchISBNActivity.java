@@ -1,9 +1,11 @@
 package com.example.derek.collegerailroad;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,8 +34,15 @@ public class SearchISBNActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mTextView.setText("Loading...");
+                try  {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                } catch (Exception e) {
+
+                }
                 getWebsite(mEditText.getText().toString());
             }
+
         });
     }
 
