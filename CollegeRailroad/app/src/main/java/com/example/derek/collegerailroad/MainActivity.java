@@ -62,6 +62,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, CameraActivity.class));
             }
         });
+
+        Button searchButton = (Button) findViewById(R.id.search_but);
+        searchButton.setOnClickListener(new OnClickListener(){
+            public void onClick(View v){
+                startActivity(new Intent(MainActivity.this, SearchISBNActivity.class));
+            }
+        });
     }
 
 }

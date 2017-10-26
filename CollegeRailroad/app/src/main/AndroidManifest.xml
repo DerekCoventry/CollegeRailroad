@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature android:name="android.hardware.location.gps" />
     <uses-feature android:name="android.hardware.camera2" />
@@ -51,11 +52,10 @@
             android:label="@string/title_activity_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".web" />
-        <activity android:name=".BookListActivity">
-        </activity>
+        <activity android:name=".BookListActivity"></activity>
         <activity android:name=".CameraActivity" />
         <activity android:name=".BookDisplayActivity" />
-
+        <activity android:name=".SearchISBNActivity"></activity>
     </application>
 
 </manifest>
