@@ -36,6 +36,23 @@
         android:textSize="18sp" />
 
     <TextView
+        android:id="@+id/locationlabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Location:"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/book_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:text="N/A"
+        android:textSize="18sp" />
+
+
+    <TextView
         android:id="@+id/conditionLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,6 +60,7 @@
         android:textAlignment="textStart"
         android:textSize="24sp"
         android:textStyle="bold" />
+
 
     <TextView
         android:id="@+id/book_condition"

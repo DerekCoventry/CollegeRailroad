@@ -28,6 +28,7 @@ import java.util.ArrayList;
 
 public class BookDisplayActivity extends Activity {
     public String book_id = "26";
+    public String[] states = new String[]{"Alabama","Alaska","Alaska Fairbanks","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,12 +84,14 @@ public class BookDisplayActivity extends Activity {
             TextView mSubjectTextView;
             TextView mConditionTextView;
 
+
             BookPost currentBook;
             String curId;
             String curTitle;
             String curEmail;
             String curCondition;
             String curSubject;
+            String curLocation;
 
             //iterate through JSON to read the title of nodes
             for(int i=0;i<result.length();i++){
@@ -99,6 +102,8 @@ public class BookDisplayActivity extends Activity {
                     JSONArray email = (JSONArray) item.get("field_email");
                     JSONArray condition = (JSONArray) item.get("field_condition");
                     JSONArray subject = (JSONArray) item.get("field_subject");
+                    JSONArray location = (JSONArray) item.get("field_state");
+
                     JSONObject valueVid = (JSONObject) vid.get(0);
                     if (title.length() > 0){
                         JSONObject valueTitle = (JSONObject) title.get(0);
@@ -131,6 +136,15 @@ public class BookDisplayActivity extends Activity {
                         if(curSubject.length() > 0 ) {
                             mSubjectTextView = (TextView) findViewById(R.id.book_subject);
                             mSubjectTextView.setText(curSubject);
+                        }
+
+                    }
+                    if (location.length() > 0) {
+                        JSONObject locationSubject = (JSONObject) location.get(0);
+                        curLocation = locationSubject.get("target_id").toString();
+                        if(curLocation.length() > 0 ) {
+                            mSubjectTextView = (TextView) findViewById(R.id.book_location);
+                            mSubjectTextView.setText(states[Integer.parseInt(curLocation)-12]);
                         }
 
                     }

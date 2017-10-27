@@ -97,31 +97,30 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
                 //        "\"href\": \"http://collegerailroad.com/rest/type/node/basic_post\"}},\"title\": [{\"value\": \""+ title + "\""+
                 //        "}],\"type\": [{\"target_id\": \"basic_post\"}],\"field_email\": [{\"value\": \""+email+"\"}]}");
                 StringEntity se = new StringEntity("{\n" +
-                        "\t\"_links\": {\n" +
-                        "\t\t\"type\":{\n" +
-                        "\t\t\t\"href\": \"http://collegerailroad.com/rest/type/node/basic_post\"\n" +
-                        "\t\t}\n" +
-                        "\t},\n" +
-                        "\t\"title\": [\n" +
-                        "\t\t{\n" +
-                        "\t\t\t\"value\": \""+title+"\"\n" +
-                        "\t\t}\n" +
-                        "\t],\n" +
-                        "\t\"type\": [\n" +
-                        "\t\t{\n" +
-                        "\t\t\t\"target_id\": \"basic_post\"\n" +
-                        "\t\t}\n" +
-                        "\t],\n" +
-                        "\t\"field_email\": [\n" +
-                        "\t\t{\n" +
-                        "\t\t\t\"value\": \""+email+"\"\n" +
-                        "\t\t}\n" +
-                        "\t],\n" +  "      \"field_state\": ["+
+                        "\"_links\": {\n" +
+                        "\"type\":{\n" +
+                        "\"href\": \"http://collegerailroad.com/rest/type/node/basic_post\"\n" +
+                        "}\n" +
+                        "},\n" +
+                        "\"title\": [\n" +
+                        "{\n" +
+                        "\"value\": \""+title+"\"\n" +
+                        "}\n" +
+                        "],\n" +
+                        "\"type\": [\n" +
+                        "{\n" +
+                        "\"target_id\": \"basic_post\"\n" +
+                        "}\n" +
+                        "],\n" +
+                        "\"field_email\": [\n" +
+                        "{\n" +
+                        "\"value\": \""+email+"\"\n" +
+                        "}\n" +
+                        "],\n\"field_state\": ["+
                         "{\"target_id\":"+ getTaxLocation(location)+","+
                         "\"target_type\": \"taxonomy_term\","+
-                        "\"target_uuid\": \"8b2b4cba-41b6-4f18-a155-a9159e099b89\","+
                         "\"url\": \"/taxonomy/term/"+getTaxLocation(location)+"\""+
-                        " }],"+
+                        " }]"+
                         "}");
                 httppost.setEntity(se);
                 httppost.setHeader("Accept", "application/hal+json");
@@ -154,7 +153,7 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
         protected String getTaxLocation(String location) {
             String[] states = new String[]{"Alabama","Alaska","Alaska Fairbanks","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"};
             for (int i = 0; i< 51; i++) {
-                if (location == states[i]) {
+                if (location.equals(states[i])) {
                     return Integer.toString((i + 12));
                 }
             }
