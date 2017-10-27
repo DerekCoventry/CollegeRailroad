@@ -2,86 +2,88 @@ package com.example.derek.collegerailroad;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
+
 public class CameraActivity extends AppCompatActivity {
 
+    public static File _file;
+    public static File _dir;
+    public static Bitmap bitmap;
     ImageView imageView;
-
+    private String pictureImagePath = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("CameraActivity", "onCreate() method triggered");
         setContentView(R.layout.activity_camera2);
         Button cameraButton = (Button) findViewById(R.id.camera_but2);
-        imageView = (ImageView)findViewById(R.id.imageView);
+        imageView = (ImageView) findViewById(R.id.imageView);
 
-        cameraButton.setOnClickListener(new View.OnClickListener(){
+        cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                _dir = new File(
+                        Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_PICTURES), "CameraActivity");
+
+                _file = new File(_dir, "bookPhoto/" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()));
+                Log.d("TEST22", String.format("myPhoto_{0}.jpg", new UUID(10, 10)));
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(_file));
+
                 startActivityForResult(intent, 0);
             }
         });
     }
 
     @Override
-    protected void onStart(){
-        super.onStart();
-        Log.i("CameraActivity", "onStart() method triggered");
-    }
-
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        Log.i("CameraActivity", "onResume() method triggered");
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        try {
-            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-            Matrix matrix = new Matrix();
-            matrix.postRotate(90);
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), true);
-            Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-            imageView.setImageBitmap(rotatedBitmap);
-        }catch(Exception e){
-
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        Uri contentUri = Uri.fromFile(_file);
+        mediaScanIntent.setData(contentUri);
+        sendBroadcast(mediaScanIntent);
+        int height = imageView.getWidth() / 2;
+        int width = imageView.getHeight() / 2;
+        bitmap = LoadAndResizeBitmap(_file.getAbsolutePath(), width, height);
+        if (bitmap != null) {
+            imageView.setImageBitmap (bitmap);
+            bitmap = null;
         }
     }
 
-    @Override
-    protected void onPause(){
-        super.onPause();
-        Log.i("CameraActivity", "onPause() method triggered");
-    }
-
-    @Override
-    protected void onStop(){
-        super.onStop();
-        Log.i("CameraActivity", "onStop() method triggered");
-    }
-
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-        Log.i("CameraActivity", "onDestroy() method triggered");
-    }
-
-    @Override
-    protected void onRestart(){
-        super.onRestart();
-        Log.i("CameraActivity", "onRestart() method triggered");
-    }
+    public static Bitmap LoadAndResizeBitmap(String fileName, int width, int height)
+    {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(fileName, options);
+        int outHeight = options.outHeight;
+        int outWidth = options.outWidth;
+        int inSampleSize = 1;
+        if (outHeight > height || outWidth > width)
+        {
+            inSampleSize = outWidth > outHeight ? outHeight / height : outWidth / width;
+        }
+        options.inSampleSize = inSampleSize;
+        options.inJustDecodeBounds = false;
+        Bitmap resizedBitmap = BitmapFactory.decodeFile(fileName, options);
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        return Bitmap.createBitmap(resizedBitmap, 0, 0, resizedBitmap.getWidth(), resizedBitmap.getHeight(), matrix, true);
+}
 
 }
