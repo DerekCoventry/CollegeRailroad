@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
@@ -36,14 +38,18 @@ public class BookListFragment extends Fragment {
     public String session_id;
     public String session_name;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_book_list, container, false);
-
         mBookRecyclerView = (RecyclerView) view
                 .findViewById(R.id.book_recycler_view);
+        Button addButton = (Button) view.findViewById(R.id.add_but);
+        addButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                startActivity(new Intent(getActivity(), AddArticle.class));
+            }
+        });
         mBookRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         new FetchBooks().execute();
         return view;

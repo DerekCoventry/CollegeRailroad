@@ -7,6 +7,9 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.apache.http.client.CookieStore;
@@ -22,20 +25,37 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONObject;
 
-public class AddArticle extends Activity {
+public class AddArticle extends Activity implements AdapterView.OnItemSelectedListener {
     public String session_id;
     public String session_name;
+    public String location = "Alabama";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_article);
         Bundle extras = getIntent().getExtras();
+        Spinner locationSpin = (Spinner) findViewById((R.id.editlocation));
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.locations_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        locationSpin.setAdapter(adapter);
+        locationSpin.setOnItemSelectedListener(this);
+
+
         if (extras != null) {
             //retrieve the session_id and session_id passed by the previous activity
             session_id = extras.getString("SESSION_ID");
             session_name = extras.getString("SESSION_NAME");
         }
+    }
+    public void onItemSelected(AdapterView<?> parent, View view,
+                               int pos, long id) {
+        location =  parent.getItemAtPosition(pos).toString();
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        location = "Alabama";
     }
 
     //click listener for addArticle button
@@ -44,6 +64,7 @@ public class AddArticle extends Activity {
         //pass session_name and session_id
         new addArticleTask().execute(session_name,session_id);
     }
+
 
     //asynchronous task to add the article into Drupal
     private class addArticleTask extends AsyncTask<String, Void, Integer> {
@@ -95,7 +116,12 @@ public class AddArticle extends Activity {
                         "\t\t{\n" +
                         "\t\t\t\"value\": \""+email+"\"\n" +
                         "\t\t}\n" +
-                        "\t]\n" +
+                        "\t],\n" +  "      \"field_state\": ["+
+                        "{\"target_id\":"+ getTaxLocation(location)+","+
+                        "\"target_type\": \"taxonomy_term\","+
+                        "\"target_uuid\": \"8b2b4cba-41b6-4f18-a155-a9159e099b89\","+
+                        "\"url\": \"/taxonomy/term/"+getTaxLocation(location)+"\""+
+                        " }],"+
                         "}");
                 httppost.setEntity(se);
                 httppost.setHeader("Accept", "application/hal+json");
@@ -125,7 +151,15 @@ public class AddArticle extends Activity {
 
             return 0;
         }
-
+        protected String getTaxLocation(String location) {
+            String[] states = new String[]{"Alabama","Alaska","Alaska Fairbanks","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"};
+            for (int i = 0; i< 51; i++) {
+                if (location == states[i]) {
+                    return Integer.toString((i + 12));
+                }
+            }
+            return Integer.toString(12);
+        }
 
         protected void onPostExecute(Integer result) {
 
