@@ -2,7 +2,10 @@ package com.example.derek.collegerailroad;
 
 import android.*;
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
@@ -15,6 +18,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -45,9 +52,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     11 );
         }
         Location coordinates = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        // Add a marker in Sydney and move the camera
-        LatLng location = new LatLng(coordinates.getLatitude(), coordinates.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(location).title("Current Location"));
+        double lat = coordinates.getLatitude();
+        double lng = coordinates.getLongitude();
+        LatLng location = new LatLng(lat, lng);
+
+        Geocoder gcd = new Geocoder(getApplicationContext(), Locale.getDefault());
+        List<Address> addresses = null;
+        String city = null;
+        String state = null;
+        String currentLocation = "Current Location";
+        try {
+            addresses = gcd.getFromLocation(lat, lng, 1);
+            if (addresses.size() > 0) {
+                // Get the current city
+                city = addresses.get(0).getLocality();
+                state = addresses.get(0).getAdminArea();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(city == null){
+            if(state != null){
+                currentLocation = state;
+            }
+        }else{
+            if (state == null) {
+                currentLocation = city;
+            } else {
+                currentLocation = city + ", " + state;
+            }
+        }
+        mMap.addMarker(new MarkerOptions().position(location).title(currentLocation));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(10));
     }
