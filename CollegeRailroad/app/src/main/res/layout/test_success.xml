@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/bookLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="user_id:"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/user_id"
+        android:layout_width="234dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:text="N/A"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/emailLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="csrf:"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/csrf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:text="N/A"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/locationlabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="logout:"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:text="N/A"
+        android:textSize="18sp" />
+    <TextView
+        android:id="@+id/locationabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="user_name:"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:text="N/A"
+        android:textSize="18sp" />
+    <TextView
+        android:id="@+id/locationbel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="raw:"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/raw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:text="N/A"
+        android:textSize="18sp" />
+</LinearLayout>

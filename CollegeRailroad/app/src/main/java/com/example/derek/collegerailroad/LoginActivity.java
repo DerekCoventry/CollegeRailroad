@@ -112,6 +112,28 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     public String session_name;
     public String session_id;
+    public String user_id = "none";
+    public String csrf = "f";
+    public String logout = "f";
+    public String user_name = "f";
+    public String raw = "f";
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+        if(!(user_id.equals("none"))) {
+            savedInstanceState.putString("user_id", user_id);
+            savedInstanceState.putString("csrf", csrf);
+
+            savedInstanceState.putString("user_name", user_name);
+
+            savedInstanceState.putString("logout", logout);
+
+        }
+
+    }
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
@@ -320,7 +342,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 HttpClient httpclient = new DefaultHttpClient();
 
                 //set the remote endpoint URL
-                HttpPost httppost = new HttpPost("http://collegerailroad.com/api/user/login");
+                HttpPost httppost = new HttpPost("http://collegerailroad.com/user/login?_format=json");
 
 
                 try {
@@ -331,8 +353,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     JSONObject json = new JSONObject();
                     //extract the username and password from UI elements and create a JSON object
-                    json.put("username", username.getText().toString().trim());
-                    json.put("password", password.getText().toString().trim());
+                    json.put("name", username.getText().toString().trim());
+                    json.put("pass", password.getText().toString().trim());
 
                     //add serialised JSON object into POST request
                     StringEntity se = new StringEntity(json.toString());
@@ -348,8 +370,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     JSONObject jsonObject = new JSONObject(jsonResponse);
                     //read the session information
-                    session_name=jsonObject.getString("session_name");
-                    session_id=jsonObject.getString("sessid");
+                    //session_name=jsonObject.getString("session_name");
+                    //session_id=jsonObject.getString("sessid");
+                    raw = jsonObject.toString();
+                    csrf = jsonObject.getString("csrf_token");
+                    user_id = ((JSONObject)jsonObject.get("current_user")).getString("uid");
+                    user_name = ((JSONObject)jsonObject.get("current_user")).getString("name");
+                    logout = jsonObject.getString("logout_token");
+
+
 
                     return 0;
 
@@ -364,10 +393,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             protected void onPostExecute(Integer result) {
 
                 //create an intent to start the ListActivity
-                Intent intent = new Intent(LoginActivity.this, ListActivity.class);
+                Intent intent = new Intent(LoginActivity.this, TestSuccess.class);
                 //pass the session_id and session_name to ListActivity
-                intent.putExtra("SESSION_ID", session_id);
-                intent.putExtra("SESSION_NAME", session_name);
+                intent.putExtra("USER_ID", user_id);
+                intent.putExtra("USER_NAME", user_name);
+                intent.putExtra("CSRF", csrf);
+                intent.putExtra("LOGOUT", logout);
+                intent.putExtra("RAW", raw);
                 //start the ListActivity
                 startActivity(intent);
             }

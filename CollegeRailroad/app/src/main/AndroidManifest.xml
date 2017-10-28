@@ -57,6 +57,8 @@
         <activity android:name=".CameraActivity" />
         <activity android:name=".BookDisplayActivity" />
         <activity android:name=".SearchISBNActivity"></activity>
+        <activity android:name=".TestSuccess"></activity>
+
     </application>
 
 </manifest>
