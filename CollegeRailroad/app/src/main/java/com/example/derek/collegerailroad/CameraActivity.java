@@ -42,7 +42,6 @@ public class CameraActivity extends AppCompatActivity {
                                 Environment.DIRECTORY_PICTURES), "CameraActivity");
 
                 _file = new File(_dir, "bookPhoto/" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()));
-                Log.d("TEST22", String.format("myPhoto_{0}.jpg", new UUID(10, 10)));
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(_file));
 
                 startActivityForResult(intent, 0);
