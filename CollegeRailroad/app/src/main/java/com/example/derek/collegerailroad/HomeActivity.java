@@ -96,7 +96,6 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         searched = false;
-        mProgressDialog.dismiss();
     }
     private List<String> getWebsite(final String search) {
         final List<String> book_details = new ArrayList<>(7);
@@ -145,6 +144,7 @@ public class HomeActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        mProgressDialog.dismiss();
                         startActivity(new Intent(HomeActivity.this, BookListActivity.class));
                         searched = false;
                     }
