@@ -53,12 +53,12 @@
             android:label="@string/title_activity_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".web" />
-        <activity android:name=".BookListActivity"></activity>
+        <activity android:name=".BookListActivity" />
         <activity android:name=".CameraActivity" />
         <activity android:name=".BookDisplayActivity" />
-        <activity android:name=".SearchISBNActivity"></activity>
-        <activity android:name=".TestSuccess"></activity>
-
+        <activity android:name=".SearchISBNActivity" />
+        <activity android:name=".TestSuccess" />
+        <activity android:name=".HomeActivity"></activity>
     </application>
 
 </manifest>

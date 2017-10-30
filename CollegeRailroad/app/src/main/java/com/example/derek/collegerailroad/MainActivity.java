@@ -69,6 +69,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, SearchISBNActivity.class));
             }
         });
+
+        Button homeButton = (Button) findViewById(R.id.home_but);
+        homeButton.setOnClickListener(new OnClickListener(){
+            public void onClick(View v){
+                startActivity(new Intent(MainActivity.this, HomeActivity.class));
+            }
+        });
     }
 
 }

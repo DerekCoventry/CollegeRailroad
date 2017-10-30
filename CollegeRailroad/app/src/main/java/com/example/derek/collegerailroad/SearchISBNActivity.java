@@ -64,8 +64,8 @@ public class SearchISBNActivity extends AppCompatActivity {
                         if(ISBNelts != null) {
                             String ISBN = ISBNelts.text();
                             if (ISBN.contains("/")) {
-                                String ISBN13 = ISBN.substring(0, ISBN.lastIndexOf("/")).replaceAll("\\s+", "");
-                                String ISBN10 = ISBN.substring(ISBN.lastIndexOf("/") + 1).replaceAll("\\s+", "");
+                                String ISBN13 = ISBN.substring(0, ISBN.lastIndexOf("/")).replaceAll("[\\s+-]", "");
+                                String ISBN10 = ISBN.substring(ISBN.lastIndexOf("/") + 1).replaceAll("[\\s+-]", "");
                                 if (ISBN13.length() == 13) {
                                     builder.append("ISBN13: ").append(ISBN13).append("\n");
                                 }
