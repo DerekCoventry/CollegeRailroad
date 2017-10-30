@@ -45,6 +45,14 @@ public class HomeActivity extends AppCompatActivity implements SearchFragment.On
                 startActivity(new Intent(HomeActivity.this, LoginActivity.class));
             }
         });
+
+        Button signupButton = (Button) findViewById(R.id.signup_but);
+
+        signupButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                startActivity(new Intent(HomeActivity.this, web.class));
+            }
+        });
         Button listButton = (Button) findViewById(R.id.list_but);
 
         listButton.setOnClickListener(new View.OnClickListener(){
