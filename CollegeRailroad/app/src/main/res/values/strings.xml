@@ -22,4 +22,7 @@
     <string name="title_activity_add_article">Add Article</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_maps2">Map</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
