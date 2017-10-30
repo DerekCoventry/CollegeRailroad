@@ -55,6 +55,5 @@ public class HomeActivity extends AppCompatActivity implements SearchFragment.On
     }
     @Override
     public void onFragmentInteraction(Uri uri){
-        //you can leave it empty
     }
 }
