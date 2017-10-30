@@ -49,7 +49,7 @@ public class HomeActivity extends AppCompatActivity {
                             } else {
                                 String number = search.replaceAll("-", "");
                                 if ((number.length() == 10 || number.length() == 13) && number.matches("\\d+")) {
-                                    mProgressDialog = ProgressDialog.show(HomeActivity.this, "Loading", "Wait while loading...");
+                                    mProgressDialog = ProgressDialog.show(HomeActivity.this, "Loading", "Searching for book...");
                                     getWebsite(number);
                                     return true;
                                 } else {
@@ -144,8 +144,16 @@ public class HomeActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        Intent goToList = new Intent(HomeActivity.this, BookListActivity.class);
+                        goToList.putExtra("TITLE", book_details.get(0));
+                        goToList.putExtra("AUTHOR", book_details.get(1));
+                        goToList.putExtra("ISBN10", book_details.get(2));
+                        goToList.putExtra("ISBN13", book_details.get(3));
+                        goToList.putExtra("PUBLISHER", book_details.get(4));
+                        goToList.putExtra("EDITION", book_details.get(5));
+                        goToList.putExtra("LANGUAGE", book_details.get(6));
                         mProgressDialog.dismiss();
-                        startActivity(new Intent(HomeActivity.this, BookListActivity.class));
+                        startActivity(goToList);
                         searched = false;
                     }
                 });
