@@ -1,6 +1,7 @@
 package com.example.derek.collegerailroad;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,9 +22,13 @@ import org.jsoup.select.Elements;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
     private TextView mTextView;
+    boolean searched = false;
+    ProgressDialog mProgressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,23 +37,25 @@ public class HomeActivity extends AppCompatActivity {
         mEditText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_RIGHT = 2;
-                String search = mEditText.getText().toString();
-                int search_length = search.length();
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    if(event.getRawX() >= (mEditText.getRight() - mEditText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        if(search_length == 0) {
-                            Toast.makeText(HomeActivity.this, "Enter ISBN before searching", Toast.LENGTH_LONG).show();
-                            return false;
-                        }else{
-                            String number = search.replaceAll("-", "");
-                            if((number.length() == 10 || number.length() == 13) && number.matches("\\d+")){
-                                getWebsite(number);
-                                startActivity(new Intent(HomeActivity.this, BookListActivity.class));
-                                return true;
-                            }else{
-                                Toast.makeText(HomeActivity.this, "ISBN must be 10 or 13 digits", Toast.LENGTH_LONG).show();
+                if(!searched) {
+                    final int DRAWABLE_RIGHT = 2;
+                    String search = mEditText.getText().toString();
+                    int search_length = search.length();
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        if (event.getRawX() >= (mEditText.getRight() - mEditText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                            if (search_length == 0) {
+                                Toast.makeText(HomeActivity.this, "Enter ISBN before searching", Toast.LENGTH_LONG).show();
                                 return false;
+                            } else {
+                                String number = search.replaceAll("-", "");
+                                if ((number.length() == 10 || number.length() == 13) && number.matches("\\d+")) {
+                                    mProgressDialog = ProgressDialog.show(HomeActivity.this, "Loading", "Wait while loading...");
+                                    getWebsite(number);
+                                    return true;
+                                } else {
+                                    Toast.makeText(HomeActivity.this, "ISBN must be 10 or 13 digits", Toast.LENGTH_LONG).show();
+                                    return false;
+                                }
                             }
                         }
                     }
@@ -85,10 +93,17 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    private String getWebsite(final String search) {
+    @Override
+    public void onBackPressed(){
+        searched = false;
+        mProgressDialog.dismiss();
+    }
+    private List<String> getWebsite(final String search) {
+        final List<String> book_details = new ArrayList<>(7);
         new Thread(new Runnable() {
             @Override
             public void run() {
+                book_details.clear();
                 String title = "", author = "", ISBN10 = "", ISBN13 = "", publisher = "", edition = "", language = "";
                 try {
                     Document doc = Jsoup.connect("https://www.bookfinder.com/search/?isbn="+search+"+&mode=isbn&st=sr&ac=qr").get();
@@ -120,15 +135,23 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 } catch (IOException e) {
                 }
-
+                book_details.add(title);
+                book_details.add(author);
+                book_details.add(ISBN10);
+                book_details.add(ISBN13);
+                book_details.add(publisher);
+                book_details.add(edition);
+                book_details.add(language);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //mTextView.setText(builder.toString());
+                        startActivity(new Intent(HomeActivity.this, BookListActivity.class));
+                        searched = false;
                     }
                 });
             }
         }).start();
-        return "";
+
+        return book_details;
     }
 }
