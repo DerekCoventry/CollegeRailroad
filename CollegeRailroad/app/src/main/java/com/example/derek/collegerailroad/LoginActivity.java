@@ -3,6 +3,7 @@ package com.example.derek.collegerailroad;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -422,7 +423,16 @@ public class LoginActivity extends BaseAppCompatActivity implements LoaderCallba
                 intent.putExtra("CSRF", csrf);
                 intent.putExtra("LOGOUT", logout);
                 intent.putExtra("RAW", raw);
-                //intent.putExtra("BASIC_AUTH", Base64.encode((UserName+":"+Pass).getBytes(), Base64.NO_WRAP));
+                intent.putExtra("BASIC_AUTH", Base64.encodeToString((UserName+":"+Pass).toString().getBytes(), Base64.NO_WRAP));
+                SharedPreferences userInfo = getSharedPreferences("userInfo", MODE_PRIVATE);
+                SharedPreferences.Editor userInfoEditor = userInfo.edit();
+                userInfoEditor.putString("USER_ID", user_id);
+                userInfoEditor.putString("USER_NAME", user_name);
+                userInfoEditor.putString("CSRF", csrf);
+                userInfoEditor.putString("LOGOUT", logout);
+                userInfoEditor.putString("RAW", raw);
+                userInfoEditor.putString("BASIC_AUTH", Base64.encodeToString((UserName+":"+Pass).toString().getBytes(), Base64.NO_WRAP));
+                userInfoEditor.commit();
                 //start the ListActivity
                 startActivity(intent);
             }

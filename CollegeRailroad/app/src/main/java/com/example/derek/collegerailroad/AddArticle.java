@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -14,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -55,8 +57,11 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null){
-            basicauth = savedInstanceState.getString("BASIC_AUTH");
+            basicauth = savedInstanceState.getString("basic_auth");
         }
+        SharedPreferences userInfo = getSharedPreferences("userInfo", MODE_PRIVATE);
+        basicauth = userInfo.getString("BASIC_AUTH", "none");
+        Log.i("basic auth", basicauth);
         setContentView(R.layout.activity_add_article);
         Bundle extras = getIntent().getExtras();
         Spinner locationSpin = (Spinner) findViewById((R.id.editlocation));
@@ -199,7 +204,7 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
                 httppost.setEntity(se);
                 httppost.setHeader("Accept", "application/hal+json");
                 httppost.setHeader("Content-Type", "application/hal+json");
-                httppost.setHeader("Authorization", basicauth);
+                httppost.setHeader("Authorization", "basic " + basicauth);
 
 
 

@@ -24,6 +24,15 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="My Books"
+            android:textSize="10pt"
+            android:id="@+id/self_items"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="Edit Profile"
             android:textSize="10pt"
             android:id="@+id/profile_but"

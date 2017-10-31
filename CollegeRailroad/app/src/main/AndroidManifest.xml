@@ -54,6 +54,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".web" />
         <activity android:name=".BookListActivity" />
+        <activity android:name=".BookListActivitySelf" />
+
         <activity android:name=".CameraActivity"
             android:label="@string/title_activity_camera2"/>
         <activity android:name=".BookDisplayActivity" />

@@ -48,18 +48,18 @@ public class TestSuccess extends Activity {
             logout = savedInstanceState.getString("logout");
 
             user_name = savedInstanceState.getString("user_name");
-            basicauth = savedInstanceState.getString("BASIC_AUTH");
+            //basicauth = savedInstanceState.getString("BASIC_AUTH");
 
 
 
         }
-        savedInstanceState.putString("user_id", user_id);
-        savedInstanceState.putString("csrf", csrf);
+        //savedInstanceState.putString("user_id", user_id);
+        //savedInstanceState.putString("csrf", csrf);
 
-        savedInstanceState.putString("user_name", user_name);
+        //savedInstanceState.putString("user_name", user_name);
 
-        savedInstanceState.putString("logout", logout);
-        savedInstanceState.putString("basic_auth", basicauth);
+        //savedInstanceState.putString("logout", logout);
+        //savedInstanceState.putString("basic_auth", basicauth);
         TextView userName = (TextView) findViewById(R.id.user_name);
         userName.setText(user_name);
         TextView logoutText = (TextView) findViewById(R.id.logout);
@@ -88,6 +88,6 @@ public class TestSuccess extends Activity {
         savedInstanceState.putString("user_name", user_name);
 
         savedInstanceState.putString("logout", logout);
-
+        savedInstanceState.putString("basic_auth", basicauth);
     }
 }

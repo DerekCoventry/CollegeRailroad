@@ -1,6 +1,8 @@
 package com.example.derek.collegerailroad;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,10 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
@@ -27,30 +26,29 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by derek on 10/24/17.
  */
 
-public class BookListFragment extends Fragment {
+public class BookListFragmentSelf extends Fragment {
     private RecyclerView mBookRecyclerView;
     private BookAdapter mAdapter;
     private List<BookPost> mBooks;
     public String session_id;
     public String session_name;
+    public String user_id;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_book_list, container, false);
+        SharedPreferences userInfo = getActivity().getSharedPreferences("userInfo", MODE_PRIVATE);
+        user_id = userInfo.getString("USER_ID", "none");
+        View view = inflater.inflate(R.layout.fragment_book_list_self, container, false);
         mBookRecyclerView = (RecyclerView) view
                 .findViewById(R.id.book_recycler_view);
-        Button addButton = (Button) view.findViewById(R.id.add_but);
-        addButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                startActivity(new Intent(getActivity(), AddArticle.class));
-            }
-        });
         mBookRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         new FetchBooks().execute();
         return view;
@@ -143,6 +141,7 @@ public class BookListFragment extends Fragment {
         String curId;
         String curTitle;
         String curEmail;
+        String curUID;
 
         //iterate through JSON to read the title of nodes
         for(int i=0;i<result.length();i++){
@@ -151,15 +150,19 @@ public class BookListFragment extends Fragment {
                 JSONArray title = (JSONArray) item.get("title");
                 JSONArray vid = (JSONArray) item.get("vid");
                 JSONArray email = (JSONArray) item.get("field_email");
+                JSONArray user= (JSONArray) item.get("uid");
+                JSONObject valueUID = (JSONObject) user.get(0);
                 JSONObject valueVid = (JSONObject) vid.get(0);
                 JSONObject valueTitle = (JSONObject) title.get(0);
                 JSONObject valueEmail = (JSONObject) email.get(0);
+                curUID = valueUID.get("target_id").toString();
                 curId = valueVid.get("value").toString();
                 curTitle = valueTitle.get("value").toString();
                 curEmail = valueEmail.get("value").toString();
                 currentBook = new BookPost(curId, curTitle, curEmail);
-
-                mBooks.add(currentBook);
+                if(curUID.equals(user_id)) {
+                    mBooks.add(currentBook);
+                }
             } catch (Exception e) {
                 Log.v("Error adding database", e.getMessage());
             }
@@ -210,6 +213,7 @@ public class BookListFragment extends Fragment {
             String curId;
             String curTitle;
             String curEmail;
+            String curUID;
 
             //iterate through JSON to read the title of nodes
             for(int i=0;i<result.length();i++){
@@ -218,16 +222,20 @@ public class BookListFragment extends Fragment {
                     JSONArray title = (JSONArray) item.get("title");
                     JSONArray vid = (JSONArray) item.get("vid");
                     JSONArray email = (JSONArray) item.get("field_email");
+                    JSONArray user= (JSONArray) item.get("uid");
+                    JSONObject valueUID = (JSONObject) user.get(0);
                     JSONObject valueVid = (JSONObject) vid.get(0);
                     JSONObject valueTitle = (JSONObject) title.get(0);
                     JSONObject valueEmail = (JSONObject) email.get(0);
+                    curUID = valueUID.get("target_id").toString();
                     curId = valueVid.get("value").toString();
                     curTitle = valueTitle.get("value").toString();
                     curEmail = valueEmail.get("value").toString();
                     currentBook = new BookPost(curId, curTitle, curEmail);
                     updateUI();
-
-                    mBooks.add(currentBook);
+                    if(curUID.equals(user_id)) {
+                        mBooks.add(currentBook);
+                    }
                 } catch (Exception e) {
                     Log.v("Error adding database", e.getMessage());
                 }
