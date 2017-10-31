@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
-public class CameraActivity extends AppCompatActivity {
+public class CameraActivity extends BaseAppCompatActivity {
 
     public static File _file;
     public static File _dir;
@@ -42,7 +42,6 @@ public class CameraActivity extends AppCompatActivity {
                                 Environment.DIRECTORY_PICTURES), "CameraActivity");
 
                 _file = new File(_dir, "bookPhoto/" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()));
-                Log.d("TEST22", String.format("myPhoto_{0}.jpg", new UUID(10, 10)));
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(_file));
 
                 startActivityForResult(intent, 0);

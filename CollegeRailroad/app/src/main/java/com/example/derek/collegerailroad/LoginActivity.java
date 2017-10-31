@@ -53,7 +53,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends BaseAppCompatActivity implements LoaderCallbacks<Cursor> {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -431,13 +431,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         new UserLoginTask().execute();
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.login, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
+        menu.removeItem(R.id.action_sign_in);
         return true;
     }
+
 /*        private final String mEmail;
         private final String mPassword;
 
