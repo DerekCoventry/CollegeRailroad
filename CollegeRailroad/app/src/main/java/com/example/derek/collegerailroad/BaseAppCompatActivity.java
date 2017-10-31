@@ -12,7 +12,24 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
         return true;
     }
 
-    public void goToActivity(MenuItem item){
+    public void goToHome(MenuItem item){
+        startActivity(new Intent(this,MainActivity.class));
+    }
+
+    public void goToProfile(MenuItem item){
         startActivity(new Intent(this, ProfileActivity.class));
+    }
+
+    public void goToSignIn(MenuItem item){
+        startActivity(new Intent(this, LoginActivity.class));
+    }
+
+    public void goToSignUp(MenuItem item){
+        startActivity(new Intent(this, web.class));
+    }
+
+    public void signOut(MenuItem item){
+        //Sign out
+        startActivity(new Intent(this, MainActivity.class));
     }
 }
