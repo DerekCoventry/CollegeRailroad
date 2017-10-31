@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -76,11 +77,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private String UserName;
+    private String Pass;
+    public boolean correct = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            correct = extras.getBoolean("Correct");
+
+            //The key argument here must match that used in the other activity
+        }
         setContentView(R.layout.activity_login);
+        if(!correct){
+            TextView error = (TextView) findViewById(R.id.invalid);
+            error.setText("Error logging in. Try again.");
+        }
         // Set up the login form.
 /*        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -355,7 +369,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     //extract the username and password from UI elements and create a JSON object
                     json.put("name", username.getText().toString().trim());
                     json.put("pass", password.getText().toString().trim());
-
+                    UserName = username.getText().toString().trim();
+                    Pass = password.getText().toString().trim();
                     //add serialised JSON object into POST request
                     StringEntity se = new StringEntity(json.toString());
                     //set request content type
@@ -373,6 +388,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     //session_name=jsonObject.getString("session_name");
                     //session_id=jsonObject.getString("sessid");
                     raw = jsonObject.toString();
+                    if((raw.substring(2,7).equals("Message"))){
+                        Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
+                        //pass the session_id and session_name to ListActivity
+                        intent.putExtra("CORRECT", false);
+                        //start the ListActivity
+                        startActivity(intent);
+                    }
                     csrf = jsonObject.getString("csrf_token");
                     user_id = ((JSONObject)jsonObject.get("current_user")).getString("uid");
                     user_name = ((JSONObject)jsonObject.get("current_user")).getString("name");
@@ -400,6 +422,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 intent.putExtra("CSRF", csrf);
                 intent.putExtra("LOGOUT", logout);
                 intent.putExtra("RAW", raw);
+                //intent.putExtra("BASIC_AUTH", Base64.encode((UserName+":"+Pass).getBytes(), Base64.NO_WRAP));
                 //start the ListActivity
                 startActivity(intent);
             }

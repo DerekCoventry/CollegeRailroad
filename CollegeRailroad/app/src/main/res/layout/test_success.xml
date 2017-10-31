@@ -80,4 +80,11 @@
         android:paddingLeft="8dp"
         android:text="N/A"
         android:textSize="18sp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Return To Home"
+        android:id="@+id/add_but"
+        />
 </LinearLayout>

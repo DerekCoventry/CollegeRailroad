@@ -1,7 +1,10 @@
 package com.example.derek.collegerailroad;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -16,6 +19,7 @@ public class TestSuccess extends Activity {
     public String logout = "none";
     public String user_name = "none";
     public String raw = "none";
+    public String basicauth = "none";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +33,8 @@ public class TestSuccess extends Activity {
 
             logout = extras.getString("LOGOUT");
             raw = extras.getString("RAW");
+            basicauth = extras.getString("BASIC_AUTH");
+
 
             //The key argument here must match that used in the other activity
         }
@@ -42,10 +48,18 @@ public class TestSuccess extends Activity {
             logout = savedInstanceState.getString("logout");
 
             user_name = savedInstanceState.getString("user_name");
+            basicauth = savedInstanceState.getString("BASIC_AUTH");
 
 
 
         }
+        savedInstanceState.putString("user_id", user_id);
+        savedInstanceState.putString("csrf", csrf);
+
+        savedInstanceState.putString("user_name", user_name);
+
+        savedInstanceState.putString("logout", logout);
+        savedInstanceState.putString("basic_auth", basicauth);
         TextView userName = (TextView) findViewById(R.id.user_name);
         userName.setText(user_name);
         TextView logoutText = (TextView) findViewById(R.id.logout);
@@ -56,5 +70,24 @@ public class TestSuccess extends Activity {
         user.setText(user_id);
         TextView rawText = (TextView) findViewById(R.id.raw);
         rawText.setText(raw);
+        Button returnHome = findViewById(R.id.add_but);
+        returnHome.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                startActivity(new Intent(TestSuccess.this, MainActivity.class));
+            }
+        });
+    }
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+        savedInstanceState.putString("user_id", user_id);
+        savedInstanceState.putString("csrf", csrf);
+
+        savedInstanceState.putString("user_name", user_name);
+
+        savedInstanceState.putString("logout", logout);
+
     }
 }

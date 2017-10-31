@@ -29,10 +29,15 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
     public String session_id;
     public String session_name;
     public String location = "Alabama";
+    public String basicauth = "none";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null){
+            basicauth = savedInstanceState.getString("BASIC_AUTH");
+        }
         setContentView(R.layout.activity_add_article);
         Bundle extras = getIntent().getExtras();
         Spinner locationSpin = (Spinner) findViewById((R.id.editlocation));
@@ -125,6 +130,7 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
                 httppost.setEntity(se);
                 httppost.setHeader("Accept", "application/hal+json");
                 httppost.setHeader("Content-Type", "application/hal+json");
+                httppost.setHeader("Authorization", basicauth);
 
 
 

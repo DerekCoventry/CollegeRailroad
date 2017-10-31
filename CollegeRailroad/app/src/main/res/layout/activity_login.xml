@@ -10,11 +10,11 @@
     android:orientation="vertical">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Welcome, please login to use your account."
-        android:id="@+id/textView3"
-        android:layout_gravity="left|center_vertical"/>
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Welcome, please login to use your account."
+    android:id="@+id/textView3"
+    android:layout_gravity="left|center_vertical"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -65,5 +65,13 @@
         android:layout_alignParentLeft="true"
         android:layout_marginTop="-3dp"
         android:layout_gravity="left|center_vertical"/>
+
+    <TextView
+        android:id="@+id/invalid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center_vertical"
+        android:text=""
+        android:textColor="?attr/colorError" />
 
 </LinearLayout>
