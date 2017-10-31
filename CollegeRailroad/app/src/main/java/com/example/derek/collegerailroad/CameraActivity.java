@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
-public class CameraActivity extends AppCompatActivity {
+public class CameraActivity extends BaseAppCompatActivity {
 
     public static File _file;
     public static File _dir;

@@ -2,6 +2,7 @@ package com.example.derek.collegerailroad;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.widget.Button;
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
@@ -12,7 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseAppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

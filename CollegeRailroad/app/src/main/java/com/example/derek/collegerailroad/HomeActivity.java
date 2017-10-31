@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends AppCompatActivity implements SearchFragment.OnFragmentInteractionListener{
+public class HomeActivity extends BaseAppCompatActivity implements SearchFragment.OnFragmentInteractionListener{
     private TextView mTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

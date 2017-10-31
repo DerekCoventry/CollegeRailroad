@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends BaseAppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 

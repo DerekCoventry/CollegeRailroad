@@ -17,7 +17,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
-public class SearchISBNActivity extends AppCompatActivity {
+public class SearchISBNActivity extends BaseAppCompatActivity {
 
     private EditText mEditText;
     private Button mButton;
