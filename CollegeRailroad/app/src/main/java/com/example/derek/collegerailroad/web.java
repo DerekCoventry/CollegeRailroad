@@ -2,6 +2,7 @@ package com.example.derek.collegerailroad;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.webkit.WebView;
 
 public class web extends BaseAppCompatActivity {
@@ -15,5 +16,12 @@ public class web extends BaseAppCompatActivity {
         webView.loadData("yourCode Html to load on the webView " , "text/html" , "utf-8");
     // you can load an URL
         webView.loadUrl("http://www.collegerailroad.com/user/login");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        menu.removeItem(R.id.action_sign_up);
+        return true;
     }
 }

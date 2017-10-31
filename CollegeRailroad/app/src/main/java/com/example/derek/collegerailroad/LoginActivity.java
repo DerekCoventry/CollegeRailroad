@@ -408,6 +408,12 @@ public class LoginActivity extends BaseAppCompatActivity implements LoaderCallba
         new UserLoginTask().execute();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        menu.removeItem(R.id.action_sign_in);
+        return true;
+    }
 
 /*        private final String mEmail;
         private final String mPassword;

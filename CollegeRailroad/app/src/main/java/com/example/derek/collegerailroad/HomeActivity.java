@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -60,6 +61,13 @@ public class HomeActivity extends BaseAppCompatActivity implements SearchFragmen
                 startActivity(new Intent(HomeActivity.this, AddArticle.class));
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        menu.removeItem(R.id.action_home);
+        return true;
     }
     @Override
     public void onFragmentInteraction(Uri uri){
