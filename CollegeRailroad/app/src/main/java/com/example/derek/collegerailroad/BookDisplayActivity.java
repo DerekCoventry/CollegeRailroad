@@ -2,6 +2,7 @@ package com.example.derek.collegerailroad;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.Intent.*;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
@@ -29,7 +31,9 @@ import java.util.ArrayList;
 public class BookDisplayActivity extends Activity {
     public String book_id = "26";
     public String[] states = new String[]{"Alabama","Alaska","Alaska Fairbanks","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"};
-
+    public String user_id = "none";
+    public Button delete_button;
+    public Button edit_button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +43,24 @@ public class BookDisplayActivity extends Activity {
             book_id = extras.getString("BOOK_ID");
             //The key argument here must match that used in the other activity
         }
+        SharedPreferences userInfo = getSharedPreferences("userInfo", MODE_PRIVATE);
+        if (userInfo.contains("USER_ID")) {
+            user_id = userInfo.getString("USER_ID", "none");
+        }
+        delete_button = (Button) findViewById(R.id.delete_but);
+        delete_button.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent intent = new Intent(BookDisplayActivity.this, BookListActivity.class);
+                startActivity(intent);
+            }
+        });
+        edit_button = (Button) findViewById(R.id.edit_but);
+        edit_button.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent intent = new Intent(BookDisplayActivity.this, BookListActivity.class);
+                startActivity(intent);
+            }
+        });
         new FetchBook().execute();
     }
     private class FetchBook extends AsyncTask<String, Void, JSONObject> {
@@ -92,7 +114,7 @@ public class BookDisplayActivity extends Activity {
             String curCondition;
             String curSubject;
             String curLocation;
-
+            String curUID;
             //iterate through JSON to read the title of nodes
             for(int i=0;i<result.length();i++){
                 try {
@@ -103,7 +125,13 @@ public class BookDisplayActivity extends Activity {
                     JSONArray condition = (JSONArray) item.get("field_condition");
                     JSONArray subject = (JSONArray) item.get("field_subject");
                     JSONArray location = (JSONArray) item.get("field_state");
-
+                    JSONArray user= (JSONArray) item.get("uid");
+                    JSONObject valueUID = (JSONObject) user.get(0);
+                    curUID = valueUID.get("target_id").toString();
+                    if (curUID.equals(user_id)){
+                        edit_button.setVisibility(View.VISIBLE);
+                        delete_button.setVisibility(View.VISIBLE);
+                    }
                     JSONObject valueVid = (JSONObject) vid.get(0);
                     if (title.length() > 0){
                         JSONObject valueTitle = (JSONObject) title.get(0);

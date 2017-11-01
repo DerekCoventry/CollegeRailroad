@@ -38,14 +38,16 @@ public class BookListFragmentSelf extends Fragment {
     private List<BookPost> mBooks;
     public String session_id;
     public String session_name;
-    public String user_id;
+    public String user_id = "none";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences userInfo = getActivity().getSharedPreferences("userInfo", MODE_PRIVATE);
-        user_id = userInfo.getString("USER_ID", "none");
+        if (userInfo.contains("USER_ID")) {
+            user_id = userInfo.getString("USER_ID", "none");
+        }
         View view = inflater.inflate(R.layout.fragment_book_list_self, container, false);
         mBookRecyclerView = (RecyclerView) view
                 .findViewById(R.id.book_recycler_view);
