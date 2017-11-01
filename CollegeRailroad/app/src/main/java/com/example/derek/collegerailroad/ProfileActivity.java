@@ -40,7 +40,8 @@ public class ProfileActivity extends BaseAppCompatActivity {
             }
         });
         final StringBuilder builder = new StringBuilder();
-        String username = "username123";
+        SharedPreferences userInfo = getSharedPreferences("userInfo", MODE_PRIVATE);
+        String username = userInfo.getString("USER_NAME","");
         String email = "test123@test.com";
         String name = "My Name";
         builder.append("Username: " + username + "\n");
