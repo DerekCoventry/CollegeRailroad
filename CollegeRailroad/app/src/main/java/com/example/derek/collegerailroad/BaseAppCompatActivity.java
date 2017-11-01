@@ -16,7 +16,7 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
     }
 
     public void goToHome(MenuItem item){
-        startActivity(new Intent(this,MainActivity.class));
+        startActivity(new Intent(this,HomeActivity.class));
     }
 
     public void goToProfile(MenuItem item){
