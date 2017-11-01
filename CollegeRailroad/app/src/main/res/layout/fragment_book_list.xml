@@ -3,18 +3,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".DisplayMessageActivity"
-    android:orientation="vertical">
+    android:backgroundTint="@color/place_autocomplete_prediction_primary_text_highlight"
+    android:orientation="vertical"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:textAlignment="center"
+    android:visibility="visible"
+    tools:context=".DisplayMessageActivity">
+
     <Button
+        android:id="@+id/add_but"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add"
-        android:id="@+id/add_but"
-        />
-<android.support.v7.widget.RecyclerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/book_recycler_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+        android:text="Add Book" />
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/filterLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filter By Location:"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="12sp" />
+
+    <Spinner
+        android:id="@+id/editlocation"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/txtLocation"
+        android:layout_marginBottom="6dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="0dp"
+        android:background="?android:attr/colorButtonNormal"
+        android:fadingEdge="vertical"
+        android:paddingBottom="6dp"
+        android:paddingTop="6dp"
+        android:textAlignment="center"
+        android:visibility="visible" />
+
+    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/book_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
