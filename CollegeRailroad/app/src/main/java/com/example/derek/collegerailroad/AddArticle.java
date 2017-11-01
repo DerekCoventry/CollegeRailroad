@@ -50,6 +50,7 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
     public String session_id;
     public String session_name;
     public String location = "Alabama";
+    public String condition = "New";
     public String basicauth = "none";
 
 
@@ -69,7 +70,33 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
                 R.array.locations_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationSpin.setAdapter(adapter);
-        locationSpin.setOnItemSelectedListener(this);
+        locationSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                location = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        Spinner conditionSpin = (Spinner) findViewById((R.id.editcondition));
+        ArrayAdapter<CharSequence> adapterc = ArrayAdapter.createFromResource(this,
+                R.array.conditions_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        conditionSpin.setAdapter(adapterc);
+        conditionSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                condition = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         // Camera functionality
         ImageButton cameraButton = (ImageButton) findViewById(R.id.book_camera);
         imageView = (ImageView) findViewById(R.id.book_photo);
@@ -165,11 +192,9 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
                 //get title and body UI elements
                 TextView txtTitle = (TextView) findViewById(R.id.editTitle);
                 TextView txtEmail = (TextView) findViewById(R.id.editEmail);
-                TextView txtBody = (TextView) findViewById(R.id.editBody);
 
                 //extract text from UI elements and remove extra spaces
                 String title=txtTitle.getText().toString().trim();
-                String body=txtBody.getText().toString().trim();
                 String email=txtEmail.getText().toString().trim();
                 //add raw json to be sent along with the HTTP POST request
                 //StringEntity se = new StringEntity( "{\"_links\": {\"type\":{"+
@@ -199,6 +224,10 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
                         "{\"target_id\":"+ getTaxLocation(location)+","+
                         "\"target_type\": \"taxonomy_term\","+
                         "\"url\": \"/taxonomy/term/"+getTaxLocation(location)+"\""+
+                        " }],\"field_condition\": ["+
+                        "{\"target_id\":"+ getTaxCondition(condition)+","+
+                        "\"target_type\": \"taxonomy_term\","+
+                        "\"url\": \"/taxonomy/term/"+getTaxCondition(condition)+"\""+
                         " }]"+
                         "}");
                 httppost.setEntity(se);
@@ -239,7 +268,15 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
             }
             return Integer.toString(12);
         }
-
+        protected String getTaxCondition(String location) {
+            String[] states = new String[]{"New", "Good",  "Worn","Damaged"};
+            for (int i = 0; i< 3; i++) {
+                if (location.equals(states[i])) {
+                    return Integer.toString((i + 3));
+                }
+            }
+            return Integer.toString(3);
+        }
         protected void onPostExecute(Integer result) {
 
             //start the List Activity and pass back the session_id and session_name
