@@ -158,6 +158,13 @@ public class ListActivity extends  SingleFragmentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        SharedPreferences userInfo = getSharedPreferences("userInfo", MODE_PRIVATE);
+        if(userInfo.contains("USER_ID")){
+            menu.removeItem(R.id.action_sign_up);
+            menu.removeItem(R.id.action_sign_in);
+        }else{
+            menu.removeItem(R.id.action_sign_out);
+        }
         return true;
     }
 

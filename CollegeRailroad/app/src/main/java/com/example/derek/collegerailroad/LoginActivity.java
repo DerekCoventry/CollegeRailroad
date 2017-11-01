@@ -445,6 +445,7 @@ public class LoginActivity extends BaseAppCompatActivity implements LoaderCallba
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         menu.removeItem(R.id.action_sign_in);
+        menu.removeItem(R.id.action_sign_out);
         return true;
     }
 
