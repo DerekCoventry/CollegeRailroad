@@ -50,7 +50,7 @@ public class ProfileActivity extends BaseAppCompatActivity {
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        super.onCreateOptionsMenu(menu);
         menu.removeItem(R.id.action_profile);
         return true;
     }

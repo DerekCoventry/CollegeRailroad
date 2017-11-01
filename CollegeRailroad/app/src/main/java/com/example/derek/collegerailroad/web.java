@@ -22,6 +22,7 @@ public class web extends BaseAppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         menu.removeItem(R.id.action_sign_up);
+        menu.removeItem(R.id.action_sign_out);
         return true;
     }
 }

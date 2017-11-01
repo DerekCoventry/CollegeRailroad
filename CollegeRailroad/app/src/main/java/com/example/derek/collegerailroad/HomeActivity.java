@@ -65,7 +65,7 @@ public class HomeActivity extends BaseAppCompatActivity implements SearchFragmen
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        super.onCreateOptionsMenu(menu);
         menu.removeItem(R.id.action_home);
         return true;
     }
