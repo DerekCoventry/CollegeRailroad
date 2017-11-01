@@ -163,6 +163,7 @@ public class ListActivity extends  SingleFragmentActivity {
             menu.removeItem(R.id.action_sign_up);
             menu.removeItem(R.id.action_sign_in);
         }else{
+            menu.removeItem(R.id.action_profile);
             menu.removeItem(R.id.action_sign_out);
         }
         return true;

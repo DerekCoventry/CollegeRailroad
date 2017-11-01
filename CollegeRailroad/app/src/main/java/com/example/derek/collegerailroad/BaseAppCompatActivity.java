@@ -17,6 +17,7 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
             menu.removeItem(R.id.action_sign_in);
         }else{
             menu.removeItem(R.id.action_sign_out);
+            menu.removeItem(R.id.action_profile);
         }
         return true;
     }
