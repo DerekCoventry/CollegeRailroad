@@ -52,7 +52,8 @@
             android:name=".AddArticle"
             android:label="@string/title_activity_list"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".web" />
+        <activity android:name=".web"
+            android:noHistory="true"/>
         <activity android:name=".BookListActivity" />
         <activity android:name=".BookListActivitySelf" />
 
@@ -62,7 +63,8 @@
         <activity android:name=".SearchISBNActivity"
             android:label="@string/title_activity_search_isbn"/>
         <activity android:name=".TestSuccess" />
-        <activity android:name=".HomeActivity" />
+        <activity android:name=".HomeActivity"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile" />
