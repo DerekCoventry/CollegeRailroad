@@ -434,7 +434,8 @@ public class LoginActivity extends BaseAppCompatActivity implements LoaderCallba
                 userInfoEditor.putString("BASIC_AUTH", Base64.encodeToString((UserName+":"+Pass).toString().getBytes(), Base64.NO_WRAP));
                 userInfoEditor.commit();
                 //start the ListActivity
-                startActivity(intent);
+                Intent intent2 = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(intent2);
             }
         }
     public void doLoginButton_click(View view){
