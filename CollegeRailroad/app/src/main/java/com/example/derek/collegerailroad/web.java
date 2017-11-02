@@ -21,8 +21,15 @@ public class web extends BaseAppCompatActivity {
         webView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url){
-                startActivity(new Intent(web.this, HomeActivity.class));
-                return false;
+                if (url.matches("^.*?(zymph|password|login).*$")) {
+                    Toast.makeText(web.this, "You can only sign up here", Toast.LENGTH_SHORT).show();
+                    return true;
+                }else if(url.contains("register")){
+                    return true;
+                }else {
+                    startActivity(new Intent(web.this, HomeActivity.class));
+                    return false;
+                }
             }
         });
         SharedPreferences userInfo = getSharedPreferences("userInfo", MODE_PRIVATE);
