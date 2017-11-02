@@ -1,6 +1,8 @@
 package com.example.derek.collegerailroad;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,7 +23,8 @@ public class EditProfileActivity extends BaseAppCompatActivity {
                 Toast.makeText(EditProfileActivity.this, "Profile updated!", Toast.LENGTH_SHORT).show();
             }
         });
-        String username = "username123";
+        SharedPreferences userInfo = getSharedPreferences("userInfo", MODE_PRIVATE);
+        String username = userInfo.getString("USER_NAME","");
         String email = "test123@test.com";
         String name = "My Name";
         EditText editUsername = (EditText) findViewById(R.id.username);
@@ -30,6 +33,8 @@ public class EditProfileActivity extends BaseAppCompatActivity {
         editUsername.setText(username);
         editEmail.setText(email);
         editName.setText(name);
+        disableEditText(editUsername);
+        disableEditText(editEmail);
         Button changePassword = (Button) findViewById(R.id.change_password_but);
         changePassword.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
@@ -44,5 +49,13 @@ public class EditProfileActivity extends BaseAppCompatActivity {
 
             }
         });
+    }
+
+    private void disableEditText(EditText editText) {
+        editText.setFocusable(false);
+        editText.setEnabled(false);
+        editText.setCursorVisible(false);
+        editText.setKeyListener(null);
+        editText.setBackgroundColor(Color.TRANSPARENT);
     }
 }
