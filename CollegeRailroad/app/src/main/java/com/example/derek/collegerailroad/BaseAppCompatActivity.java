@@ -26,6 +26,12 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.invalidateOptionsMenu();
+    }
+
     public void goToHome(MenuItem item){
         startActivity(new Intent(this,HomeActivity.class));
     }
