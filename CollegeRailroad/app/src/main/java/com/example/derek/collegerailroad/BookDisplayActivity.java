@@ -33,8 +33,11 @@ public class BookDisplayActivity extends Activity {
     public String book_id = "26";
     public String[] states = new String[]{"Alabama","Alaska","Alaska Fairbanks","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"};
     public String user_id = "none";
+    public String[] cond = new String[]{"New", "Good",  "Worn","Damaged"};
+
     public Button delete_button;
     public Button edit_button;
+    public String basicauth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +49,7 @@ public class BookDisplayActivity extends Activity {
         }
         SharedPreferences userInfo = getSharedPreferences("userInfo", MODE_PRIVATE);
         if (userInfo.contains("USER_ID")) {
+            basicauth = userInfo.getString("BASIC_AUTH", "none");
             user_id = userInfo.getString("USER_ID", "none");
         }
         delete_button = (Button) findViewById(R.id.delete_but);
@@ -156,27 +160,19 @@ public class BookDisplayActivity extends Activity {
                     }
                     if (condition.length() > 0) {
                         JSONObject valueCondition = (JSONObject) condition.get(0);
-                        curCondition = valueCondition.get("value").toString();
+                        curCondition = valueCondition.get("target_id").toString();
                         if(curCondition.length() > 0 ) {
                             mConditionTextView = (TextView) findViewById(R.id.book_condition);
-                            mConditionTextView.setText(curCondition);
+                            mConditionTextView.setText(cond[Integer.parseInt(curCondition)-3]);
                         }
                     }
-                    if (subject.length() > 0) {
-                        JSONObject valueSubject = (JSONObject) subject.get(0);
-                        curSubject = valueSubject.get("value").toString();
-                        if(curSubject.length() > 0 ) {
-                            mSubjectTextView = (TextView) findViewById(R.id.book_subject);
-                            mSubjectTextView.setText(curSubject);
-                        }
-
-                    }
+                    Log.d("loc", location.toString());
                     if (location.length() > 0) {
                         JSONObject locationSubject = (JSONObject) location.get(0);
                         curLocation = locationSubject.get("target_id").toString();
                         if(curLocation.length() > 0 ) {
-                            mSubjectTextView = (TextView) findViewById(R.id.book_location);
-                            mSubjectTextView.setText(states[Integer.parseInt(curLocation)-12]);
+                            mLocationTextView = (TextView) findViewById(R.id.book_location);
+                            mLocationTextView.setText(states[Integer.parseInt(curLocation)-12]);
                         }
 
                     }
@@ -200,10 +196,11 @@ public class BookDisplayActivity extends Activity {
 
             HttpClient httpclient = new DefaultHttpClient();
 
-            HttpDelete httpget = new HttpDelete("http://collegerailroad.com/node/"+book_id+"?_format=json");
+            HttpDelete httpget = new HttpDelete("http://collegerailroad.com/node/"+book_id+"?_format=hal_json");
             //set header to tell REST endpoint the request and response content types
             //httpget.setHeader("Accept", "application/json");
-            httpget.setHeader("Content-type", "application/json");
+            httpget.setHeader("Content-Type", "application/hal_json");
+            httpget.setHeader("Authorization", "basic " + basicauth);
 
             JSONObject json = new JSONObject();
 
