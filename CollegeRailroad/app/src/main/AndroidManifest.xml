@@ -58,7 +58,8 @@
         <activity android:name=".BookListActivity" />
         <activity android:name=".EditArticle" />
 
-        <activity android:name=".BookListActivitySelf" />
+        <activity android:name=".BookListActivitySelf"
+            android:launchMode="singleTask"/>
 
         <activity android:name=".CameraActivity"
             android:label="@string/title_activity_camera2"/>
