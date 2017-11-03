@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -50,14 +51,17 @@ public class BookDisplayActivity extends Activity {
         delete_button = (Button) findViewById(R.id.delete_but);
         delete_button.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                Intent intent = new Intent(BookDisplayActivity.this, BookListActivity.class);
+                new DeleteBook().execute();
+                Intent intent = new Intent(BookDisplayActivity.this, BookListActivitySelf.class);
+
                 startActivity(intent);
             }
         });
         edit_button = (Button) findViewById(R.id.edit_but);
         edit_button.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                Intent intent = new Intent(BookDisplayActivity.this, BookListActivity.class);
+                Intent intent = new Intent(BookDisplayActivity.this, EditArticle.class);
+                intent.putExtra("BOOK_ID", book_id);
                 startActivity(intent);
             }
         });
@@ -189,6 +193,46 @@ public class BookDisplayActivity extends Activity {
 
         }
     }
+    private class DeleteBook extends AsyncTask<String, Void, JSONObject> {
 
+        protected JSONObject doInBackground(String... params) {
+
+
+            HttpClient httpclient = new DefaultHttpClient();
+
+            HttpDelete httpget = new HttpDelete("http://collegerailroad.com/node/"+book_id+"?_format=json");
+            //set header to tell REST endpoint the request and response content types
+            //httpget.setHeader("Accept", "application/json");
+            httpget.setHeader("Content-type", "application/json");
+
+            JSONObject json = new JSONObject();
+
+            try {
+
+                httpclient.execute(httpget);
+
+                //read the response and convert it into JSON array
+                //return the JSON array for post processing to onPostExecute function
+                return json;
+
+
+
+            }catch (Exception e) {
+                Log.v("Error adding article",e.getMessage());
+            }
+
+
+
+            return json;
+        }
+
+
+        //executed after the background nodes fetching process is complete
+        protected void onPostExecute(JSONObject result) {
+
+
+
+        }
+    }
 
 }
