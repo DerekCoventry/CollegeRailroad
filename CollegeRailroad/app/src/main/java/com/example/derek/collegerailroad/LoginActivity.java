@@ -47,6 +47,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import android.view.Menu;
+import android.widget.Toast;
 
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -417,24 +418,29 @@ public class LoginActivity extends BaseAppCompatActivity implements LoaderCallba
 
                 //create an intent to start the ListActivity
                 Intent intent = new Intent(LoginActivity.this, TestSuccess.class);
-                //pass the session_id and session_name to ListActivity
-                intent.putExtra("USER_ID", user_id);
-                intent.putExtra("USER_NAME", user_name);
-                intent.putExtra("CSRF", csrf);
-                intent.putExtra("LOGOUT", logout);
-                intent.putExtra("RAW", raw);
-                intent.putExtra("BASIC_AUTH", Base64.encodeToString((UserName+":"+Pass).toString().getBytes(), Base64.NO_WRAP));
-                SharedPreferences userInfo = getSharedPreferences("userInfo", MODE_PRIVATE);
-                SharedPreferences.Editor userInfoEditor = userInfo.edit();
-                userInfoEditor.putString("USER_ID", user_id);
-                userInfoEditor.putString("USER_NAME", user_name);
-                userInfoEditor.putString("CSRF", csrf);
-                userInfoEditor.putString("LOGOUT", logout);
-                userInfoEditor.putString("RAW", raw);
-                userInfoEditor.putString("BASIC_AUTH", Base64.encodeToString((UserName+":"+Pass).toString().getBytes(), Base64.NO_WRAP));
-                userInfoEditor.commit();
                 //start the ListActivity
-                startActivity(intent);
+                if(user_id != "none") {
+                    //pass the session_id and session_name to ListActivity
+                    intent.putExtra("USER_ID", user_id);
+                    intent.putExtra("USER_NAME", user_name);
+                    intent.putExtra("CSRF", csrf);
+                    intent.putExtra("LOGOUT", logout);
+                    intent.putExtra("RAW", raw);
+                    intent.putExtra("BASIC_AUTH", Base64.encodeToString((UserName+":"+Pass).toString().getBytes(), Base64.NO_WRAP));
+                    SharedPreferences userInfo = getSharedPreferences("userInfo", MODE_PRIVATE);
+                    SharedPreferences.Editor userInfoEditor = userInfo.edit();
+                    userInfoEditor.putString("USER_ID", user_id);
+                    userInfoEditor.putString("USER_NAME", user_name);
+                    userInfoEditor.putString("CSRF", csrf);
+                    userInfoEditor.putString("LOGOUT", logout);
+                    userInfoEditor.putString("RAW", raw);
+                    userInfoEditor.putString("BASIC_AUTH", Base64.encodeToString((UserName+":"+Pass).toString().getBytes(), Base64.NO_WRAP));
+                    userInfoEditor.commit();
+                    Intent intent2 = new Intent(LoginActivity.this, HomeActivity.class);
+                    startActivity(intent2);
+                }else{
+                    Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     public void doLoginButton_click(View view){

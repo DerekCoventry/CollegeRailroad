@@ -108,8 +108,10 @@ public class SearchFragment extends Fragment {
                     if(error == null) {
                         Elements titleAuthor = doc.select("div.attributes strong span");
                         if(titleAuthor != null) {
-                            title = titleAuthor.get(0).text();
-                            author = titleAuthor.get(1).text();
+                            if(titleAuthor.size() >=2) {
+                                title = titleAuthor.get(0).text();
+                                author = titleAuthor.get(1).text();
+                            }
                         }
                         Elements ISBNelts = doc.select("div.attributes h1") ;
                         if(ISBNelts != null) {
@@ -120,7 +122,7 @@ public class SearchFragment extends Fragment {
                             }
                         }
                         Elements pubEditLang = doc.select("div.attributes p span.describe-isbn");
-                        if(pubEditLang != null) {
+                        if(pubEditLang != null && pubEditLang.size() > 0) {
                             publisher = pubEditLang.get(0).text();
                             if(pubEditLang.size() > 1) {
                                 edition = pubEditLang.get(1).text();

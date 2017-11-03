@@ -48,6 +48,7 @@ public class SearchISBNActivity extends BaseAppCompatActivity {
 
     private void getWebsite(final String search) {
         new Thread(new Runnable() {
+            String title = "", author = "", ISBN10 = "", ISBN13 = "", publisher = "", edition = "", language = "";
             @Override
             public void run() {
                 final StringBuilder builder = new StringBuilder();
@@ -56,9 +57,9 @@ public class SearchISBNActivity extends BaseAppCompatActivity {
                     Element error = doc.select("#bd").first();
                     if(error == null) {
                         Elements titleAuthor = doc.select("div.attributes strong span");
-                        if(titleAuthor != null) {
-                            builder.append("Title: ").append(titleAuthor.get(0).text()).append("\n");
-                            builder.append("Author: ").append(titleAuthor.get(1).text()).append("\n");
+                        if(titleAuthor.size() >=2) {
+                            title = titleAuthor.get(0).text();
+                            author = titleAuthor.get(1).text();
                         }
                         Elements ISBNelts = doc.select("div.attributes h1") ;
                         if(ISBNelts != null) {
@@ -75,7 +76,7 @@ public class SearchISBNActivity extends BaseAppCompatActivity {
                             }
                         }
                         Elements pubEditLang = doc.select("div.attributes p span.describe-isbn");
-                        if(pubEditLang != null) {
+                        if(pubEditLang != null && pubEditLang.size() > 0) {
                             builder.append("Publisher: ").append(pubEditLang.get(0).text()).append("\n");
                             if(pubEditLang.size() > 1) {
                                 builder.append("Edition: ").append(pubEditLang.get(1).text()).append("\n");
