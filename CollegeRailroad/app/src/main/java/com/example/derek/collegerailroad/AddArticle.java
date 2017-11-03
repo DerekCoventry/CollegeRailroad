@@ -53,6 +53,8 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
     public String location = "Alabama";
     public String condition = "New";
     public String basicauth = "none";
+    Spinner locationSpin;
+    ArrayAdapter<CharSequence> adapter;
 
 
     @Override
@@ -66,8 +68,8 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
         Log.i("basic auth", basicauth);
         setContentView(R.layout.activity_add_article);
         Bundle extras = getIntent().getExtras();
-        Spinner locationSpin = (Spinner) findViewById((R.id.editlocation));
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        locationSpin = (Spinner) findViewById((R.id.editlocation));
+        adapter = ArrayAdapter.createFromResource(this,
                 R.array.locations_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationSpin.setAdapter(adapter);
@@ -129,7 +131,9 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
         locButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(AddArticle.this, MapsActivity.class));
+                Location2 location2 = new Location2(getApplicationContext());
+                location = location2.getState();
+                locationSpin.setSelection(adapter.getPosition(location));
             }
         });
 
