@@ -24,12 +24,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -37,6 +39,9 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -52,6 +57,7 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
     public String location = "Alabama";
     public String condition = "New";
     public String basicauth = "none";
+    public String link;
 
 
     @Override
@@ -216,6 +222,11 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
                         "\"target_id\": \"basic_post\"\n" +
                         "}\n" +
                         "],\n" +
+                        "\"field_link\": ["+
+                        "{"+
+                        " \"value\": \""+link+"\""+
+                        "}"+
+                        "],"+
                         "\"field_email\": [\n" +
                         "{\n" +
                         "\"value\": \""+email+"\"\n" +
@@ -287,6 +298,67 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
 
             //stop the current activity
             finish();
+        }
+    }
+    private class PostToImgur extends AsyncTask<String, Void, JSONObject> {
+
+        protected JSONObject doInBackground(String... params) {
+
+            //read session_name and session_id from passed parameters
+            String session_name=params[0];
+            String session_id=params[1];
+
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("https://api.imgur.com/3/image");
+
+            JSONObject json = new JSONObject();
+
+
+            try {
+
+                StringEntity se = new StringEntity("{\n" +
+                        "\"data\": {\n" +
+                        "\"image\""+ bitmap+
+                        "}}");
+                httppost.setEntity(se);
+                httppost.setHeader("Authorization", "Client-ID 677813e7b6b7d5e");
+
+
+
+                BasicHttpContext mHttpContext = new BasicHttpContext();
+                CookieStore mCookieStore      = new BasicCookieStore();
+                HttpResponse response = httpclient.execute(httppost);
+
+                //read the response and convert it into JSON array
+                json = new JSONObject(EntityUtils.toString(response.getEntity()));
+                //return the JSON array for post processing to onPostExecute function
+                return json;
+
+                //httpclient.execute(httppost,mHttpContext);
+
+
+            }catch (Exception e) {
+                Log.v("Error adding article",e.getMessage());
+            }
+            return json;
+
+
+        }
+        protected void onPostExecute(JSONObject result) {
+
+                try {
+                    JSONObject item = result;
+                    JSONObject title = (JSONObject) item.get("data");
+                    if (title.length() > 0) {
+                        link = title.get("link").toString();
+                    }
+
+
+                } catch (Exception e) {
+                    Log.v("Error adding database", e.getMessage());
+                }
+
         }
     }
     @Override
