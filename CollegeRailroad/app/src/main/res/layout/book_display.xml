@@ -70,22 +70,7 @@
         android:text="N/A"
         android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/subjectLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="Subject:"
-        android:textSize="24sp"
-        android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/book_subject"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="8dp"
-        android:text="N/A"
-        android:textSize="18sp" />
 
     <Button
         android:id="@+id/edit_but"

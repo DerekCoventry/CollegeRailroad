@@ -300,7 +300,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
         protected void onPostExecute(Integer result) {
 
             //start the List Activity and pass back the session_id and session_name
-            Intent intent = new Intent(EditArticle.this, ListActivity.class);
+            Intent intent = new Intent(EditArticle.this, BookListActivitySelf.class);
             //intent.putExtra("SESSION_ID", session_id);
             //intent.putExtra("SESSION_NAME", session_name);
             startActivity(intent);
@@ -430,7 +430,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                     }
                     if (condition.length() > 0) {
                         JSONObject valueCondition = (JSONObject) condition.get(0);
-                        curCondition = valueCondition.get("value").toString();
+                        curCondition = valueCondition.get("target_id").toString();
                         if(curCondition.length() > 0 ) {
                             mConditionTextView =  findViewById(R.id.editcondition);
                             //mConditionTextView.set
@@ -474,10 +474,11 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
 
             HttpClient httpclient = new DefaultHttpClient();
 
-            HttpDelete httpget = new HttpDelete("http://collegerailroad.com/node/"+book_id+"?_format=json");
+            HttpDelete httpget = new HttpDelete("http://collegerailroad.com/node/"+book_id+"?_format=hal_json");
             //set header to tell REST endpoint the request and response content types
             //httpget.setHeader("Accept", "application/json");
-            //httpget.setHeader("Content-type", "application/json");
+            httpget.setHeader("Content-Type", "application/hal+json");
+            httpget.setHeader("Authorization", "basic " + basicauth);
 
             JSONObject json = new JSONObject();
 
