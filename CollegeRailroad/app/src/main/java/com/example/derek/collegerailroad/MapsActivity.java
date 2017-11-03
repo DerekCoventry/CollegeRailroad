@@ -27,13 +27,9 @@ import java.util.Locale;
 public class MapsActivity extends BaseAppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-
-    protected LocationManager mLocationManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -48,41 +44,13 @@ public class MapsActivity extends BaseAppCompatActivity implements OnMapReadyCal
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
                     11 );
         }
-        Location coordinates = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        double lat = coordinates.getLatitude();
-        double lng = coordinates.getLongitude();
-        LatLng location = new LatLng(lat, lng);
-
-        Geocoder gcd = new Geocoder(getApplicationContext(), Locale.getDefault());
-        List<Address> addresses = null;
-        String city = null;
-        String state = null;
-        String currentLocation = "Current Location";
-        try {
-            addresses = gcd.getFromLocation(lat, lng, 1);
-            if (addresses.size() > 0) {
-                // Get the current city
-                city = addresses.get(0).getLocality();
-                state = addresses.get(0).getAdminArea();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if(city == null){
-            if(state != null){
-                currentLocation = state;
-            }
-        }else{
-            if (state == null) {
-                currentLocation = city;
-            } else {
-                currentLocation = city + ", " + state;
-            }
-        }
+        Location2 mLoc = new Location2(getApplicationContext());
+        String currentLocation = mLoc.getCity() + ", " + mLoc.getState();
+        LatLng location = mLoc.getLocation();
         mMap.addMarker(new MarkerOptions().position(location).title(currentLocation));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(10));

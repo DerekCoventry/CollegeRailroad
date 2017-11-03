@@ -24,6 +24,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -119,6 +120,16 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
             @Override
             public void onClick(View v) {
                 showImage();
+            }
+        });
+
+        // Camera functionality
+        Button locButton = (Button) findViewById(R.id.loc_but);
+
+        locButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(AddArticle.this, MapsActivity.class));
             }
         });
 
