@@ -42,7 +42,7 @@ public class BookListFragment extends Fragment {
     private List<BookPost> mBooks = new ArrayList<BookPost>();
     public String[] states = new String[]{"Alabama","Alaska","Alaska Fairbanks","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"};
     public boolean initial = true;
-    private String option, titleFilter = null, authorFilter = null;
+    private String option = "", titleFilter = null, authorFilter = null;
     public String session_id;
     public String session_name;
 
