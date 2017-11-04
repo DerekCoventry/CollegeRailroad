@@ -49,6 +49,7 @@ public class web extends BaseAppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         menu.removeItem(R.id.action_sign_up);
         menu.removeItem(R.id.action_sign_out);
+        menu.removeItem(R.id.action_profile);
         return true;
     }
 }
