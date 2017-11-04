@@ -18,9 +18,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +39,8 @@ import java.util.List;
 
 public class HomeActivity extends BaseAppCompatActivity implements SearchFragment.OnFragmentInteractionListener{
     private TextView mTextView;
+    private String search_opt;
+    public String[] options = new String[]{ "ISBN", "Title", "Author"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +53,22 @@ public class HomeActivity extends BaseAppCompatActivity implements SearchFragmen
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.search_layout, new SearchFragment()).commit();
+        Spinner opt = (Spinner) findViewById((R.id.editcondition));
+        ArrayAdapter adapter = ArrayAdapter.createFromResource(this,
+                R.array.search_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        opt.setAdapter(adapter);
+        opt.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                search_opt = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                search_opt = "ISBN";
+            }
+        });
         TextView intro = (TextView) findViewById(R.id.intro);
         intro.setText("Welcome to College Railroad! This app allows students to buy/sell books with each other without the bookstore middleman markup. Current apps/websites exist for the sole purpose of making money. Businesses and bookstores make excessive amounts of money off of students, and for a very long time students have accepted this as a way of life. Additionally, Facebook pages, and craigslist posts try to accomplish our goal, but the market it waiting for an app to satisfy the need. Having an app be created by potential users allows for an alternative view on the textbook market.");
         Button loginButton = (Button) findViewById(R.id.log_but);

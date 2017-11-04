@@ -11,6 +11,23 @@
     android:orientation="vertical">
 
 <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search by "
+        android:textSize="20sp"/>
+    <Spinner
+        android:id="@+id/editcondition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:visibility="visible" />
+</LinearLayout>
+<LinearLayout
     android:id="@+id/search_layout"
     android:orientation="horizontal"
     android:layout_width="fill_parent"
