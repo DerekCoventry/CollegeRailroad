@@ -183,4 +183,12 @@ public class SearchFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
+
+    public void changeSearch(String opt){
+        EditText mEditText= (EditText) getView().findViewById(R.id.search);
+        if(!opt.equals("ISBN")){
+            opt = opt.toLowerCase();
+        }
+        mEditText.setHint("Search books by " + opt);
+    }
 }
