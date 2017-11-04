@@ -1,6 +1,7 @@
 package com.example.derek.collegerailroad;
 
 import android.*;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -22,11 +23,15 @@ public class Location2 {
     private String state = "", city = "";
     private LatLng location;
 
-    public Location2(Context context){
+    public Location2(Activity activity, Context context){
         this.mContext = context;
         LocationManager mLocationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
         try {
-            android.location.Location coordinates = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity , new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        12);
+            }
+            android.location.Location coordinates = mLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
             double lat = coordinates.getLatitude();
             double lng = coordinates.getLongitude();
             LatLng location = new LatLng(lat, lng);
@@ -35,7 +40,7 @@ public class Location2 {
             List<Address> addresses = null;
             String city = null;
             String state = null;
-            String currentLocation = "Current Location";
+            //String currentLocation = "Current Location";
             try {
                 addresses = gcd.getFromLocation(lat, lng, 1);
                 if (addresses.size() > 0) {
@@ -46,7 +51,7 @@ public class Location2 {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(city == null){
+            /**if(city == null){
                 if(state != null){
                     currentLocation = state;
                 }
@@ -56,11 +61,14 @@ public class Location2 {
                 } else {
                     currentLocation = city + ", " + state;
                 }
-            }
+            }**/
             this.state = state;
             this.city = city;
             this.location = location;
         } catch (SecurityException e) {
+            this.state = "";
+            this.city = "";
+            this.location = null;
         }
     }
 

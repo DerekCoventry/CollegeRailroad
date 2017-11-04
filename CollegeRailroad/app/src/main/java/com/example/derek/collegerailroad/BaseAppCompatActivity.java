@@ -2,6 +2,7 @@ package com.example.derek.collegerailroad;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.Menu;
@@ -80,6 +81,15 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
             startActivity(new Intent(this, HomeActivity.class));
         }else{
             Toast.makeText(this, "Already signed out", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == 11) {
+            finish();
+        }else if (requestCode == 12){
+            finish();
         }
     }
 }

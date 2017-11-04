@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,15 +45,14 @@ public class MapsActivity extends BaseAppCompatActivity implements OnMapReadyCal
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
-                    11 );
+        try {
+                Location2 mLoc = new Location2(this, getApplicationContext());
+                String currentLocation = mLoc.getCity() + ", " + mLoc.getState();
+                LatLng location = mLoc.getLocation();
+                mMap.addMarker(new MarkerOptions().position(location).title(currentLocation));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+        }catch(Exception e){
         }
-        Location2 mLoc = new Location2(getApplicationContext());
-        String currentLocation = mLoc.getCity() + ", " + mLoc.getState();
-        LatLng location = mLoc.getLocation();
-        mMap.addMarker(new MarkerOptions().position(location).title(currentLocation));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(10));
     }
 }

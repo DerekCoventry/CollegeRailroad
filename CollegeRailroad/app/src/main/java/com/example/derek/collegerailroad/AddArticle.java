@@ -1,11 +1,13 @@
 package com.example.derek.collegerailroad;
 
+import android.*;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -15,6 +17,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -31,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
@@ -113,15 +117,23 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                _dir = new File(
-                        Environment.getExternalStoragePublicDirectory(
-                                Environment.DIRECTORY_PICTURES), "AddArticle");
+                if (ActivityCompat.checkSelfPermission(AddArticle.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions( AddArticle.this, new String[] {  android.Manifest.permission.WRITE_EXTERNAL_STORAGE  },
+                            11 );
+                }
+                try {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    _dir = new File(
+                            Environment.getExternalStoragePublicDirectory(
+                                    Environment.DIRECTORY_PICTURES), "AddArticle");
 
-                _file = new File(_dir, "bookPhoto/" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()));
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(_file));
+                    _file = new File(_dir, "bookPhoto/" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()));
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(_file));
 
-                startActivityForResult(intent, 0);
+                    startActivityForResult(intent, 0);
+                }catch(Exception e){
+                    Toast.makeText(AddArticle.this, "Error uploading photo", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -137,9 +149,11 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
         locButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Location2 location2 = new Location2(getApplicationContext());
+                Location2 location2 = new Location2(AddArticle.this, getApplicationContext());
                 location = location2.getState();
-                locationSpin.setSelection(adapter.getPosition(location));
+                if(location != "") {
+                    locationSpin.setSelection(adapter.getPosition(location));
+                }
             }
         });
 
@@ -379,16 +393,20 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri contentUri = Uri.fromFile(_file);
-        mediaScanIntent.setData(contentUri);
-        sendBroadcast(mediaScanIntent);
-        int height = imageView.getWidth();
-        int width = imageView.getHeight();
-        bitmap = LoadAndResizeBitmap(_file.getAbsolutePath(), width, height);
-        if (bitmap != null) {
-            imageView.setImageBitmap (bitmap);
-            bitmap = null;
+        try {
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            Uri contentUri = Uri.fromFile(_file);
+            mediaScanIntent.setData(contentUri);
+            sendBroadcast(mediaScanIntent);
+            int height = imageView.getWidth();
+            int width = imageView.getHeight();
+            bitmap = LoadAndResizeBitmap(_file.getAbsolutePath(), width, height);
+            if (bitmap != null) {
+                imageView.setImageBitmap(bitmap);
+                bitmap = null;
+            }
+        }catch (Exception e){
+            Toast.makeText(AddArticle.this, "Error uploading photo", Toast.LENGTH_SHORT).show();
         }
     }
 

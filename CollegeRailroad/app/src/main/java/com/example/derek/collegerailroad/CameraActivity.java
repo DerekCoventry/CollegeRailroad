@@ -1,6 +1,9 @@
 package com.example.derek.collegerailroad;
 
+import android.*;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -8,11 +11,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -30,6 +35,10 @@ public class CameraActivity extends BaseAppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera2);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions( this, new String[] {  Manifest.permission.WRITE_EXTERNAL_STORAGE  },
+                    11 );
+        }
         Button cameraButton = (Button) findViewById(R.id.camera_but2);
         imageView = (ImageView) findViewById(R.id.imageView);
 
@@ -52,16 +61,20 @@ public class CameraActivity extends BaseAppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri contentUri = Uri.fromFile(_file);
-        mediaScanIntent.setData(contentUri);
-        sendBroadcast(mediaScanIntent);
-        int height = imageView.getWidth() / 2;
-        int width = imageView.getHeight() / 2;
-        bitmap = LoadAndResizeBitmap(_file.getAbsolutePath(), width, height);
-        if (bitmap != null) {
-            imageView.setImageBitmap (bitmap);
-            bitmap = null;
+        try {
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            Uri contentUri = Uri.fromFile(_file);
+            mediaScanIntent.setData(contentUri);
+            sendBroadcast(mediaScanIntent);
+            int height = imageView.getWidth() / 2;
+            int width = imageView.getHeight() / 2;
+            bitmap = LoadAndResizeBitmap(_file.getAbsolutePath(), width, height);
+            if (bitmap != null) {
+                imageView.setImageBitmap(bitmap);
+                bitmap = null;
+            }
+        }catch(Exception e){
+            Toast.makeText(CameraActivity.this, "Error uploading photo", Toast.LENGTH_SHORT).show();
         }
     }
 
