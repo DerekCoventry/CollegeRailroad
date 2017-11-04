@@ -252,12 +252,12 @@ public class BookListFragment extends Fragment {
                         boolean addBook = false;
                         switch(BookListFragment.this.option){
                             case "ISBN":
-                                if(curTitle.contains(BookListFragment.this.titleFilter)){
+                                if(curTitle.toLowerCase().contains(BookListFragment.this.titleFilter.toLowerCase())){
                                     addBook = true;
                                 }
                                 break;
                             case "Title":
-                                if(curTitle.contains(BookListFragment.this.titleFilter)){
+                                if(curTitle.toLowerCase().contains(BookListFragment.this.titleFilter.toLowerCase())){
                                     addBook = true;
                                 }
                                 break;
