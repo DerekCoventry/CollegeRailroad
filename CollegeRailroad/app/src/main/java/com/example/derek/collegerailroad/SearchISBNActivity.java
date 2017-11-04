@@ -48,7 +48,6 @@ public class SearchISBNActivity extends BaseAppCompatActivity {
 
     private void getWebsite(final String search) {
         new Thread(new Runnable() {
-            String title = "", author = "", ISBN10 = "", ISBN13 = "", publisher = "", edition = "", language = "";
             @Override
             public void run() {
                 final StringBuilder builder = new StringBuilder();
@@ -58,8 +57,10 @@ public class SearchISBNActivity extends BaseAppCompatActivity {
                     if(error == null) {
                         Elements titleAuthor = doc.select("div.attributes strong span");
                         if(titleAuthor.size() >=2) {
-                            title = titleAuthor.get(0).text();
-                            author = titleAuthor.get(1).text();
+                            String title = titleAuthor.get(0).text();
+                            String author = titleAuthor.get(1).text();
+                            builder.append("Title: ").append(title).append("\n");
+                            builder.append("Author: ").append(author).append("\n");
                         }
                         Elements ISBNelts = doc.select("div.attributes h1") ;
                         if(ISBNelts != null) {
