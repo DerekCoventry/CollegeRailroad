@@ -447,6 +447,10 @@ public class LoginActivity extends BaseAppCompatActivity implements LoaderCallba
         new UserLoginTask().execute();
     }
 
+    public void doSignupButton_click(View view){
+        startActivity(new Intent(LoginActivity.this, web.class));
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
