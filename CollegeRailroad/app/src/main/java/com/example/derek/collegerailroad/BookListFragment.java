@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ public class BookListFragment extends Fragment {
     private List<BookPost> mBooks = new ArrayList<BookPost>();
     public String[] states = new String[]{"Alabama","Alaska","Alaska Fairbanks","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"};
     public boolean initial = true;
+    private String option, titleFilter = null, authorFilter = null;
     public String session_id;
     public String session_name;
 
@@ -247,13 +249,48 @@ public class BookListFragment extends Fragment {
                     currentBook = new BookPost(curId, curTitle, curEmail);
                     updateUI();
                     if (curLoc.equals(locCheck) || locCheck.equals("none")) {
-                        mBooks.add(currentBook);
+                        boolean addBook = false;
+                        switch(BookListFragment.this.option){
+                            case "ISBN":
+                                if(curTitle.contains(BookListFragment.this.titleFilter)){
+                                    addBook = true;
+                                }
+                                break;
+                            case "Title":
+                                if(curTitle.contains(BookListFragment.this.titleFilter)){
+                                    addBook = true;
+                                }
+                                break;
+                            default:
+                                addBook = true;
+                                break;
+                        }
+                        if(addBook) {
+                            mBooks.add(currentBook);
+                        }
                     }
                 } catch (Exception e) {
                     Log.v("Error adding database", e.getMessage());
                 }
             }
 
+        }
+    }
+
+    public void setFilter(String opt, String search){
+        this.option = opt;
+        if(opt.equals("Title")){
+            this.titleFilter = search;
+        }else if(opt.equals("Author")){
+            this.authorFilter = search;
+        }
+    }
+
+    public void setFilter(String opt, String title, String author){
+        this.option = opt;
+        if(opt.equals("ISBN")) {
+            this.titleFilter = title;
+            this.authorFilter = author;
         }
     }
 
