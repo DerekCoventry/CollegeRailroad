@@ -9,8 +9,6 @@ List of things I have left to do:
 ===================
 - Get email and name for profile (and set name)
 
-- Add ISBN and author to sell book page (ISBN can autofill them)
-
 - Sort by author and ISBN (which will just sort by title+author)
 
 - Display locations from books
