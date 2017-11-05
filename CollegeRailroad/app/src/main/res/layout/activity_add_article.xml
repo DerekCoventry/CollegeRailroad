@@ -25,6 +25,24 @@
         android:layout_alignLeft="@+id/textView"
         android:layout_alignParentRight="true"
         android:background="#fff9d4"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_below="@+id/editTitle"
+        android:text="Author"
+        android:id="@+id/author"
+        />
+
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editAuthor"
+        android:layout_below="@+id/author"
+        android:layout_alignLeft="@+id/author"
+        android:layout_alignParentRight="true"
+        android:background="#fff9d4"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -56,41 +74,12 @@
         android:visibility="visible" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Condition"
-        android:id="@+id/txtCondition"
-        android:layout_below="@+id/loc_but"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-    <Spinner
-        android:id="@+id/editcondition"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/txtCondition"
-        android:layout_marginBottom="6dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="0dp"
-        android:background="?android:attr/colorButtonNormal"
-        android:fadingEdge="vertical"
-        android:paddingBottom="6dp"
-        android:paddingTop="6dp"
-        android:textAlignment="center"
-        android:visibility="visible" />
-
-    <TextView
         android:id="@+id/txtEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/editTitle"
+        android:layout_below="@+id/editAuthor"
         android:layout_marginTop="5dp"
         android:text="Email"
         android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -125,17 +114,40 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/textView2"
-        android:layout_below="@+id/editcondition"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_below="@+id/loc_but"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Condition"
+            android:id="@+id/txtCondition" />
+        <Spinner
+            android:id="@+id/editcondition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="0dp"
+            android:background="?android:attr/colorButtonNormal"
+            android:fadingEdge="vertical"
+            android:paddingBottom="6dp"
+            android:paddingTop="6dp"
+            android:textAlignment="center"
+            android:visibility="visible" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/textView2"
-            android:layout_below="@+id/editlocation"
+            android:layout_gravity="right"
             android:orientation="vertical">
 
             <ImageView
