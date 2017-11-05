@@ -4,6 +4,8 @@ import android.*;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -13,6 +15,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -52,7 +58,37 @@ public class MapsActivity extends BaseAppCompatActivity implements OnMapReadyCal
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         mMap = googleMap;
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+            @Override
+            public View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                Context mContext = MapsActivity.this;
+                LinearLayout info = new LinearLayout(mContext);
+                info.setOrientation(LinearLayout.VERTICAL);
+
+                TextView title = new TextView(mContext);
+                title.setTextColor(Color.BLACK);
+                title.setGravity(Gravity.CENTER);
+                title.setTypeface(null, Typeface.BOLD);
+                title.setText(marker.getTitle());
+
+                TextView snippet = new TextView(mContext);
+                snippet.setTextColor(Color.GRAY);
+                snippet.setText(marker.getSnippet());
+
+                info.addView(title);
+                info.addView(snippet);
+
+                return info;
+            }
+        });
         List<MarkerOptions> markers= new ArrayList<>();
         try {
                 Location2 mLoc = new Location2(this, getApplicationContext());
@@ -60,12 +96,15 @@ public class MapsActivity extends BaseAppCompatActivity implements OnMapReadyCal
                 Random rand = new Random();
                 for(int i =0; i < mBooks.size(); i++) {
                     BookPost book = (BookPost) mBooks.get(i);
-                    currentLocation = book.getTitle();
-                    currentLocation = Double.toString(mLoc.getLocation().latitude);
+                    String title = book.getTitle();
+                    String email = book.getEmail();
+                    String id = book.getId();
+                    String bookInfo = title + " by Author\n" + email;
                     float random1 = rand.nextFloat()*2-1;
                     float random2 = rand.nextFloat()*2-1;
                     LatLng location = new LatLng(mLoc.getLocation().latitude+random1, mLoc.getLocation().longitude+random2);
                     MarkerOptions marker = new MarkerOptions().position(location).title(currentLocation);
+                    marker.snippet(bookInfo);
                     markers.add(marker);
                     mMap.addMarker(marker);
                 }
