@@ -39,7 +39,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class BookListFragment extends Fragment {
     private RecyclerView mBookRecyclerView;
     private BookAdapter mAdapter;
-    private List<BookPost> mBooks = new ArrayList<BookPost>();
+    private ArrayList<BookPost> mBooks = new ArrayList<BookPost>();
     public String[] states = new String[]{"Alabama","Alaska","Alaska Fairbanks","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"};
     public boolean initial = true;
     private String option = "", titleFilter = null, authorFilter = null;
@@ -63,7 +63,9 @@ public class BookListFragment extends Fragment {
         Button mapButton = (Button) view.findViewById(R.id.map_but);
         mapButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), MapsActivity.class));
+                Intent intent = new Intent(getActivity(), MapsActivity.class);
+                intent.putExtra("BOOKS", mBooks);
+                startActivity(intent);
             }
         });
         Spinner locationSpin = (Spinner) view.findViewById((R.id.editlocation));
@@ -119,7 +121,7 @@ public class BookListFragment extends Fragment {
     private class BookAdapter extends RecyclerView.Adapter<BookHolder> {
 
 
-        public BookAdapter(List<BookPost> books) {
+        public BookAdapter(ArrayList<BookPost> books) {
             mBooks = books;
         }
 
@@ -141,7 +143,7 @@ public class BookListFragment extends Fragment {
             return mBooks.size();
         }
 
-        public void updateList(List<BookPost> books) {
+        public void updateList(ArrayList<BookPost> books) {
             mBooks = books;
             notifyDataSetChanged();
         }
