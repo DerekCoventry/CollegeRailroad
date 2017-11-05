@@ -228,6 +228,7 @@ public class BookListFragment extends Fragment {
             String curTitle;
             String curEmail;
             String curLoc;
+            String curCondition;
 
             String locCheck = "none";
             SharedPreferences userInfo = getActivity().getSharedPreferences("userInfo", MODE_PRIVATE);
@@ -241,20 +242,24 @@ public class BookListFragment extends Fragment {
             //iterate through JSON to read the title of nodes
             for(int i=0;i<result.length();i++){
                 try {
+                    Log.d("TEST22", "TRY");
                     JSONObject item = (JSONObject) result.get(i);
                     JSONArray title = (JSONArray) item.get("title");
                     JSONArray vid = (JSONArray) item.get("vid");
                     JSONArray email = (JSONArray) item.get("field_email");
+                    JSONArray condition = (JSONArray) item.get("field_condition");
                     JSONObject valueVid = (JSONObject) vid.get(0);
                     JSONObject valueTitle = (JSONObject) title.get(0);
                     JSONObject valueEmail = (JSONObject) email.get(0);
                     JSONArray loc = (JSONArray) item.get("field_state");
                     JSONObject valueLoc = (JSONObject) loc.get(0);
+                    JSONObject valueCondition = (JSONObject) condition.get(0);
                     curLoc = valueLoc.get("target_id").toString();
                     curId = valueVid.get("value").toString();
                     curTitle = valueTitle.get("value").toString();
                     curEmail = valueEmail.get("value").toString();
-                    currentBook = new BookPost(curId, curTitle, curEmail);
+                    curCondition = valueCondition.get("target_id").toString();
+                    currentBook = new BookPost(curId, curTitle, curEmail, curCondition);
                     updateUI();
                     if (curLoc.equals(locCheck) || locCheck.equals("none")) {
                         boolean addBook = false;
@@ -280,6 +285,7 @@ public class BookListFragment extends Fragment {
                     TextView numberOfResults = getActivity().findViewById(R.id.numberOfResults);
                     numberOfResults.setText(Integer.toString(mBooks.size())+" results found");
                 } catch (Exception e) {
+                    Log.d("TEST22", "ERROR");
                     Log.v("Error adding database", e.getMessage());
                 }
             }

@@ -11,17 +11,20 @@ public class BookPost implements Parcelable{
     private String bId;
     private String bTitle;
     private String bEmail;
+    private String bCondition;
 
-    public BookPost(String id, String title, String email) {
+    public BookPost(String id, String title, String email, String condition) {
         bId = id;
         bTitle = title;
         bEmail = email;
+        bCondition = condition;
     }
 
     protected BookPost(Parcel in) {
         bId = in.readString();
         bTitle = in.readString();
         bEmail = in.readString();
+        bCondition = in.readString();
     }
 
     public static final Creator<BookPost> CREATOR = new Creator<BookPost>() {
@@ -55,6 +58,14 @@ public class BookPost implements Parcelable{
     public void setEmail(String email) {
         bEmail = email;
     }
+    public void setCondition(String condition) {
+        bCondition = condition;
+    }
+    public String getCondition() {
+
+        String[] conditions = new String[]{"New", "Good",  "Worn","Damaged"};
+        return conditions[Integer.parseInt(bCondition)-3];
+    }
 
     @Override
     public int describeContents() {
@@ -66,5 +77,6 @@ public class BookPost implements Parcelable{
         parcel.writeString(bId);
         parcel.writeString(bTitle);
         parcel.writeString(bEmail);
+        parcel.writeString(bCondition);
     }
 }

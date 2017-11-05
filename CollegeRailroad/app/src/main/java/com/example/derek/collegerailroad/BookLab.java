@@ -89,6 +89,7 @@ public class BookLab {
             String curId;
             String curTitle;
             String curEmail;
+            String curCondition;
 
             //iterate through JSON to read the title of nodes
             for(int i=0;i<result.length();i++){
@@ -97,14 +98,16 @@ public class BookLab {
                     JSONArray title = (JSONArray) item.get("title");
                     JSONArray vid = (JSONArray) item.get("vid");
                     JSONArray email = (JSONArray) item.get("field_email");
+                    JSONArray condition = (JSONArray) item.get("field_condition");
+                    JSONObject valueCondition = (JSONObject) condition.get(0);
                     JSONObject valueVid = (JSONObject) vid.get(0);
                     JSONObject valueTitle = (JSONObject) title.get(0);
                     JSONObject valueEmail = (JSONObject) email.get(0);
                     curId = valueVid.get("value").toString();
                     curTitle = valueTitle.get("value").toString();
                     curEmail = valueEmail.get("value").toString();
-                    currentBook = new BookPost(curId, curTitle, curEmail);
-
+                    curCondition = valueCondition.get("target_condition").toString();
+                    currentBook = new BookPost(curId, curTitle, curEmail, curCondition);
                     mBooks.add(currentBook);
                 } catch (Exception e) {
                     Log.v("Error adding database", e.getMessage());

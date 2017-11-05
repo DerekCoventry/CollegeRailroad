@@ -98,8 +98,8 @@ public class MapsActivity extends BaseAppCompatActivity implements OnMapReadyCal
                     BookPost book = (BookPost) mBooks.get(i);
                     String title = book.getTitle();
                     String email = book.getEmail();
-                    String id = book.getId();
-                    String bookInfo = title + " by Author\n" + email;
+                    String condition = book.getCondition();
+                    String bookInfo = title + " by Author\n" + email+"\nCondtion: "+condition;
                     float random1 = rand.nextFloat()*2-1;
                     float random2 = rand.nextFloat()*2-1;
                     LatLng location = new LatLng(mLoc.getLocation().latitude+random1, mLoc.getLocation().longitude+random2);

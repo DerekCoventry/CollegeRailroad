@@ -144,6 +144,7 @@ public class BookListFragmentSelf extends Fragment {
         String curTitle;
         String curEmail;
         String curUID;
+        String curCondition;
 
         //iterate through JSON to read the title of nodes
         for(int i=0;i<result.length();i++){
@@ -152,16 +153,19 @@ public class BookListFragmentSelf extends Fragment {
                 JSONArray title = (JSONArray) item.get("title");
                 JSONArray vid = (JSONArray) item.get("vid");
                 JSONArray email = (JSONArray) item.get("field_email");
+                JSONArray condition = (JSONArray) item.get("field_condition");
                 JSONArray user= (JSONArray) item.get("uid");
                 JSONObject valueUID = (JSONObject) user.get(0);
                 JSONObject valueVid = (JSONObject) vid.get(0);
                 JSONObject valueTitle = (JSONObject) title.get(0);
                 JSONObject valueEmail = (JSONObject) email.get(0);
+                JSONObject valueCondition = (JSONObject) condition.get(0);
                 curUID = valueUID.get("target_id").toString();
                 curId = valueVid.get("value").toString();
                 curTitle = valueTitle.get("value").toString();
                 curEmail = valueEmail.get("value").toString();
-                currentBook = new BookPost(curId, curTitle, curEmail);
+                curCondition = valueCondition.get("target_id").toString();
+                currentBook = new BookPost(curId, curTitle, curEmail, curCondition);
                 if(curUID.equals(user_id)) {
                     mBooks.add(currentBook);
                 }
@@ -216,6 +220,7 @@ public class BookListFragmentSelf extends Fragment {
             String curTitle;
             String curEmail;
             String curUID;
+            String curCondition;
 
             //iterate through JSON to read the title of nodes
             for(int i=0;i<result.length();i++){
@@ -225,15 +230,18 @@ public class BookListFragmentSelf extends Fragment {
                     JSONArray vid = (JSONArray) item.get("vid");
                     JSONArray email = (JSONArray) item.get("field_email");
                     JSONArray user= (JSONArray) item.get("uid");
+                    JSONArray condition = (JSONArray) item.get("field_condition");
                     JSONObject valueUID = (JSONObject) user.get(0);
                     JSONObject valueVid = (JSONObject) vid.get(0);
                     JSONObject valueTitle = (JSONObject) title.get(0);
                     JSONObject valueEmail = (JSONObject) email.get(0);
+                    JSONObject valueCondition = (JSONObject) condition.get(0);
                     curUID = valueUID.get("target_id").toString();
                     curId = valueVid.get("value").toString();
                     curTitle = valueTitle.get("value").toString();
                     curEmail = valueEmail.get("value").toString();
-                    currentBook = new BookPost(curId, curTitle, curEmail);
+                    curCondition = valueCondition.get("target_id").toString();
+                    currentBook = new BookPost(curId, curTitle, curEmail, curCondition);
                     updateUI();
                     if(curUID.equals(user_id)) {
                         mBooks.add(currentBook);

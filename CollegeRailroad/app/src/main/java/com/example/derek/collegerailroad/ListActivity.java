@@ -105,6 +105,7 @@ public class ListActivity extends  SingleFragmentActivity {
             String curId;
             String curTitle;
             String curEmail;
+            String curCondition;
             //get the ListView UI element
             //ListView lst = (ListView)  findViewById(R.id.listView);
 
@@ -118,13 +119,16 @@ public class ListActivity extends  SingleFragmentActivity {
                     JSONArray title = (JSONArray) item.get("title");
                     JSONArray vid = (JSONArray) item.get("vid");
                     JSONArray email = (JSONArray) item.get("field_email");
+                    JSONArray condition = (JSONArray) item.get("field_condition");
                     JSONObject valueVid = (JSONObject) vid.get(0);
                     JSONObject valueTitle = (JSONObject) title.get(0);
                     JSONObject valueEmail = (JSONObject) email.get(0);
+                    JSONObject valueCondition = (JSONObject) condition.get(0);
                     curId = valueVid.get("value").toString();
                     curTitle = valueTitle.get("value").toString();
                     curEmail = valueEmail.get("value").toString();
-                    currentBook = new BookPost(curId, curTitle, curEmail);
+                    curCondition = valueCondition.get("target_id").toString();
+                    currentBook = new BookPost(curId, curTitle, curEmail, curCondition);
                     listItems.add(curTitle);
 
                     books.add(currentBook);
