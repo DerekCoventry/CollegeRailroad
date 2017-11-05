@@ -52,7 +52,6 @@ public class HomeActivity extends BaseAppCompatActivity implements SearchFragmen
         setContentView(R.layout.activity_home);
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        SearchFragment search_frag = SearchFragment.newInstance();
         transaction.replace(R.id.search_layout, new SearchFragment()).commit();
         Spinner opt = (Spinner) findViewById((R.id.editcondition));
         ArrayAdapter adapter = ArrayAdapter.createFromResource(this,

@@ -18,6 +18,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -52,7 +55,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class AddArticle extends Activity implements AdapterView.OnItemSelectedListener {
+public class AddArticle extends FragmentActivity implements AdapterView.OnItemSelectedListener, SearchFragment.OnFragmentInteractionListener {
     public static File _file;
     public static File _dir;
     public static Bitmap bitmap;
@@ -66,7 +69,6 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
     Spinner locationSpin;
     ArrayAdapter<CharSequence> adapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +79,9 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
         basicauth = userInfo.getString("BASIC_AUTH", "none");
         Log.i("basic auth", basicauth);
         setContentView(R.layout.activity_add_article);
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.autofill_layout, new SearchFragment()).commit();
         Bundle extras = getIntent().getExtras();
         locationSpin = (Spinner) findViewById((R.id.editlocation));
         adapter = ArrayAdapter.createFromResource(this,
@@ -164,6 +169,26 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
         }
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+        FragmentManager fm = getSupportFragmentManager();
+
+        SearchFragment fragment = (SearchFragment) fm.findFragmentById(R.id.autofill_layout);
+        fragment.changeSearch("Enter ISBN to autofill");
+    }
+
+    public void setTitleAndAuthor(String title, String author){
+        EditText txtTitle = (EditText) findViewById(R.id.editTitle);
+        EditText txtAuthor = (EditText) findViewById(R.id.editAuthor);
+        if(title.isEmpty() && author.isEmpty()) {
+            Toast.makeText(this, "No book found with that ISBN", Toast.LENGTH_SHORT).show();
+        }else {
+            txtTitle.setText(title);
+            txtAuthor.setText(author);
+        }
+    }
+
     public void showImage() {
         //ImageView imageView2 = new ImageView(this);
         //imageView2.setImageURI(Uri.fromFile(_file));
@@ -226,11 +251,13 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
 
                 //get title and body UI elements
                 TextView txtTitle = (TextView) findViewById(R.id.editTitle);
+                TextView txtAuthor = (TextView) findViewById(R.id.editAuthor);
                 TextView txtEmail = (TextView) findViewById(R.id.editEmail);
 
                 //extract text from UI elements and remove extra spaces
                 String title=txtTitle.getText().toString().trim();
                 String email=txtEmail.getText().toString().trim();
+                String author = txtAuthor.getText().toString().trim();
                 //add raw json to be sent along with the HTTP POST request
                 //StringEntity se = new StringEntity( "{\"_links\": {\"type\":{"+
                 //        "\"href\": \"http://collegerailroad.com/rest/type/node/basic_post\"}},\"title\": [{\"value\": \""+ title + "\""+
@@ -428,5 +455,8 @@ public class AddArticle extends Activity implements AdapterView.OnItemSelectedLi
         Matrix matrix = new Matrix();
         matrix.postRotate(90);
         return Bitmap.createBitmap(resizedBitmap, 0, 0, resizedBitmap.getWidth(), resizedBitmap.getHeight(), matrix, true);
+    }
+    @Override
+    public void onFragmentInteraction(Uri uri){
     }
 }

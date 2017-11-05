@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -63,10 +64,10 @@ public class SearchFragment extends Fragment {
                                 Toast.makeText(getActivity(), "Search can't be empty", Toast.LENGTH_LONG).show();
                                 return false;
                             } else {
-                                if(option.equals("ISBN")) {
+                                if(option.contains("ISBN")) {
                                     search = search.replaceAll("-", "");
                                 }
-                                if (!option.equals("ISBN") || ((search.length() == 10 || search.length() == 13) && search.matches("\\d+"))) {
+                                if (!option.contains("ISBN") || ((search.length() == 10 || search.length() == 13) && search.matches("\\d+"))) {
                                     mProgressDialog = ProgressDialog.show(getActivity(), "Loading", "Searching for book...");
                                     getWebsite(search);
                                     return true;
@@ -107,7 +108,7 @@ public class SearchFragment extends Fragment {
                     book_details.clear();
                     final Intent goToList = new Intent(getActivity(), BookListActivity.class);
                     String title = "", author = "", ISBN10 = "", ISBN13 = "", publisher = "", edition = "", language = "";
-                    if(option.equals("ISBN")) {
+                    if(option.contains("ISBN")) {
                         try {
                             Document doc = Jsoup.connect("https://www.bookfinder.com/search/?isbn=" + search + "+&mode=isbn&st=sr&ac=qr").get();
                             Element error = doc.select("#bd").first();
@@ -168,7 +169,15 @@ public class SearchFragment extends Fragment {
                             goToList.putExtra("EDITION", book_details.get(5));
                             goToList.putExtra("LANGUAGE", book_details.get(6));
                             mProgressDialog.dismiss();
-                            startActivity(goToList);
+                            if(option.equals("ISBN") || option.equals("Title") || option.equals("Author")) {
+                                if(book_details.get(0).isEmpty() && book_details.get(1).isEmpty()) {
+                                    Toast.makeText(getActivity(), "No book found with that ISBN", Toast.LENGTH_LONG).show();
+                                }else {
+                                    startActivity(goToList);
+                                }
+                            }else{
+                                ((AddArticle)getActivity()).setTitleAndAuthor(book_details.get(0), book_details.get(1));
+                            }
                             searched = false;
                         }
                     });
@@ -200,10 +209,20 @@ public class SearchFragment extends Fragment {
 
     public void changeSearch(String opt){
         this.option = opt;
+        String search;
         EditText mEditText= (EditText) getView().findViewById(R.id.search);
-        if(!opt.equals("ISBN")){
-            opt = opt.toLowerCase();
+        switch (opt) {
+            case "ISBN":
+                search = "Search book by " + opt;
+                break;
+            case "Title":
+            case "Author":
+                search = "Search book by " + opt.toLowerCase();
+                break;
+            default:
+                search = opt;
+                break;
         }
-        mEditText.setHint("Search books by " + opt);
+        mEditText.setHint(search);
     }
 }
