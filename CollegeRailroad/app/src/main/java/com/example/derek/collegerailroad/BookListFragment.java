@@ -60,6 +60,12 @@ public class BookListFragment extends Fragment {
                 startActivity(new Intent(getActivity(), AddArticle.class));
             }
         });
+        Button mapButton = (Button) view.findViewById(R.id.map_but);
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), MapsActivity.class));
+            }
+        });
         Spinner locationSpin = (Spinner) view.findViewById((R.id.editlocation));
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.locationsSearch_array, android.R.layout.simple_spinner_item);
