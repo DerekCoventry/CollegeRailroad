@@ -269,6 +269,8 @@ public class BookListFragment extends Fragment {
                             mBooks.add(currentBook);
                         }
                     }
+                    TextView numberOfResults = getActivity().findViewById(R.id.numberOfResults);
+                    numberOfResults.setText(Integer.toString(mBooks.size())+" results found");
                 } catch (Exception e) {
                     Log.v("Error adding database", e.getMessage());
                 }
