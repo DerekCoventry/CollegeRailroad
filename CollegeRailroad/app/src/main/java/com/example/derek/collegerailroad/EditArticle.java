@@ -2,6 +2,7 @@ package com.example.derek.collegerailroad;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,10 +30,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
@@ -40,9 +43,12 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -63,6 +69,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
     public String condition = "New";
     public String basicauth = "none";
     public double latitude = 0, longitude = 0;
+    private String uploadedImageUrl;
     private boolean usedCurLoc = false;
     Spinner locationSpin;
     ArrayAdapter<CharSequence> adapter;
@@ -221,27 +228,60 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
         //initiate the background process to post the article to the Drupal endpoint.
         //pass session_name and session_id
         new DeleteBook().execute();
-        new addArticleTask().execute(session_name,session_id);
+        String fileName = "";
+        if(_file != null) {
+            fileName = _file.toString();
+        }
+        new addArticleTask().execute(session_name, session_id, fileName);
     }
 
 
     //asynchronous task to add the article into Drupal
     private class addArticleTask extends AsyncTask<String, Void, Integer> {
-
+        ProgressDialog mProgressDialog;
+        @Override
+        protected void onPreExecute() {
+            mProgressDialog = ProgressDialog.show(EditArticle.this, "Loading", "Adding book...");
+        }
         protected Integer doInBackground(String... params) {
-
             //read session_name and session_id from passed parameters
             String session_name=params[0];
             String session_id=params[1];
+            final String upload_to = "https://api.imgur.com/3/upload";
 
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpContext localContext = new BasicHttpContext();
+            HttpPost httpPost = new HttpPost(upload_to);
+            try {
+                HttpEntity entity = MultipartEntityBuilder.create()
+                        .addPart("image", new FileBody(new File(params[2])))
+                        .build();
+                httpPost.setHeader("Authorization", "Client-ID 677813e7b6b7d5e");
+                httpPost.setEntity(entity);
 
+                final HttpResponse response = httpClient.execute(httpPost,
+                        localContext);
+
+                final String response_string = EntityUtils.toString(response
+                        .getEntity());
+
+                final JSONObject json = new JSONObject(response_string);
+
+                Log.d("tag", json.toString());
+
+                JSONObject data = json.optJSONObject("data");
+                uploadedImageUrl = data.optString("link");
+                Log.d("tag", "uploaded image url : " + uploadedImageUrl);
+            } catch (Exception e) {
+                uploadedImageUrl = "No image";
+                e.printStackTrace();
+            }
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost("http://collegerailroad.com/entity/node?_format=hal_json");
 
 
 
             try {
-
                 //get title and body UI elements
                 TextView txtTitle = (TextView) findViewById(R.id.editTitle);
                 TextView txtAuthor = (TextView) findViewById(R.id.editAuthor);
@@ -284,6 +324,11 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                         "\"field_long\": ["+
                         "{"+
                         " \"value\": \""+longitude+"\""+
+                        "}"+
+                        "],"+
+                        "\"field_title\": ["+
+                        "{"+
+                        " \"value\": \""+uploadedImageUrl+"\""+
                         "}"+
                         "],"+
                         "\"field_email\": [\n" +
@@ -351,6 +396,8 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
 
             //start the List Activity and pass back the session_id and session_name
             Intent intent = new Intent(EditArticle.this, BookListActivitySelf.class);
+            mProgressDialog.dismiss();
+            Toast.makeText(EditArticle.this, "Book updated!", Toast.LENGTH_SHORT).show();
             //intent.putExtra("SESSION_ID", session_id);
             //intent.putExtra("SESSION_NAME", session_name);
             startActivity(intent);
