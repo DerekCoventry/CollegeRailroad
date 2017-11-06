@@ -1,18 +1,30 @@
 package com.example.derek.collegerailroad;
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Intent.*;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -23,7 +35,13 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by derek on 10/25/17.
@@ -34,6 +52,7 @@ public class BookDisplayActivity extends Activity {
     public String[] states = new String[]{"Alabama","Alaska","Alaska Fairbanks","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"};
     public String user_id = "none";
     public String[] cond = new String[]{"New", "Good",  "Worn","Damaged"};
+    public String imageURL;
 
     public Button delete_button;
     public Button edit_button;
@@ -70,6 +89,41 @@ public class BookDisplayActivity extends Activity {
             }
         });
         new FetchBook().execute();
+    }
+    class loadImage extends AsyncTask<Void, Void, Void> {
+        ProgressDialog pdLoading = new ProgressDialog(BookDisplayActivity.this);
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pdLoading.setMessage("Loading Image...");
+            pdLoading.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            final ImageView mURLImageView;
+            try {
+                mURLImageView = (ImageView) findViewById(R.id.book_photo);
+                try {
+                    Log.d("TEST22", "In here");
+                    InputStream i = (InputStream)new URL(imageURL).getContent();
+                    final Bitmap bitmap = BitmapFactory.decodeStream(i);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mURLImageView.setImageBitmap(bitmap);
+                        }
+                    });
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            pdLoading.dismiss();
+            return null;
+        }
     }
     private class FetchBook extends AsyncTask<String, Void, JSONObject> {
 
@@ -114,6 +168,7 @@ public class BookDisplayActivity extends Activity {
             TextView mSubjectTextView;
             TextView mConditionTextView;
             TextView mAuthorTextView;
+            ImageView mURLImageView;
 
 
             BookPost currentBook;
@@ -125,8 +180,8 @@ public class BookDisplayActivity extends Activity {
             String curAuthor;
             String curLocation;
             String curUID;
+            String curURL;
             //iterate through JSON to read the title of nodes
-            for(int i=0;i<result.length();i++){
                 try {
                     JSONObject item = result;
                     JSONArray title = (JSONArray) item.get("title");
@@ -136,6 +191,7 @@ public class BookDisplayActivity extends Activity {
                     JSONArray condition = (JSONArray) item.get("field_condition");
                     JSONArray subject = (JSONArray) item.get("field_subject");
                     JSONArray location = (JSONArray) item.get("field_state");
+                    JSONArray url = (JSONArray) item.get("field_title");
                     JSONArray user= (JSONArray) item.get("uid");
                     JSONObject valueUID = (JSONObject) user.get(0);
                     curUID = valueUID.get("target_id").toString();
@@ -178,6 +234,16 @@ public class BookDisplayActivity extends Activity {
                             mConditionTextView.setText(cond[Integer.parseInt(curCondition)-3]);
                         }
                     }
+                    if (url.length() > 0 ){
+                        JSONObject valueURL = (JSONObject) url.get(0);
+                        curURL = valueURL.get("value").toString();
+                        if(curURL.length() > 0 && curURL.contains("imgur")) {
+                            imageURL = curURL;
+                            new loadImage().execute();
+                        }else{imageURL = "none";}
+
+                    }else{imageURL = "none";}
+
                     Log.d("loc", location.toString());
                     if (location.length() > 0) {
                         JSONObject locationSubject = (JSONObject) location.get(0);
@@ -197,10 +263,10 @@ public class BookDisplayActivity extends Activity {
                 } catch (Exception e) {
                     Log.v("Error adding database", e.getMessage());
                 }
-            }
 
         }
     }
+
     private class DeleteBook extends AsyncTask<String, Void, JSONObject> {
 
         protected JSONObject doInBackground(String... params) {
