@@ -274,7 +274,7 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
         }
         protected Integer doInBackground(String... params) {
 
-
+            Log.d("TEST227", "a: " +uploadedImageUrl);
             //read session_name and session_id from passed parameters
             String session_name=params[0];
             String session_id=params[1];
@@ -284,6 +284,7 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
             HttpContext localContext = new BasicHttpContext();
             HttpPost httpPost = new HttpPost(upload_to);
 
+            Log.d("TEST226", "a: " +uploadedImageUrl);
             try {
                 HttpEntity entity = MultipartEntityBuilder.create()
                         .addPart("image", new FileBody(new File(params[2])))
@@ -305,16 +306,17 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
                 uploadedImageUrl = data.optString("link");
                 Log.d("tag", "uploaded image url : " + uploadedImageUrl);
             } catch (Exception e) {
+                uploadedImageUrl = "No image";
                 e.printStackTrace();
             }
-
+            Log.d("TEST223", "a: " +uploadedImageUrl);
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost("http://collegerailroad.com/entity/node?_format=hal_json");
 
-
+            Log.d("TEST225", "a: " +uploadedImageUrl);
 
             try {
-                Log.d("TEST22", uploadedImageUrl);
+                Log.d("TEST22", "a: " +uploadedImageUrl);
                 //get title and body UI elements
                 TextView txtTitle = (TextView) findViewById(R.id.editTitle);
                 TextView txtAuthor = (TextView) findViewById(R.id.editAuthor);
@@ -364,6 +366,11 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
                         " \"value\": \""+longitude+"\""+
                         "}"+
                         "],"+
+                        "\"field_title\": ["+
+                        "{"+
+                        " \"value\": \""+uploadedImageUrl+"\""+
+                        "}"+
+                        "],"+
                         "\"field_email\": [\n" +
                         "{\n" +
                         "\"value\": \""+email+"\"\n" +
@@ -397,7 +404,9 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
                 cookie = new BasicClientCookie("has_js", "1");
                 mCookieStore.addCookie(cookie);
                 mHttpContext.setAttribute(ClientContext.COOKIE_STORE, mCookieStore);*/
+                Log.d("TEST229", "a: " +uploadedImageUrl);
                 httpclient.execute(httppost);
+                Log.d("TEST221", "a: " +uploadedImageUrl);
                 //httpclient.execute(httppost,mHttpContext);
                 return 0;
 
