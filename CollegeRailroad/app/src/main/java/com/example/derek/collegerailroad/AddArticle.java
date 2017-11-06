@@ -260,7 +260,11 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
                 latitude = latLng.latitude;
                 longitude = latLng.longitude;
             }
-            new addArticleTask().execute(session_name, session_id, _file.toString());
+            String fileName = "";
+            if(_file != null) {
+                fileName = _file.toString();
+            }
+            new addArticleTask().execute(session_name, session_id, fileName);
         }
     }
 
