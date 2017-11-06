@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -93,20 +94,21 @@ public class MapsActivity extends BaseAppCompatActivity implements OnMapReadyCal
         try {
                 Location2 mLoc = new Location2(this, getApplicationContext());
                 String currentLocation = mLoc.getCity() + ", " + mLoc.getState();
-                Random rand = new Random();
                 for(int i =0; i < mBooks.size(); i++) {
                     BookPost book = (BookPost) mBooks.get(i);
                     String title = book.getTitle();
                     String email = book.getEmail();
+                    String author = book.getAuthor();
                     String condition = book.getCondition();
-                    String bookInfo = title + " by Author\n" + email+"\nCondtion: "+condition;
-                    float random1 = rand.nextFloat()*2-1;
-                    float random2 = rand.nextFloat()*2-1;
-                    LatLng location = new LatLng(mLoc.getLocation().latitude+random1, mLoc.getLocation().longitude+random2);
-                    MarkerOptions marker = new MarkerOptions().position(location).title(currentLocation);
-                    marker.snippet(bookInfo);
-                    markers.add(marker);
-                    mMap.addMarker(marker);
+                    String bookInfo = title + " by " + author +"\n" + email+"\nCondtion: "+condition;
+                    LatLng latLng = book.getLatLng();
+                    if(latLng != null) {
+                        LatLng location = new LatLng(latLng.latitude, latLng.longitude);
+                        MarkerOptions marker = new MarkerOptions().position(location).title(currentLocation);
+                        marker.snippet(bookInfo);
+                        markers.add(marker);
+                        mMap.addMarker(marker);
+                    }
                 }
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             for (MarkerOptions marker : markers) {
@@ -117,6 +119,7 @@ public class MapsActivity extends BaseAppCompatActivity implements OnMapReadyCal
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
             googleMap.animateCamera(cu);
         }catch(Exception e){
+            e.printStackTrace();
         }
     }
 }

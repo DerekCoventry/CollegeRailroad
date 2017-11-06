@@ -63,6 +63,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
     public String condition = "New";
     public String basicauth = "none";
     public double latitude = 0, longitude = 0;
+    private boolean usedCurLoc = false;
     Spinner locationSpin;
     ArrayAdapter<CharSequence> adapter;
     public String user_id;
@@ -99,9 +100,12 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
                 location = parent.getItemAtPosition(position).toString();
-                LatLng latLng = Location2.getStateCoordinates(EditArticle.this, location);
-                latitude = latLng.latitude;
-                longitude = latLng.longitude;
+                if(!usedCurLoc) {
+                    usedCurLoc = false;
+                    LatLng latLng = Location2.getStateCoordinates(EditArticle.this, location);
+                    latitude = latLng.latitude;
+                    longitude = latLng.longitude;
+                }
             }
 
             @Override
@@ -158,7 +162,8 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                 location = location2.getState();
                 latitude = location2.getLocation().latitude;
                 longitude = location2.getLocation().longitude;
-                if(location != "") {
+                if(!location.equals("")) {
+                    usedCurLoc = true;
                     locationSpin.setSelection(adapter.getPosition(location));
                 }
             }

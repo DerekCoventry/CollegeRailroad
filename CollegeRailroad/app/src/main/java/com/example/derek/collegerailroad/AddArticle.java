@@ -69,6 +69,7 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
     public String basicauth = "none";
     public double latitude = 0, longitude = 0;
     public String link;
+    private boolean usedCurLoc = false;
     Spinner locationSpin;
     ArrayAdapter<CharSequence> adapter;
 
@@ -95,9 +96,12 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
                 location = parent.getItemAtPosition(position).toString();
-                LatLng latLng = Location2.getStateCoordinates(AddArticle.this, location);
-                latitude = latLng.latitude;
-                longitude = latLng.longitude;
+                if(!usedCurLoc) {
+                    usedCurLoc = false;
+                    LatLng latLng = Location2.getStateCoordinates(AddArticle.this, location);
+                    latitude = latLng.latitude;
+                    longitude = latLng.longitude;
+                }
             }
 
             @Override
@@ -163,7 +167,8 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
                 location = location2.getState();
                 latitude = location2.getLocation().latitude;
                 longitude = location2.getLocation().longitude;
-                if(location != "") {
+                if(!location.equals("")) {
+                    usedCurLoc = true;
                     locationSpin.setSelection(adapter.getPosition(location));
                 }
             }

@@ -2,6 +2,7 @@ package com.example.derek.collegerailroad;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -15,7 +16,8 @@ public class BookPost implements Parcelable{
     private String bAuthor;
     private String bEmail;
     private String bCondition;
-    private LatLng bLatLng;
+    private double bLatitude;
+    private double bLongitude;
 
     public BookPost(String id, String title, String author, String email, String condition, LatLng latLng) {
         bId = id;
@@ -23,7 +25,8 @@ public class BookPost implements Parcelable{
         bAuthor = author;
         bEmail = email;
         bCondition = condition;
-        bLatLng = latLng;
+        bLatitude = latLng.latitude;
+        bLongitude = latLng.longitude;
     }
 
     protected BookPost(Parcel in) {
@@ -32,6 +35,8 @@ public class BookPost implements Parcelable{
         bAuthor = in.readString();
         bEmail = in.readString();
         bCondition = in.readString();
+        bLatitude = in.readDouble();
+        bLongitude = in.readDouble();
     }
 
     public static final Creator<BookPost> CREATOR = new Creator<BookPost>() {
@@ -82,11 +87,12 @@ public class BookPost implements Parcelable{
         return conditions[Integer.parseInt(bCondition)-3];
     }
     public LatLng getLatLng() {
-        return bLatLng;
+        return new LatLng(bLatitude, bLongitude);
     }
 
     public void setLatLng(LatLng latLng) {
-        bLatLng = latLng;
+        bLatitude = latLng.latitude;
+        bLongitude = latLng.longitude;
     }
 
     @Override
@@ -101,5 +107,7 @@ public class BookPost implements Parcelable{
         parcel.writeString(bAuthor);
         parcel.writeString(bEmail);
         parcel.writeString(bCondition);
+        parcel.writeDouble(bLatitude);
+        parcel.writeDouble(bLongitude);
     }
 }
