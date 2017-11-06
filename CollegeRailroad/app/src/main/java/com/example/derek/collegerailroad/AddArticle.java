@@ -226,9 +226,21 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
 
     //click listener for addArticle button
     public void addArticleButton_click(View view){
-        //initiate the background process to post the article to the Drupal endpoint.
-        //pass session_name and session_id
-        new addArticleTask().execute(session_name,session_id);
+        TextView txtTitle = (TextView) findViewById(R.id.editTitle);
+        TextView txtAuthor = (TextView) findViewById(R.id.editAuthor);
+        TextView txtEmail = (TextView) findViewById(
+                R.id.editEmail);
+        if(txtTitle.getText().toString().trim().isEmpty()){
+            Toast.makeText(this, "Title can't be empty", Toast.LENGTH_SHORT).show();
+        }else if(txtAuthor.getText().toString().trim().isEmpty()){
+            Toast.makeText(this, "Author can't be empty", Toast.LENGTH_SHORT).show();
+        }else if(txtEmail.getText().toString().trim().isEmpty()){
+            Toast.makeText(this, "Email can't be empty", Toast.LENGTH_SHORT).show();
+        }else {
+            //initiate the background process to post the article to the Drupal endpoint.
+            //pass session_name and session_id
+            new addArticleTask().execute(session_name, session_id);
+        }
     }
 
 
