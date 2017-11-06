@@ -61,6 +61,7 @@ public class MapsActivity extends BaseAppCompatActivity implements OnMapReadyCal
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
+        mMap.setMaxZoomPreference(17);
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
             @Override
