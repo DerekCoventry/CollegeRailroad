@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.security.Security;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -81,5 +82,30 @@ public class Location2 {
     }
     public LatLng getLocation(){
         return this.location;
+    }
+
+    public static LatLng getStateCoordinates(Context mContext, String state) {
+        List<LatLng> ll = new ArrayList<>();
+        LatLng coordinates = new LatLng(0,0);
+        if (Geocoder.isPresent()) {
+            try {
+                String location = state;
+                Geocoder gc = new Geocoder(mContext);
+                List<Address> addresses = gc.getFromLocationName(location, 5); // get the found Address Objects
+
+                ll = new ArrayList<LatLng>(addresses.size()); // A list to save the coordinates if they are available
+                for (Address a : addresses) {
+                    if (a.hasLatitude() && a.hasLongitude()) {
+                        ll.add(new LatLng(a.getLatitude(), a.getLongitude()));
+                    }
+                }
+            } catch (IOException e) {
+                // handle the exception
+            }
+        }
+        if(!ll.isEmpty()){
+            coordinates = ll.get(0);
+        }
+        return coordinates;
     }
 }
