@@ -52,8 +52,13 @@ public class BookListFragmentSelf extends Fragment {
         mBookRecyclerView = (RecyclerView) view
                 .findViewById(R.id.book_recycler_view);
         mBookRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        new FetchBooks().execute();
         return view;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        new FetchBooks().execute();
     }
 
     private class BookAdapter extends RecyclerView.Adapter<BookHolder> {
