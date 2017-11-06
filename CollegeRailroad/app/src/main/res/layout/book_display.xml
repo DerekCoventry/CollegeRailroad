@@ -7,7 +7,7 @@
         android:id="@+id/bookLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Book Title:"
+        android:text="Title:"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -18,6 +18,23 @@
         android:paddingLeft="8dp"
         android:text="N/A"
         android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/authorLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Book Title:"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/book_author"
+        android:layout_width="234dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:text="N/A"
+        android:textSize="18sp" />
+
 
     <TextView
         android:id="@+id/emailLabel"

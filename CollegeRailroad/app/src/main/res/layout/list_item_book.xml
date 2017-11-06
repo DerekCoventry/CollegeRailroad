@@ -13,7 +13,6 @@
         android:text="Book Title"
         android:textSize="18sp"
         android:textStyle="bold" />
-
     <TextView
         android:id="@+id/book_email"
         android:layout_width="match_parent"

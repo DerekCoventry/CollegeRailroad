@@ -10,12 +10,14 @@ import android.os.Parcelable;
 public class BookPost implements Parcelable{
     private String bId;
     private String bTitle;
+    private String bAuthor;
     private String bEmail;
     private String bCondition;
 
-    public BookPost(String id, String title, String email, String condition) {
+    public BookPost(String id, String title, String author, String email, String condition) {
         bId = id;
         bTitle = title;
+        bAuthor = author;
         bEmail = email;
         bCondition = condition;
     }
@@ -23,6 +25,7 @@ public class BookPost implements Parcelable{
     protected BookPost(Parcel in) {
         bId = in.readString();
         bTitle = in.readString();
+        bAuthor = in.readString();
         bEmail = in.readString();
         bCondition = in.readString();
     }
@@ -50,6 +53,14 @@ public class BookPost implements Parcelable{
     public void setTitle(String title) {
         bTitle = title;
     }
+    public String getAuthor() {
+        return bAuthor;
+    }
+
+    public void setAuthor(String author) {
+        bAuthor = author;
+    }
+
 
     public String getEmail() {
         return bEmail;
@@ -76,6 +87,7 @@ public class BookPost implements Parcelable{
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(bId);
         parcel.writeString(bTitle);
+        parcel.writeString(bAuthor);
         parcel.writeString(bEmail);
         parcel.writeString(bCondition);
     }

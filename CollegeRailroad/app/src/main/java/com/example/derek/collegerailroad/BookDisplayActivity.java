@@ -113,6 +113,7 @@ public class BookDisplayActivity extends Activity {
             TextView mLocationTextView;
             TextView mSubjectTextView;
             TextView mConditionTextView;
+            TextView mAuthorTextView;
 
 
             BookPost currentBook;
@@ -121,6 +122,7 @@ public class BookDisplayActivity extends Activity {
             String curEmail;
             String curCondition;
             String curSubject;
+            String curAuthor;
             String curLocation;
             String curUID;
             //iterate through JSON to read the title of nodes
@@ -130,6 +132,7 @@ public class BookDisplayActivity extends Activity {
                     JSONArray title = (JSONArray) item.get("title");
                     JSONArray vid = (JSONArray) item.get("vid");
                     JSONArray email = (JSONArray) item.get("field_email");
+                    JSONArray author = (JSONArray) item.get("field_author");
                     JSONArray condition = (JSONArray) item.get("field_condition");
                     JSONArray subject = (JSONArray) item.get("field_subject");
                     JSONArray location = (JSONArray) item.get("field_state");
@@ -155,6 +158,15 @@ public class BookDisplayActivity extends Activity {
                         mEmailTextView = (TextView) findViewById(R.id.book_email);
                         if(curEmail.length() > 0 ) {
                             mEmailTextView.setText(curEmail);
+                        }
+
+                    }
+                    if (author.length() > 0 ){
+                        JSONObject valueAuthor = (JSONObject) author.get(0);
+                        curAuthor = valueAuthor.get("value").toString();
+                        mAuthorTextView = (TextView) findViewById(R.id.book_author);
+                        if(curAuthor.length() > 0 ) {
+                            mAuthorTextView.setText(curAuthor);
                         }
 
                     }

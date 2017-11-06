@@ -83,18 +83,21 @@ public class BookListFragmentSelf extends Fragment {
 
     private class BookHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mTitleTextView;
+        private TextView mAuthorTextView;
         private TextView mEmailTextView;
         private BookPost mBook;
         public BookHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_book, parent, false));
             itemView.setOnClickListener(this);
             mTitleTextView = (TextView) itemView.findViewById(R.id.book_title);
+            mAuthorTextView = (TextView) itemView.findViewById(R.id.book_author);
             mEmailTextView = (TextView) itemView.findViewById(R.id.book_email);
 
         }
         public void bind(BookPost book) {
             mBook = book;
             mTitleTextView.setText(mBook.getTitle());
+            mAuthorTextView.setText(mBook.getAuthor());
             mEmailTextView.setText(mBook.getEmail());
         }
         @Override
@@ -142,6 +145,7 @@ public class BookListFragmentSelf extends Fragment {
         BookPost currentBook;
         String curId;
         String curTitle;
+        String curAuthor;
         String curEmail;
         String curUID;
         String curCondition;
@@ -153,19 +157,22 @@ public class BookListFragmentSelf extends Fragment {
                 JSONArray title = (JSONArray) item.get("title");
                 JSONArray vid = (JSONArray) item.get("vid");
                 JSONArray email = (JSONArray) item.get("field_email");
+                JSONArray author = (JSONArray) item.get("field_author");
                 JSONArray condition = (JSONArray) item.get("field_condition");
                 JSONArray user= (JSONArray) item.get("uid");
                 JSONObject valueUID = (JSONObject) user.get(0);
                 JSONObject valueVid = (JSONObject) vid.get(0);
                 JSONObject valueTitle = (JSONObject) title.get(0);
+                JSONObject valueAuthor = (JSONObject) author.get(0);
                 JSONObject valueEmail = (JSONObject) email.get(0);
                 JSONObject valueCondition = (JSONObject) condition.get(0);
                 curUID = valueUID.get("target_id").toString();
                 curId = valueVid.get("value").toString();
                 curTitle = valueTitle.get("value").toString();
+                curAuthor = valueAuthor.get("value").toString();
                 curEmail = valueEmail.get("value").toString();
                 curCondition = valueCondition.get("target_id").toString();
-                currentBook = new BookPost(curId, curTitle, curEmail, curCondition);
+                currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition);
                 if(curUID.equals(user_id)) {
                     mBooks.add(currentBook);
                 }
@@ -218,6 +225,7 @@ public class BookListFragmentSelf extends Fragment {
             BookPost currentBook;
             String curId;
             String curTitle;
+            String curAuthor;
             String curEmail;
             String curUID;
             String curCondition;
@@ -229,19 +237,22 @@ public class BookListFragmentSelf extends Fragment {
                     JSONArray title = (JSONArray) item.get("title");
                     JSONArray vid = (JSONArray) item.get("vid");
                     JSONArray email = (JSONArray) item.get("field_email");
+                    JSONArray author = (JSONArray) item.get("field_author");
                     JSONArray user= (JSONArray) item.get("uid");
                     JSONArray condition = (JSONArray) item.get("field_condition");
                     JSONObject valueUID = (JSONObject) user.get(0);
                     JSONObject valueVid = (JSONObject) vid.get(0);
                     JSONObject valueTitle = (JSONObject) title.get(0);
                     JSONObject valueEmail = (JSONObject) email.get(0);
+                    JSONObject valueAuthor = (JSONObject) author.get(0);
                     JSONObject valueCondition = (JSONObject) condition.get(0);
                     curUID = valueUID.get("target_id").toString();
                     curId = valueVid.get("value").toString();
                     curTitle = valueTitle.get("value").toString();
                     curEmail = valueEmail.get("value").toString();
+                    curAuthor = valueAuthor.get("value").toString();
                     curCondition = valueCondition.get("target_id").toString();
-                    currentBook = new BookPost(curId, curTitle, curEmail, curCondition);
+                    currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition);
                     updateUI();
                     if(curUID.equals(user_id)) {
                         mBooks.add(currentBook);

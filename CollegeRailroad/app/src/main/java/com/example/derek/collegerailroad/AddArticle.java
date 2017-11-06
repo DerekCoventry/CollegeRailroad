@@ -283,6 +283,11 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
                         " \"value\": \""+link+"\""+
                         "}"+
                         "],"+
+                        "\"field_author\": ["+
+                        "{"+
+                        " \"value\": \""+author+"\""+
+                        "}"+
+                        "],"+
                         "\"field_email\": [\n" +
                         "{\n" +
                         "\"value\": \""+email+"\"\n" +

@@ -384,6 +384,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
         protected void onPostExecute(JSONObject result) {
             EditText mTitleTextView;
             EditText mEmailTextView;
+            EditText mAuthorTextView;
             EditText mLocationTextView;
             EditText mSubjectTextView;
             Spinner mConditionTextView;
@@ -392,6 +393,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             BookPost currentBook;
             String curId;
             String curTitle;
+            String curAuthor;
             String curEmail;
             String curCondition;
             String curSubject;
@@ -404,6 +406,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                     JSONArray title = (JSONArray) item.get("title");
                     JSONArray vid = (JSONArray) item.get("vid");
                     JSONArray email = (JSONArray) item.get("field_email");
+                    JSONArray author = (JSONArray) item.get("field_author");
                     JSONArray condition = (JSONArray) item.get("field_condition");
                     JSONArray subject = (JSONArray) item.get("field_subject");
                     JSONArray location = (JSONArray) item.get("field_state");
@@ -417,6 +420,14 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                         mTitleTextView = (EditText) findViewById(R.id.editTitle);
                         if(curTitle.length() > 0 ){
                             mTitleTextView.setText(curTitle);
+                        }
+                    }
+                    if (author.length() > 0){
+                        JSONObject valueAuthor = (JSONObject) author.get(0);
+                        curAuthor = valueAuthor.get("value").toString();
+                        mAuthorTextView = (EditText) findViewById(R.id.editAuthor);
+                        if(curAuthor.length() > 0 ){
+                            mAuthorTextView.setText(curAuthor);
                         }
                     }
                     if (email.length() > 0 ){

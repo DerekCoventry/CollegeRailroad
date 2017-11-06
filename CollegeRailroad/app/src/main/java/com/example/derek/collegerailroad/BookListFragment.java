@@ -205,7 +205,7 @@ public class BookListFragment extends Fragment {
         }
         public void bind(BookPost book) {
             mBook = book;
-            mTitleTextView.setText(mBook.getTitle());
+            mTitleTextView.setText(mBook.getTitle()+" by " + mBook.getAuthor());
             mEmailTextView.setText(mBook.getEmail());
         }
         @Override
@@ -269,6 +269,7 @@ public class BookListFragment extends Fragment {
             BookPost currentBook;
             String curId;
             String curTitle;
+            String curAuthor;
             String curEmail;
             String curLoc;
             String curCondition;
@@ -292,10 +293,12 @@ public class BookListFragment extends Fragment {
                     JSONObject item = (JSONObject) result.get(i);
                     JSONArray title = (JSONArray) item.get("title");
                     JSONArray vid = (JSONArray) item.get("vid");
+                    JSONArray author = (JSONArray) item.get("field_author");
                     JSONArray email = (JSONArray) item.get("field_email");
                     JSONArray condition = (JSONArray) item.get("field_condition");
                     JSONObject valueVid = (JSONObject) vid.get(0);
                     JSONObject valueTitle = (JSONObject) title.get(0);
+                    JSONObject valueAuthor = (JSONObject) author.get(0);
                     JSONObject valueEmail = (JSONObject) email.get(0);
                     JSONArray loc = (JSONArray) item.get("field_state");
                     JSONObject valueLoc = (JSONObject) loc.get(0);
@@ -303,21 +306,26 @@ public class BookListFragment extends Fragment {
                     curLoc = valueLoc.get("target_id").toString();
                     curId = valueVid.get("value").toString();
                     curTitle = valueTitle.get("value").toString();
+                    curAuthor = valueAuthor.get("value").toString();
                     curEmail = valueEmail.get("value").toString();
                     curCondition = valueCondition.get("target_id").toString();
-                    currentBook = new BookPost(curId, curTitle, curEmail, curCondition);
+                    currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition);
                     updateUI();
                     if ((curLoc.equals(locCheck) || locCheck.equals("none")) && (curCondition.equals(condCheck) || condCheck.equals("none"))) {
-                        Log.d("TEST22", condCheck);
                         boolean addBook = false;
                         switch(BookListFragment.this.option){
                             case "ISBN":
-                                if(curTitle.toLowerCase().contains(BookListFragment.this.titleFilter.toLowerCase())){
+                                if(curTitle.toLowerCase().contains(BookListFragment.this.titleFilter.toLowerCase())&&curAuthor.toLowerCase().contains(BookListFragment.this.authorFilter.toLowerCase())){
                                     addBook = true;
                                 }
                                 break;
                             case "Title":
                                 if(curTitle.toLowerCase().contains(BookListFragment.this.titleFilter.toLowerCase())){
+                                    addBook = true;
+                                }
+                                break;
+                            case "Author":
+                                if(curAuthor.toLowerCase().contains(BookListFragment.this.authorFilter.toLowerCase())){
                                     addBook = true;
                                 }
                                 break;
