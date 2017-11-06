@@ -39,6 +39,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
@@ -93,6 +95,9 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
                 location = parent.getItemAtPosition(position).toString();
+                LatLng latLng = Location2.getStateCoordinates(AddArticle.this, location);
+                latitude = latLng.latitude;
+                longitude = latLng.longitude;
             }
 
             @Override
@@ -239,6 +244,11 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
         }else if(txtEmail.getText().toString().trim().isEmpty()){
             Toast.makeText(this, "Email can't be empty", Toast.LENGTH_SHORT).show();
         }else {
+            if(latitude == 0 && longitude == 0){
+                LatLng latLng = Location2.getStateCoordinates(AddArticle.this, location);
+                latitude = latLng.latitude;
+                longitude = latLng.longitude;
+            }
             //initiate the background process to post the article to the Drupal endpoint.
             //pass session_name and session_id
             new addArticleTask().execute(session_name, session_id);

@@ -31,6 +31,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
@@ -97,6 +99,9 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
                 location = parent.getItemAtPosition(position).toString();
+                LatLng latLng = Location2.getStateCoordinates(EditArticle.this, location);
+                latitude = latLng.latitude;
+                longitude = latLng.longitude;
             }
 
             @Override
@@ -203,6 +208,11 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
 
     //click listener for addArticle button
     public void addArticleButton_click(View view){
+        if(latitude == 0 && longitude == 0){
+            LatLng latLng = Location2.getStateCoordinates(EditArticle.this, location);
+            latitude = latLng.latitude;
+            longitude = latLng.longitude;
+        }
         //initiate the background process to post the article to the Drupal endpoint.
         //pass session_name and session_id
         new DeleteBook().execute();
