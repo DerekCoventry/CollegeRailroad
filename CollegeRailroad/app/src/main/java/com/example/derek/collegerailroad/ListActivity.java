@@ -12,6 +12,8 @@ import android.view.*;
 import android.content.*;
 import android.widget.*;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.apache.http.util.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -107,6 +109,7 @@ public class ListActivity extends  SingleFragmentActivity {
             String curAuthor;
             String curEmail;
             String curCondition;
+            LatLng latLng;
             //get the ListView UI element
             //ListView lst = (ListView)  findViewById(R.id.listView);
 
@@ -122,17 +125,22 @@ public class ListActivity extends  SingleFragmentActivity {
                     JSONArray vid = (JSONArray) item.get("vid");
                     JSONArray email = (JSONArray) item.get("field_email");
                     JSONArray condition = (JSONArray) item.get("field_condition");
+                    JSONArray latitude = (JSONArray) item.get("field_lat");
+                    JSONArray longitude = (JSONArray) item.get("field_long");
                     JSONObject valueVid = (JSONObject) vid.get(0);
                     JSONObject valueTitle = (JSONObject) title.get(0);
                     JSONObject valueAuthor = (JSONObject) author.get(0);
                     JSONObject valueEmail = (JSONObject) email.get(0);
                     JSONObject valueCondition = (JSONObject) condition.get(0);
+                    JSONObject valueLatitude = (JSONObject) latitude.get(0);
+                    JSONObject valueLongitude = (JSONObject) longitude.get(0);
                     curId = valueVid.get("value").toString();
                     curTitle = valueTitle.get("value").toString();
                     curAuthor = valueAuthor.get("value").toString();
                     curEmail = valueEmail.get("value").toString();
                     curCondition = valueCondition.get("target_id").toString();
-                    currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition);
+                    latLng = new LatLng(Double.parseDouble(valueLatitude.get("value").toString()), Double.parseDouble(valueLongitude.get("value").toString()));
+                    currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition, latLng);
                     listItems.add(curTitle);
 
                     books.add(currentBook);

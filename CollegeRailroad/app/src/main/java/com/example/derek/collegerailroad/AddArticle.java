@@ -149,7 +149,6 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
             }
         });
 
-        // Camera functionality
         Button locButton = (Button) findViewById(R.id.loc_but);
 
         locButton.setOnClickListener(new View.OnClickListener() {

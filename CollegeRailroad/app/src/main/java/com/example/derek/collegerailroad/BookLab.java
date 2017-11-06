@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -91,6 +93,7 @@ public class BookLab {
             String curEmail;
             String curCondition;
             String curAuthor;
+            LatLng latLng;
 
             //iterate through JSON to read the title of nodes
             for(int i=0;i<result.length();i++){
@@ -101,17 +104,22 @@ public class BookLab {
                     JSONArray email = (JSONArray) item.get("field_email");
                     JSONArray condition = (JSONArray) item.get("field_condition");
                     JSONArray author = (JSONArray) item.get("field_author");
+                    JSONArray latitude = (JSONArray) item.get("field_lat");
+                    JSONArray longitude = (JSONArray) item.get("field_long");
                     JSONObject valueCondition = (JSONObject) condition.get(0);
                     JSONObject valueVid = (JSONObject) vid.get(0);
                     JSONObject valueTitle = (JSONObject) title.get(0);
                     JSONObject valueEmail = (JSONObject) email.get(0);
                     JSONObject valueAuthor = (JSONObject) author.get(0);
+                    JSONObject valueLatitude = (JSONObject) latitude.get(0);
+                    JSONObject valueLongitude = (JSONObject) longitude.get(0);
                     curId = valueVid.get("value").toString();
                     curTitle = valueTitle.get("value").toString();
                     curEmail = valueEmail.get("value").toString();
                     curAuthor = valueAuthor.get("value").toString();
+                    latLng = new LatLng(Double.parseDouble(valueLatitude.get("value").toString()), Double.parseDouble(valueLongitude.get("value").toString()));
                     curCondition = valueCondition.get("target_condition").toString();
-                    currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition);
+                    currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition, latLng);
                     mBooks.add(currentBook);
                 } catch (Exception e) {
                     Log.v("Error adding database", e.getMessage());

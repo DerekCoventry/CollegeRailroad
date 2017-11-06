@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -153,6 +155,7 @@ public class BookListFragmentSelf extends Fragment {
         String curEmail;
         String curUID;
         String curCondition;
+        LatLng latLng;
 
         //iterate through JSON to read the title of nodes
         for(int i=0;i<result.length();i++){
@@ -163,6 +166,8 @@ public class BookListFragmentSelf extends Fragment {
                 JSONArray email = (JSONArray) item.get("field_email");
                 JSONArray author = (JSONArray) item.get("field_author");
                 JSONArray condition = (JSONArray) item.get("field_condition");
+                JSONArray latitude = (JSONArray) item.get("field_lat");
+                JSONArray longitude = (JSONArray) item.get("field_long");
                 JSONArray user= (JSONArray) item.get("uid");
                 JSONObject valueUID = (JSONObject) user.get(0);
                 JSONObject valueVid = (JSONObject) vid.get(0);
@@ -170,13 +175,16 @@ public class BookListFragmentSelf extends Fragment {
                 JSONObject valueAuthor = (JSONObject) author.get(0);
                 JSONObject valueEmail = (JSONObject) email.get(0);
                 JSONObject valueCondition = (JSONObject) condition.get(0);
+                JSONObject valueLatitude = (JSONObject) latitude.get(0);
+                JSONObject valueLongitude = (JSONObject) longitude.get(0);
                 curUID = valueUID.get("target_id").toString();
                 curId = valueVid.get("value").toString();
                 curTitle = valueTitle.get("value").toString();
                 curAuthor = valueAuthor.get("value").toString();
                 curEmail = valueEmail.get("value").toString();
                 curCondition = valueCondition.get("target_id").toString();
-                currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition);
+                latLng = new LatLng(Double.parseDouble(valueLatitude.get("value").toString()), Double.parseDouble(valueLongitude.get("value").toString()));
+                currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition,latLng);
                 if(curUID.equals(user_id)) {
                     mBooks.add(currentBook);
                 }
@@ -233,6 +241,7 @@ public class BookListFragmentSelf extends Fragment {
             String curEmail;
             String curUID;
             String curCondition;
+            LatLng latLng;
 
             //iterate through JSON to read the title of nodes
             for(int i=0;i<result.length();i++){
@@ -244,19 +253,24 @@ public class BookListFragmentSelf extends Fragment {
                     JSONArray author = (JSONArray) item.get("field_author");
                     JSONArray user= (JSONArray) item.get("uid");
                     JSONArray condition = (JSONArray) item.get("field_condition");
+                    JSONArray latitude = (JSONArray) item.get("field_lat");
+                    JSONArray longitude = (JSONArray) item.get("field_long");
                     JSONObject valueUID = (JSONObject) user.get(0);
                     JSONObject valueVid = (JSONObject) vid.get(0);
                     JSONObject valueTitle = (JSONObject) title.get(0);
                     JSONObject valueEmail = (JSONObject) email.get(0);
                     JSONObject valueAuthor = (JSONObject) author.get(0);
                     JSONObject valueCondition = (JSONObject) condition.get(0);
+                    JSONObject valueLatitude = (JSONObject) latitude.get(0);
+                    JSONObject valueLongitude = (JSONObject) longitude.get(0);
                     curUID = valueUID.get("target_id").toString();
                     curId = valueVid.get("value").toString();
                     curTitle = valueTitle.get("value").toString();
                     curEmail = valueEmail.get("value").toString();
                     curAuthor = valueAuthor.get("value").toString();
                     curCondition = valueCondition.get("target_id").toString();
-                    currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition);
+                    latLng = new LatLng(Double.parseDouble(valueLatitude.get("value").toString()), Double.parseDouble(valueLongitude.get("value").toString()));
+                    currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition, latLng);
                     updateUI();
                     if(curUID.equals(user_id)) {
                         mBooks.add(currentBook);

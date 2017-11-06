@@ -3,6 +3,8 @@ package com.example.derek.collegerailroad;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by derek on 10/10/17.
  */
@@ -13,13 +15,15 @@ public class BookPost implements Parcelable{
     private String bAuthor;
     private String bEmail;
     private String bCondition;
+    private LatLng bLatLng;
 
-    public BookPost(String id, String title, String author, String email, String condition) {
+    public BookPost(String id, String title, String author, String email, String condition, LatLng latLng) {
         bId = id;
         bTitle = title;
         bAuthor = author;
         bEmail = email;
         bCondition = condition;
+        bLatLng = latLng;
     }
 
     protected BookPost(Parcel in) {
@@ -76,6 +80,13 @@ public class BookPost implements Parcelable{
 
         String[] conditions = new String[]{"New", "Good",  "Worn","Damaged"};
         return conditions[Integer.parseInt(bCondition)-3];
+    }
+    public LatLng getLatLng() {
+        return bLatLng;
+    }
+
+    public void setLatLng(LatLng latLng) {
+        bLatLng = latLng;
     }
 
     @Override

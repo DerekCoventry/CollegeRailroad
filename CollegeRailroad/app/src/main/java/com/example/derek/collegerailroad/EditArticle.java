@@ -22,6 +22,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -59,6 +60,9 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
     public String location = "Alabama";
     public String condition = "New";
     public String basicauth = "none";
+    public double latitude = 0, longitude = 0;
+    Spinner locationSpin;
+    ArrayAdapter<CharSequence> adapter;
     public String user_id;
     public String book_id;
 
@@ -84,8 +88,8 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
         Log.i("basic auth", basicauth);
         setContentView(R.layout.activity_add_article);
         new FetchBook().execute();
-        Spinner locationSpin = (Spinner) findViewById((R.id.editlocation));
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        locationSpin = (Spinner) findViewById((R.id.editlocation));
+        adapter = ArrayAdapter.createFromResource(this,
                 R.array.locations_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationSpin.setAdapter(adapter);
@@ -138,6 +142,20 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             @Override
             public void onClick(View v) {
                 showImage();
+            }
+        });
+        Button locButton = (Button) findViewById(R.id.loc_but);
+
+        locButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Location2 location2 = new Location2(EditArticle.this, getApplicationContext());
+                location = location2.getState();
+                latitude = location2.getLocation().latitude;
+                longitude = location2.getLocation().longitude;
+                if(location != "") {
+                    locationSpin.setSelection(adapter.getPosition(location));
+                }
             }
         });
 
@@ -241,6 +259,16 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                         "\"field_author\": ["+
                         "{"+
                         " \"value\": \""+author+"\""+
+                        "}"+
+                        "],"+
+                        "\"field_lat\": ["+
+                        "{"+
+                        " \"value\": \""+latitude+"\""+
+                        "}"+
+                        "],"+
+                        "\"field_long\": ["+
+                        "{"+
+                        " \"value\": \""+longitude+"\""+
                         "}"+
                         "],"+
                         "\"field_email\": [\n" +
