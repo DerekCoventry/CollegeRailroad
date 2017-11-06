@@ -67,7 +67,7 @@ public class SearchFragment extends Fragment {
                                 if(option.contains("ISBN")) {
                                     search = search.replaceAll("-", "");
                                 }
-                                if (!option.contains("ISBN") || ((search.length() == 10 || search.length() == 13) && search.matches("\\d+"))) {
+                                if (!option.contains("ISBN") || ((search.length() == 10 || search.length() == 13) && search.matches("\\d+X?"))) {
                                     mProgressDialog = ProgressDialog.show(getActivity(), "Loading", "Searching for book...");
                                     getWebsite(search);
                                     return true;
