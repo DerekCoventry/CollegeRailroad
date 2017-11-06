@@ -41,14 +41,18 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -392,6 +396,7 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
 
             //start the List Activity and pass back the session_id and session_name
             Intent intent = new Intent(AddArticle.this, HomeActivity.class);
+            new PostToImgur().execute(_file.toString());
             Toast.makeText(AddArticle.this, "Book listed!", Toast.LENGTH_SHORT).show();
             //intent.putExtra("SESSION_ID", session_id);
             //intent.putExtra("SESSION_NAME", session_name);
@@ -401,6 +406,50 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
             finish();
         }
     }
+    class PostToImgur extends AsyncTask<String, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            final String upload_to = "https://api.imgur.com/3/upload";
+
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpContext localContext = new BasicHttpContext();
+            HttpPost httpPost = new HttpPost(upload_to);
+
+            try {
+                HttpEntity entity = MultipartEntityBuilder.create()
+                        .addPart("image", new FileBody(new File(params[0])))
+                        .build();
+                httpPost.setHeader("Authorization", "Client-ID 677813e7b6b7d5e");
+                httpPost.setEntity(entity);
+
+                final HttpResponse response = httpClient.execute(httpPost,
+                        localContext);
+
+                final String response_string = EntityUtils.toString(response
+                        .getEntity());
+
+                final JSONObject json = new JSONObject(response_string);
+
+                Log.d("tag", json.toString());
+
+                JSONObject data = json.optJSONObject("data");
+                String uploadedImageUrl = data.optString("link");
+                Log.d("tag", "uploaded image url : " + uploadedImageUrl);
+
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+        }
+    }
+    /**
     private class PostToImgur extends AsyncTask<String, Void, JSONObject> {
 
         protected JSONObject doInBackground(String... params) {
@@ -433,6 +482,7 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
 
                 //read the response and convert it into JSON array
                 json = new JSONObject(EntityUtils.toString(response.getEntity()));
+                Log.d("TEST22", json.toString());
                 //return the JSON array for post processing to onPostExecute function
                 return json;
 
@@ -462,6 +512,7 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
 
         }
     }
+     **/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
