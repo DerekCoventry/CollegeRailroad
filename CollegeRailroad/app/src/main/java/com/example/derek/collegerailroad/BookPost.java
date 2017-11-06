@@ -18,8 +18,9 @@ public class BookPost implements Parcelable{
     private String bCondition;
     private double bLatitude;
     private double bLongitude;
+    private String bURL;
 
-    public BookPost(String id, String title, String author, String email, String condition, LatLng latLng) {
+    public BookPost(String id, String title, String author, String email, String condition, LatLng latLng, String URL) {
         bId = id;
         bTitle = title;
         bAuthor = author;
@@ -27,6 +28,7 @@ public class BookPost implements Parcelable{
         bCondition = condition;
         bLatitude = latLng.latitude;
         bLongitude = latLng.longitude;
+        bURL = URL;
     }
 
     protected BookPost(Parcel in) {
@@ -37,6 +39,7 @@ public class BookPost implements Parcelable{
         bCondition = in.readString();
         bLatitude = in.readDouble();
         bLongitude = in.readDouble();
+        bURL = in.readString();
     }
 
     public static final Creator<BookPost> CREATOR = new Creator<BookPost>() {
@@ -94,7 +97,13 @@ public class BookPost implements Parcelable{
         bLatitude = latLng.latitude;
         bLongitude = latLng.longitude;
     }
+    public String getURL() {
+        return bURL;
+    }
 
+    public void setURL(String URL) {
+        bURL = URL;
+    }
     @Override
     public int describeContents() {
         return 0;
@@ -109,5 +118,6 @@ public class BookPost implements Parcelable{
         parcel.writeString(bCondition);
         parcel.writeDouble(bLatitude);
         parcel.writeDouble(bLongitude);
+        parcel.writeString(bURL);
     }
 }

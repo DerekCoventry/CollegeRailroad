@@ -93,6 +93,7 @@ public class BookLab {
             String curEmail;
             String curCondition;
             String curAuthor;
+            String curURL;
             LatLng latLng;
 
             //iterate through JSON to read the title of nodes
@@ -106,9 +107,11 @@ public class BookLab {
                     JSONArray author = (JSONArray) item.get("field_author");
                     JSONArray latitude = (JSONArray) item.get("field_lat");
                     JSONArray longitude = (JSONArray) item.get("field_long");
+                    JSONArray url = (JSONArray) item.get("field_title");
                     JSONObject valueCondition = (JSONObject) condition.get(0);
                     JSONObject valueVid = (JSONObject) vid.get(0);
                     JSONObject valueTitle = (JSONObject) title.get(0);
+                    JSONObject valueURL = (JSONObject) url.get(0);
                     JSONObject valueEmail = (JSONObject) email.get(0);
                     JSONObject valueAuthor = (JSONObject) author.get(0);
                     JSONObject valueLatitude = (JSONObject) latitude.get(0);
@@ -117,9 +120,10 @@ public class BookLab {
                     curTitle = valueTitle.get("value").toString();
                     curEmail = valueEmail.get("value").toString();
                     curAuthor = valueAuthor.get("value").toString();
+                    curURL = valueURL.get("value").toString();
                     latLng = new LatLng(Double.parseDouble(valueLatitude.get("value").toString()), Double.parseDouble(valueLongitude.get("value").toString()));
                     curCondition = valueCondition.get("target_condition").toString();
-                    currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition, latLng);
+                    currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition, latLng, curURL);
                     mBooks.add(currentBook);
                 } catch (Exception e) {
                     Log.v("Error adding database", e.getMessage());

@@ -110,6 +110,7 @@ public class ListActivity extends  SingleFragmentActivity {
             String curEmail;
             String curCondition;
             LatLng latLng;
+            String curURL;
             //get the ListView UI element
             //ListView lst = (ListView)  findViewById(R.id.listView);
 
@@ -127,6 +128,7 @@ public class ListActivity extends  SingleFragmentActivity {
                     JSONArray condition = (JSONArray) item.get("field_condition");
                     JSONArray latitude = (JSONArray) item.get("field_lat");
                     JSONArray longitude = (JSONArray) item.get("field_long");
+                    JSONArray url = (JSONArray) item.get("field_title");
                     JSONObject valueVid = (JSONObject) vid.get(0);
                     JSONObject valueTitle = (JSONObject) title.get(0);
                     JSONObject valueAuthor = (JSONObject) author.get(0);
@@ -134,13 +136,15 @@ public class ListActivity extends  SingleFragmentActivity {
                     JSONObject valueCondition = (JSONObject) condition.get(0);
                     JSONObject valueLatitude = (JSONObject) latitude.get(0);
                     JSONObject valueLongitude = (JSONObject) longitude.get(0);
+                    JSONObject valueURL = (JSONObject) url.get(0);
                     curId = valueVid.get("value").toString();
                     curTitle = valueTitle.get("value").toString();
                     curAuthor = valueAuthor.get("value").toString();
                     curEmail = valueEmail.get("value").toString();
+                    curURL = valueURL.get("value").toString();
                     curCondition = valueCondition.get("target_id").toString();
                     latLng = new LatLng(Double.parseDouble(valueLatitude.get("value").toString()), Double.parseDouble(valueLongitude.get("value").toString()));
-                    currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition, latLng);
+                    currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition, latLng, curURL);
                     listItems.add(curTitle);
 
                     books.add(currentBook);

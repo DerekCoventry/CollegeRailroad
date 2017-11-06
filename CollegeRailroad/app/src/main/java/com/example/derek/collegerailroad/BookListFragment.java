@@ -287,6 +287,7 @@ public class BookListFragment extends Fragment {
             String curLoc;
             String curCondition;
             String curUID;
+            String curURL;
             LatLng latLng;
 
             String locCheck = "none";
@@ -312,6 +313,7 @@ public class BookListFragment extends Fragment {
                     JSONArray email = (JSONArray) item.get("field_email");
                     JSONArray condition = (JSONArray) item.get("field_condition");
                     JSONArray latitude = (JSONArray) item.get("field_lat");
+                    JSONArray url = (JSONArray) item.get("field_title");
                     JSONArray longitude = (JSONArray) item.get("field_long");
                     JSONArray user= (JSONArray) item.get("uid");
                     JSONObject valueUID = (JSONObject) user.get(0);
@@ -323,6 +325,7 @@ public class BookListFragment extends Fragment {
                     JSONObject valueLoc = (JSONObject) loc.get(0);
                     JSONObject valueCondition = (JSONObject) condition.get(0);
                     JSONObject valueLatitude = (JSONObject) latitude.get(0);
+                    JSONObject valueURL = (JSONObject) url.get(0);
                     JSONObject valueLongitude = (JSONObject) longitude.get(0);
                     curLoc = valueLoc.get("target_id").toString();
                     curUID = valueUID.get("target_id").toString();
@@ -330,9 +333,10 @@ public class BookListFragment extends Fragment {
                     curTitle = valueTitle.get("value").toString();
                     curAuthor = valueAuthor.get("value").toString();
                     curEmail = valueEmail.get("value").toString();
+                    curURL = valueURL.get("value").toString();
                     curCondition = valueCondition.get("target_id").toString();
                     latLng = new LatLng(Double.parseDouble(valueLatitude.get("value").toString()), Double.parseDouble(valueLongitude.get("value").toString()));
-                    currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition, latLng);
+                    currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition, latLng, curURL);
                     updateUI();
                     if ((curLoc.equals(locCheck) || locCheck.equals("none")) && (curCondition.equals(condCheck) || condCheck.equals("none"))) {
                         boolean addBook = false;

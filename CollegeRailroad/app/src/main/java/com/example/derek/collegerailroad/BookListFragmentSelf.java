@@ -155,6 +155,7 @@ public class BookListFragmentSelf extends Fragment {
         String curEmail;
         String curUID;
         String curCondition;
+        String curURL;
         LatLng latLng;
 
         //iterate through JSON to read the title of nodes
@@ -168,6 +169,7 @@ public class BookListFragmentSelf extends Fragment {
                 JSONArray condition = (JSONArray) item.get("field_condition");
                 JSONArray latitude = (JSONArray) item.get("field_lat");
                 JSONArray longitude = (JSONArray) item.get("field_long");
+                JSONArray url = (JSONArray) item.get("field_title");
                 JSONArray user= (JSONArray) item.get("uid");
                 JSONObject valueUID = (JSONObject) user.get(0);
                 JSONObject valueVid = (JSONObject) vid.get(0);
@@ -177,14 +179,16 @@ public class BookListFragmentSelf extends Fragment {
                 JSONObject valueCondition = (JSONObject) condition.get(0);
                 JSONObject valueLatitude = (JSONObject) latitude.get(0);
                 JSONObject valueLongitude = (JSONObject) longitude.get(0);
+                JSONObject valueURL = (JSONObject) url.get(0);
                 curUID = valueUID.get("target_id").toString();
                 curId = valueVid.get("value").toString();
                 curTitle = valueTitle.get("value").toString();
                 curAuthor = valueAuthor.get("value").toString();
                 curEmail = valueEmail.get("value").toString();
+                curURL = valueURL.get("value").toString();
                 curCondition = valueCondition.get("target_id").toString();
                 latLng = new LatLng(Double.parseDouble(valueLatitude.get("value").toString()), Double.parseDouble(valueLongitude.get("value").toString()));
-                currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition,latLng);
+                currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition,latLng, curURL);
                 if(curUID.equals(user_id)) {
                     mBooks.add(currentBook);
                 }
@@ -240,6 +244,7 @@ public class BookListFragmentSelf extends Fragment {
             String curAuthor;
             String curEmail;
             String curUID;
+            String curURL;
             String curCondition;
             LatLng latLng;
 
@@ -251,6 +256,7 @@ public class BookListFragmentSelf extends Fragment {
                     JSONArray vid = (JSONArray) item.get("vid");
                     JSONArray email = (JSONArray) item.get("field_email");
                     JSONArray author = (JSONArray) item.get("field_author");
+                    JSONArray url = (JSONArray) item.get("field_title");
                     JSONArray user= (JSONArray) item.get("uid");
                     JSONArray condition = (JSONArray) item.get("field_condition");
                     JSONArray latitude = (JSONArray) item.get("field_lat");
@@ -262,6 +268,7 @@ public class BookListFragmentSelf extends Fragment {
                     JSONObject valueAuthor = (JSONObject) author.get(0);
                     JSONObject valueCondition = (JSONObject) condition.get(0);
                     JSONObject valueLatitude = (JSONObject) latitude.get(0);
+                    JSONObject valueURL = (JSONObject) url.get(0);
                     JSONObject valueLongitude = (JSONObject) longitude.get(0);
                     curUID = valueUID.get("target_id").toString();
                     curId = valueVid.get("value").toString();
@@ -269,8 +276,9 @@ public class BookListFragmentSelf extends Fragment {
                     curEmail = valueEmail.get("value").toString();
                     curAuthor = valueAuthor.get("value").toString();
                     curCondition = valueCondition.get("target_id").toString();
+                    curURL = valueURL.get("value").toString();
                     latLng = new LatLng(Double.parseDouble(valueLatitude.get("value").toString()), Double.parseDouble(valueLongitude.get("value").toString()));
-                    currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition, latLng);
+                    currentBook = new BookPost(curId, curTitle, curAuthor, curEmail, curCondition, latLng, curURL);
                     updateUI();
                     if(curUID.equals(user_id)) {
                         mBooks.add(currentBook);
