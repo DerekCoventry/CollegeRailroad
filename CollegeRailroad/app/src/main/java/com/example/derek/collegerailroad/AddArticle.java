@@ -65,6 +65,7 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
     public String location = "Alabama";
     public String condition = "New";
     public String basicauth = "none";
+    public double latitude = 0, longitude = 0;
     public String link;
     Spinner locationSpin;
     ArrayAdapter<CharSequence> adapter;
@@ -156,6 +157,8 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
             public void onClick(View view) {
                 Location2 location2 = new Location2(AddArticle.this, getApplicationContext());
                 location = location2.getState();
+                latitude = location2.getLocation().latitude;
+                longitude = location2.getLocation().longitude;
                 if(location != "") {
                     locationSpin.setSelection(adapter.getPosition(location));
                 }
@@ -298,6 +301,16 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
                         "\"field_author\": ["+
                         "{"+
                         " \"value\": \""+author+"\""+
+                        "}"+
+                        "],"+
+                        "\"field_lat\": ["+
+                        "{"+
+                        " \"value\": \""+latitude+"\""+
+                        "}"+
+                        "],"+
+                        "\"field_long\": ["+
+                        "{"+
+                        " \"value\": \""+longitude+"\""+
                         "}"+
                         "],"+
                         "\"field_email\": [\n" +
