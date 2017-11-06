@@ -11,11 +11,12 @@
     android:visibility="visible"
     tools:context=".DisplayMessageActivity">
 
+    <!--
     <Button
         android:id="@+id/add_but"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Book" />
+        android:text="Add Book" />-->
 
     <TextView
         android:id="@+id/filterLabel"

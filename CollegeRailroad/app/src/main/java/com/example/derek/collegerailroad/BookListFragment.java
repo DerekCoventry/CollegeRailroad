@@ -60,12 +60,14 @@ public class BookListFragment extends Fragment {
         if (userInfo.contains("USER_ID")) {
             user_id = userInfo.getString("USER_ID", "none");
         }
+        /**
         Button addButton = (Button) view.findViewById(R.id.add_but);
         addButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), AddArticle.class));
             }
         });
+         **/
         Button mapButton = (Button) view.findViewById(R.id.map_but);
         mapButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
