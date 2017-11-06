@@ -134,7 +134,9 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
         // Camera functionality
         ImageButton cameraButton = (ImageButton) findViewById(R.id.book_camera);
         imageView = (ImageView) findViewById(R.id.book_photo);
-
+        if(bitmap != null){
+            imageView.setImageBitmap(bitmap);
+        }
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

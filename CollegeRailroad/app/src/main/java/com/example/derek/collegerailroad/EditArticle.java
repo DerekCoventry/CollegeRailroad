@@ -54,6 +54,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -68,6 +70,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
     public String location = "Alabama";
     public String condition = "New";
     public String basicauth = "none";
+    public String imageURL;
     public double latitude = 0, longitude = 0;
     private String uploadedImageUrl;
     private boolean usedCurLoc = false;
@@ -75,6 +78,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
     ArrayAdapter<CharSequence> adapter;
     public String user_id;
     public String book_id;
+    public String oldURL;
 
 
 
@@ -85,7 +89,6 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             basicauth = savedInstanceState.getString("basic_auth");
         }
         Bundle extras = getIntent().getExtras();
-
         if (extras != null) {
             book_id = extras.getString("BOOK_ID");
             //The key argument here must match that used in the other activity
@@ -462,6 +465,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
 
                 //read the response and convert it into JSON array
                 json = new JSONObject(EntityUtils.toString(response.getEntity()));
+                Log.d("TEST22", json.toString());
                 //return the JSON array for post processing to onPostExecute function
                 return json;
 
@@ -495,6 +499,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             String curCondition;
             String curSubject;
             String curLocation;
+            String curURL;
             String curUID;
             //iterate through JSON to read the title of nodes
             for(int i=0;i<result.length();i++){
@@ -506,6 +511,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                     JSONArray author = (JSONArray) item.get("field_author");
                     JSONArray condition = (JSONArray) item.get("field_condition");
                     JSONArray subject = (JSONArray) item.get("field_subject");
+                    JSONArray url = (JSONArray) item.get("field_title");
                     JSONArray location = (JSONArray) item.get("field_state");
                     JSONArray user= (JSONArray) item.get("uid");
                     JSONObject valueUID = (JSONObject) user.get(0);
@@ -552,6 +558,18 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                             //mSubjectTextView.setText(curSubject);
                         }
 
+                    }
+                    if (url.length() > 0 ){
+                        JSONObject valueURL = (JSONObject) url.get(0);
+                        curURL = valueURL.get("value").toString();
+                        if(curURL.length() > 0 && curURL.contains("imgur")) {
+                            imageURL = curURL;
+                            new loadImage().execute();
+                        }else{
+                            imageURL = "none";
+                        }
+                    }else{
+                        imageURL = "none";
                     }
                     if (location.length() > 0) {
                         JSONObject locationSubject = (JSONObject) location.get(0);
@@ -617,5 +635,35 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
 
         }
     }
+    class loadImage extends AsyncTask<Void, Void, Void> {
+        ProgressDialog pdLoading = new ProgressDialog(EditArticle.this);
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pdLoading.setMessage("Loading Image...");
+            pdLoading.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            final ImageView mURLImageView = (ImageView) findViewById(R.id.book_photo);
+            try {
+                InputStream i = (InputStream)new URL(imageURL).getContent();
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                final Bitmap bitmap = BitmapFactory.decodeStream(i, null, options);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mURLImageView.setImageBitmap(bitmap);
+                    }
+                });
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            pdLoading.dismiss();
+            return null;
+        }
+    }
 }
