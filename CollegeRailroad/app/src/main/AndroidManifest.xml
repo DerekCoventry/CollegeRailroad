@@ -39,6 +39,7 @@
         <activity
             android:name=".ListActivity"
             android:label="@string/title_activity_list"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MapsActivity"
@@ -51,6 +52,7 @@
         <activity
             android:name=".AddArticle"
             android:label="@string/title_activity_list"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".web"
             android:noHistory="true"

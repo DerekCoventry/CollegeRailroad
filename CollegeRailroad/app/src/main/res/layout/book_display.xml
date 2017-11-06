@@ -23,7 +23,7 @@
         android:id="@+id/authorLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Book Title:"
+        android:text="Book Author:"
         android:textSize="24sp"
         android:textStyle="bold" />
 

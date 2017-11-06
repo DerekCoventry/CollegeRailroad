@@ -211,11 +211,13 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
 
                 //get title and body UI elements
                 TextView txtTitle = (TextView) findViewById(R.id.editTitle);
+                TextView txtAuthor = (TextView) findViewById(R.id.editAuthor);
                 TextView txtEmail = (TextView) findViewById(R.id.editEmail);
 
                 //extract text from UI elements and remove extra spaces
                 String title=txtTitle.getText().toString().trim();
                 String email=txtEmail.getText().toString().trim();
+                String author = txtAuthor.getText().toString().trim();
                 //add raw json to be sent along with the HTTP POST request
                 //StringEntity se = new StringEntity( "{\"_links\": {\"type\":{"+
                 //        "\"href\": \"http://collegerailroad.com/rest/type/node/basic_post\"}},\"title\": [{\"value\": \""+ title + "\""+
@@ -236,6 +238,11 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                         "\"target_id\": \"basic_post\"\n" +
                         "}\n" +
                         "],\n" +
+                        "\"field_author\": ["+
+                        "{"+
+                        " \"value\": \""+author+"\""+
+                        "}"+
+                        "],"+
                         "\"field_email\": [\n" +
                         "{\n" +
                         "\"value\": \""+email+"\"\n" +

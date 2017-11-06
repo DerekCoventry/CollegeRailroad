@@ -90,14 +90,12 @@ public class BookListFragmentSelf extends Fragment {
             super(inflater.inflate(R.layout.list_item_book, parent, false));
             itemView.setOnClickListener(this);
             mTitleTextView = (TextView) itemView.findViewById(R.id.book_title);
-            mAuthorTextView = (TextView) itemView.findViewById(R.id.book_author);
             mEmailTextView = (TextView) itemView.findViewById(R.id.book_email);
 
         }
         public void bind(BookPost book) {
             mBook = book;
-            mTitleTextView.setText(mBook.getTitle());
-            mAuthorTextView.setText(mBook.getAuthor());
+            mTitleTextView.setText(mBook.getTitle() + " by " + mBook.getAuthor());
             mEmailTextView.setText(mBook.getEmail());
         }
         @Override
