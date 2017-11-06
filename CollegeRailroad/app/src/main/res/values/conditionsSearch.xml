@@ -2,9 +2,9 @@
 <resources>
     <string-array name="conditionsSearch_array">
         <item>All</item>
-        <item>Damaged</item>
-        <item>Good</item>
         <item>New</item>
+        <item>Good</item>
         <item>Worn</item>
+        <item>Damaged</item>
     </string-array>
 </resources>
