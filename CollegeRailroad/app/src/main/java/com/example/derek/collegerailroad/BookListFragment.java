@@ -338,10 +338,16 @@ public class BookListFragment extends Fragment {
                         }
                     }
                     TextView numberOfResults = getActivity().findViewById(R.id.numberOfResults);
-                    numberOfResults.setText(Integer.toString(mBooks.size())+" results found");
+                    int numOfBooks = mBooks.size();
+                    if(numOfBooks == 1){
+                        numberOfResults.setText(Integer.toString(numOfBooks) + " result found");
+                    }else {
+                        numberOfResults.setText(Integer.toString(numOfBooks) + " results found");
+                    }
                 } catch (Exception e) {
                     Log.v("Error adding database", e.getMessage());
                 }
+
             }
 
         }
