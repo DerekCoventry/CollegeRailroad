@@ -193,24 +193,26 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
         float displayWidth = mWinMgr.getDefaultDisplay().getWidth();
         float displayHeight = mWinMgr.getDefaultDisplay().getHeight();
         int newImageWidth = imageView.getWidth() * 2;
-        int newImageHeight = imageView.getHeight() * 2;;
-        Bitmap bitmap2 = LoadAndResizeBitmap(_file.getAbsolutePath(), newImageWidth, newImageHeight);
-        ImageView imageView2 = new ImageView(this);
-        imageView2.setImageBitmap(bitmap2);
-        Dialog builder = new Dialog(this);
-        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        builder.getWindow().setBackgroundDrawable(
-                new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                //nothing;
-            }
-        });
-        builder.addContentView(imageView2, new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
-        builder.show();
+        int newImageHeight = imageView.getHeight() * 2;
+        if(_file != null) {
+            Bitmap bitmap2 = LoadAndResizeBitmap(_file.getAbsolutePath(), newImageWidth, newImageHeight);
+            ImageView imageView2 = new ImageView(this);
+            imageView2.setImageBitmap(bitmap2);
+            Dialog builder = new Dialog(this);
+            builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            builder.getWindow().setBackgroundDrawable(
+                    new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    //nothing;
+                }
+            });
+            builder.addContentView(imageView2, new RelativeLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+            builder.show();
+        }
     }
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
