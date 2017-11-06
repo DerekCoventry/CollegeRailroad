@@ -106,6 +106,12 @@
         android:background="@android:color/darker_gray"
         android:cropToPadding="true"
         android:scaleType="centerInside" />
+    <TextView
+        android:id="@+id/no_photo"
+        android:text="No photo found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/edit_but"

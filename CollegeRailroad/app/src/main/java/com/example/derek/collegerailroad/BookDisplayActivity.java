@@ -102,23 +102,25 @@ public class BookDisplayActivity extends Activity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            final ImageView mURLImageView;
+            final ImageView mURLImageView = (ImageView) findViewById(R.id.book_photo);
+            final TextView mNoImageView = (TextView) findViewById(R.id.no_photo);
             try {
-                mURLImageView = (ImageView) findViewById(R.id.book_photo);
-                try {
-                    Log.d("TEST22", "In here");
-                    InputStream i = (InputStream)new URL(imageURL).getContent();
-                    final Bitmap bitmap = BitmapFactory.decodeStream(i);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mURLImageView.setImageBitmap(bitmap);
-                        }
-                    });
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
+                InputStream i = (InputStream)new URL(imageURL).getContent();
+                final Bitmap bitmap = BitmapFactory.decodeStream(i);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mURLImageView.setImageBitmap(bitmap);
+                    }
+                });
             }catch(Exception e){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mURLImageView.setVisibility(View.GONE);
+                        mNoImageView.setVisibility(View.VISIBLE);
+                    }
+                });
                 e.printStackTrace();
             }
             pdLoading.dismiss();
@@ -169,6 +171,7 @@ public class BookDisplayActivity extends Activity {
             TextView mConditionTextView;
             TextView mAuthorTextView;
             ImageView mURLImageView;
+            TextView mNoImageView;
 
 
             BookPost currentBook;
@@ -234,15 +237,24 @@ public class BookDisplayActivity extends Activity {
                             mConditionTextView.setText(cond[Integer.parseInt(curCondition)-3]);
                         }
                     }
+                    mURLImageView = (ImageView) findViewById(R.id.book_photo);
+                    mNoImageView = (TextView) findViewById(R.id.no_photo);
                     if (url.length() > 0 ){
                         JSONObject valueURL = (JSONObject) url.get(0);
                         curURL = valueURL.get("value").toString();
                         if(curURL.length() > 0 && curURL.contains("imgur")) {
                             imageURL = curURL;
                             new loadImage().execute();
-                        }else{imageURL = "none";}
-
-                    }else{imageURL = "none";}
+                        }else{
+                            mURLImageView.setVisibility(View.GONE);
+                            mNoImageView.setVisibility(View.VISIBLE);
+                            imageURL = "none";
+                        }
+                    }else{
+                        mURLImageView.setVisibility(View.GONE);
+                        mNoImageView.setVisibility(View.VISIBLE);
+                        imageURL = "none";
+                    }
 
                     Log.d("loc", location.toString());
                     if (location.length() > 0) {
