@@ -3,6 +3,7 @@ package com.example.derek.collegerailroad;
 import android.*;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -73,6 +74,7 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
     public String basicauth = "none";
     public double latitude = 0, longitude = 0;
     public String link;
+    private String uploadedImageUrl;
     private boolean usedCurLoc = false;
     Spinner locationSpin;
     ArrayAdapter<CharSequence> adapter;
@@ -258,22 +260,53 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
                 latitude = latLng.latitude;
                 longitude = latLng.longitude;
             }
-            //initiate the background process to post the article to the Drupal endpoint.
-            //pass session_name and session_id
-            new addArticleTask().execute(session_name, session_id);
+            new addArticleTask().execute(session_name, session_id, _file.toString());
         }
     }
 
 
     //asynchronous task to add the article into Drupal
     private class addArticleTask extends AsyncTask<String, Void, Integer> {
-
+        ProgressDialog mProgressDialog;
+        @Override
+        protected void onPreExecute() {
+            mProgressDialog = ProgressDialog.show(AddArticle.this, "Loading", "Adding book...");
+        }
         protected Integer doInBackground(String... params) {
+
 
             //read session_name and session_id from passed parameters
             String session_name=params[0];
             String session_id=params[1];
+            final String upload_to = "https://api.imgur.com/3/upload";
 
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpContext localContext = new BasicHttpContext();
+            HttpPost httpPost = new HttpPost(upload_to);
+
+            try {
+                HttpEntity entity = MultipartEntityBuilder.create()
+                        .addPart("image", new FileBody(new File(params[2])))
+                        .build();
+                httpPost.setHeader("Authorization", "Client-ID 677813e7b6b7d5e");
+                httpPost.setEntity(entity);
+
+                final HttpResponse response = httpClient.execute(httpPost,
+                        localContext);
+
+                final String response_string = EntityUtils.toString(response
+                        .getEntity());
+
+                final JSONObject json = new JSONObject(response_string);
+
+                Log.d("tag", json.toString());
+
+                JSONObject data = json.optJSONObject("data");
+                uploadedImageUrl = data.optString("link");
+                Log.d("tag", "uploaded image url : " + uploadedImageUrl);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost("http://collegerailroad.com/entity/node?_format=hal_json");
@@ -281,7 +314,7 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
 
 
             try {
-
+                Log.d("TEST22", uploadedImageUrl);
                 //get title and body UI elements
                 TextView txtTitle = (TextView) findViewById(R.id.editTitle);
                 TextView txtAuthor = (TextView) findViewById(R.id.editAuthor);
@@ -396,7 +429,7 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
 
             //start the List Activity and pass back the session_id and session_name
             Intent intent = new Intent(AddArticle.this, HomeActivity.class);
-            new PostToImgur().execute(_file.toString());
+            mProgressDialog.dismiss();
             Toast.makeText(AddArticle.this, "Book listed!", Toast.LENGTH_SHORT).show();
             //intent.putExtra("SESSION_ID", session_id);
             //intent.putExtra("SESSION_NAME", session_name);
@@ -404,49 +437,6 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
 
             //stop the current activity
             finish();
-        }
-    }
-    class PostToImgur extends AsyncTask<String, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            final String upload_to = "https://api.imgur.com/3/upload";
-
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpContext localContext = new BasicHttpContext();
-            HttpPost httpPost = new HttpPost(upload_to);
-
-            try {
-                HttpEntity entity = MultipartEntityBuilder.create()
-                        .addPart("image", new FileBody(new File(params[0])))
-                        .build();
-                httpPost.setHeader("Authorization", "Client-ID 677813e7b6b7d5e");
-                httpPost.setEntity(entity);
-
-                final HttpResponse response = httpClient.execute(httpPost,
-                        localContext);
-
-                final String response_string = EntityUtils.toString(response
-                        .getEntity());
-
-                final JSONObject json = new JSONObject(response_string);
-
-                Log.d("tag", json.toString());
-
-                JSONObject data = json.optJSONObject("data");
-                String uploadedImageUrl = data.optString("link");
-                Log.d("tag", "uploaded image url : " + uploadedImageUrl);
-
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
         }
     }
     /**
