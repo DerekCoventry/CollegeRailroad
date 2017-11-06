@@ -65,7 +65,8 @@
 
         <activity android:name=".CameraActivity"
             android:label="@string/title_activity_camera2"/>
-        <activity android:name=".BookDisplayActivity" />
+        <activity android:name=".BookDisplayActivity"
+            android:noHistory="true"/>
         <activity android:name=".SearchISBNActivity"
             android:label="@string/title_activity_search_isbn"/>
         <activity android:name=".TestSuccess" />

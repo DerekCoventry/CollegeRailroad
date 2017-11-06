@@ -44,6 +44,7 @@ public class BookListFragment extends Fragment {
     public String[] conditions = new String[]{"New", "Good",  "Worn","Damaged"};
     public boolean initial = true;
     private String option = "", titleFilter = null, authorFilter = null;
+    public String user_id = "none";
     public String session_id;
     public String session_name;
 
@@ -55,6 +56,10 @@ public class BookListFragment extends Fragment {
         mBookRecyclerView = (RecyclerView) view
                 .findViewById(R.id.book_recycler_view);
         mBookRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        SharedPreferences userInfo = getActivity().getSharedPreferences("userInfo", MODE_PRIVATE);
+        if (userInfo.contains("USER_ID")) {
+            user_id = userInfo.getString("USER_ID", "none");
+        }
         Button addButton = (Button) view.findViewById(R.id.add_but);
         addButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -273,6 +278,7 @@ public class BookListFragment extends Fragment {
             String curEmail;
             String curLoc;
             String curCondition;
+            String curUID;
 
             String locCheck = "none";
             String condCheck = "none";
@@ -296,6 +302,8 @@ public class BookListFragment extends Fragment {
                     JSONArray author = (JSONArray) item.get("field_author");
                     JSONArray email = (JSONArray) item.get("field_email");
                     JSONArray condition = (JSONArray) item.get("field_condition");
+                    JSONArray user= (JSONArray) item.get("uid");
+                    JSONObject valueUID = (JSONObject) user.get(0);
                     JSONObject valueVid = (JSONObject) vid.get(0);
                     JSONObject valueTitle = (JSONObject) title.get(0);
                     JSONObject valueAuthor = (JSONObject) author.get(0);
@@ -304,6 +312,7 @@ public class BookListFragment extends Fragment {
                     JSONObject valueLoc = (JSONObject) loc.get(0);
                     JSONObject valueCondition = (JSONObject) condition.get(0);
                     curLoc = valueLoc.get("target_id").toString();
+                    curUID = valueUID.get("target_id").toString();
                     curId = valueVid.get("value").toString();
                     curTitle = valueTitle.get("value").toString();
                     curAuthor = valueAuthor.get("value").toString();
@@ -333,7 +342,7 @@ public class BookListFragment extends Fragment {
                                 addBook = true;
                                 break;
                         }
-                        if(addBook) {
+                        if(addBook && !curUID.equals(user_id)) {
                             mBooks.add(currentBook);
                         }
                     }

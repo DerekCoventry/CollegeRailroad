@@ -364,7 +364,8 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
         protected void onPostExecute(Integer result) {
 
             //start the List Activity and pass back the session_id and session_name
-            Intent intent = new Intent(AddArticle.this, ListActivity.class);
+            Intent intent = new Intent(AddArticle.this, HomeActivity.class);
+            Toast.makeText(AddArticle.this, "Book listed!", Toast.LENGTH_SHORT).show();
             //intent.putExtra("SESSION_ID", session_id);
             //intent.putExtra("SESSION_NAME", session_name);
             startActivity(intent);

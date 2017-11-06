@@ -74,7 +74,7 @@ public class HomeActivity extends BaseAppCompatActivity implements SearchFragmen
         intro.setText("Welcome to College Railroad! This app allows students to buy/sell books with each other without the bookstore middleman markup. Current apps/websites exist for the sole purpose of making money. Businesses and bookstores make excessive amounts of money off of students, and for a very long time students have accepted this as a way of life. Additionally, Facebook pages, and craigslist posts try to accomplish our goal, but the market it waiting for an app to satisfy the need. Having an app be created by potential users allows for an alternative view on the textbook market.");
         Button loginButton = (Button) findViewById(R.id.log_but);
         Button signupButton = (Button) findViewById(R.id.signup_but);
-        SharedPreferences userInfo = getSharedPreferences("userInfo", MODE_PRIVATE);
+        final SharedPreferences userInfo = getSharedPreferences("userInfo", MODE_PRIVATE);
         if(userInfo.contains("USER_ID")){
             ViewGroup loginLayout = (ViewGroup) loginButton.getParent();
             ViewGroup signupLayout = (ViewGroup) signupButton.getParent();
@@ -96,7 +96,11 @@ public class HomeActivity extends BaseAppCompatActivity implements SearchFragmen
 
         listButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                startActivity(new Intent(HomeActivity.this, AddArticle.class));
+                if(userInfo.contains("USER_ID")) {
+                    startActivity(new Intent(HomeActivity.this, AddArticle.class));
+                }else{
+                    Toast.makeText(HomeActivity.this, "You must be signed in to sell books", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
