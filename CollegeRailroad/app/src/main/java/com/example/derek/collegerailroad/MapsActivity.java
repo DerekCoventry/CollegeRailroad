@@ -110,7 +110,7 @@ public class MapsActivity extends BaseAppCompatActivity implements OnMapReadyCal
                     LatLng latLng = book.getLatLng();
                     int duplicates = Collections.frequency(dupCheck, latLng);
                     dupCheck.add(latLng);
-                    latLng = new LatLng(latLng.latitude + 0.001 * duplicates, latLng.longitude + 0.001 * duplicates);
+                    latLng = new LatLng(latLng.latitude + 0.0002 * duplicates, latLng.longitude + 0.0002 * duplicates);
                     LatLng location = new LatLng(latLng.latitude, latLng.longitude);
                     MarkerOptions marker = new MarkerOptions().position(location).title(currentLocation);
                     marker.snippet(bookInfo);
