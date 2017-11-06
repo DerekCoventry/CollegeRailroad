@@ -2,12 +2,16 @@ package com.example.derek.collegerailroad;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -212,7 +216,7 @@ public class BookListFragment extends Fragment {
         }
         public void bind(BookPost book) {
             mBook = book;
-            mTitleTextView.setText(mBook.getTitle()+" by " + mBook.getAuthor());
+            mTitleTextView.setText(Html.fromHtml("<b>" + mBook.getTitle()+"</b> by " + mBook.getAuthor()));
             mEmailTextView.setText(mBook.getEmail());
         }
         @Override

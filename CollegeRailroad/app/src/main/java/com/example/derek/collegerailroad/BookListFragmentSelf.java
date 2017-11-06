@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -100,7 +101,7 @@ public class BookListFragmentSelf extends Fragment {
         }
         public void bind(BookPost book) {
             mBook = book;
-            mTitleTextView.setText(mBook.getTitle() + " by " + mBook.getAuthor());
+            mTitleTextView.setText(Html.fromHtml("<b>" + mBook.getTitle()+"</b> by " + mBook.getAuthor()));
             mEmailTextView.setText(mBook.getEmail());
         }
         @Override

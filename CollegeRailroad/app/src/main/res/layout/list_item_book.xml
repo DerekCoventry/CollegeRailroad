@@ -11,8 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Book Title"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textSize="18sp" />
     <TextView
         android:id="@+id/book_email"
         android:layout_width="match_parent"
