@@ -109,4 +109,23 @@ public class Location2 {
         }
         return coordinates;
     }
+
+    public static String getCityState(Context mContext, LatLng latLng){
+        Geocoder gcd = new Geocoder(mContext, Locale.getDefault());
+        List<Address> addresses = null;
+        String city = "Unknown City";
+        String state = "Unknown State";
+        //String currentLocation = "Current Location";
+        try {
+            addresses = gcd.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            if (addresses.size() > 0) {
+                // Get the current city
+                city = addresses.get(0).getLocality();
+                state = addresses.get(0).getAdminArea();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return city + ", " + state;
+    }
 }

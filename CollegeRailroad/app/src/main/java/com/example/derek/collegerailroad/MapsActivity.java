@@ -98,8 +98,7 @@ public class MapsActivity extends BaseAppCompatActivity implements OnMapReadyCal
         List<MarkerOptions> markers= new ArrayList<>();
         try {
                 List<LatLng> dupCheck = new ArrayList<>();
-                Location2 mLoc = new Location2(this, getApplicationContext());
-                String currentLocation = mLoc.getCity() + ", " + mLoc.getState();
+                String currentLocation;
                 for(int i =0; i < mBooks.size(); i++) {
                     BookPost book = (BookPost) mBooks.get(i);
                     String title = book.getTitle();
@@ -108,6 +107,7 @@ public class MapsActivity extends BaseAppCompatActivity implements OnMapReadyCal
                     String condition = book.getCondition();
                     String bookInfo = title + " by " + author +"\n" + email+"\nCondtion: "+condition;
                     LatLng latLng = book.getLatLng();
+                    currentLocation = Location2.getCityState(this, latLng);
                     int duplicates = Collections.frequency(dupCheck, latLng);
                     dupCheck.add(latLng);
                     latLng = new LatLng(latLng.latitude + 0.0002 * duplicates, latLng.longitude + 0.0002 * duplicates);
