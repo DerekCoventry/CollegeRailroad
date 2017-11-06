@@ -33,10 +33,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
 
 public class MapsActivity extends BaseAppCompatActivity implements OnMapReadyCallback {
 
@@ -93,6 +97,7 @@ public class MapsActivity extends BaseAppCompatActivity implements OnMapReadyCal
         });
         List<MarkerOptions> markers= new ArrayList<>();
         try {
+                List<LatLng> dupCheck = new ArrayList<>();
                 Location2 mLoc = new Location2(this, getApplicationContext());
                 String currentLocation = mLoc.getCity() + ", " + mLoc.getState();
                 for(int i =0; i < mBooks.size(); i++) {
@@ -103,13 +108,14 @@ public class MapsActivity extends BaseAppCompatActivity implements OnMapReadyCal
                     String condition = book.getCondition();
                     String bookInfo = title + " by " + author +"\n" + email+"\nCondtion: "+condition;
                     LatLng latLng = book.getLatLng();
-                    if(latLng != null) {
-                        LatLng location = new LatLng(latLng.latitude, latLng.longitude);
-                        MarkerOptions marker = new MarkerOptions().position(location).title(currentLocation);
-                        marker.snippet(bookInfo);
-                        markers.add(marker);
-                        mMap.addMarker(marker);
-                    }
+                    int duplicates = Collections.frequency(dupCheck, latLng);
+                    dupCheck.add(latLng);
+                    latLng = new LatLng(latLng.latitude + 0.001 * duplicates, latLng.longitude + 0.001 * duplicates);
+                    LatLng location = new LatLng(latLng.latitude, latLng.longitude);
+                    MarkerOptions marker = new MarkerOptions().position(location).title(currentLocation);
+                    marker.snippet(bookInfo);
+                    markers.add(marker);
+                    mMap.addMarker(marker);
                 }
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             for (MarkerOptions marker : markers) {
