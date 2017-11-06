@@ -21,12 +21,39 @@
         android:id="@+id/filterLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Filter By Location:"
+        android:text="Filter by Location:"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="12sp" />
 
     <Spinner
         android:id="@+id/editlocation"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/txtLocation"
+        android:layout_marginBottom="6dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="0dp"
+        android:background="?android:attr/colorButtonNormal"
+        android:fadingEdge="vertical"
+        android:paddingBottom="6dp"
+        android:paddingTop="6dp"
+        android:textAlignment="center"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/filterCondition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filter by Condition:"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="12sp" />
+    <Spinner
+        android:id="@+id/editcondition"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"

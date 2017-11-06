@@ -41,6 +41,7 @@ public class BookListFragment extends Fragment {
     private BookAdapter mAdapter;
     private ArrayList<BookPost> mBooks = new ArrayList<BookPost>();
     public String[] states = new String[]{"Alabama","Alaska","Alaska Fairbanks","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"};
+    public String[] conditions = new String[]{"New", "Good",  "Worn","Damaged"};
     public boolean initial = true;
     private String option = "", titleFilter = null, authorFilter = null;
     public String session_id;
@@ -68,8 +69,50 @@ public class BookListFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        Spinner locationSpin = (Spinner) view.findViewById((R.id.editlocation));
+        Spinner conditionSpin = (Spinner) view.findViewById((R.id.editcondition));
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.conditionsSearch_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        conditionSpin.setAdapter(adapter);
+        conditionSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                SharedPreferences userInfo = getActivity().getSharedPreferences("userInfo", MODE_PRIVATE);
+                SharedPreferences.Editor userInfoEditor = userInfo.edit();
+                String condition = parent.getItemAtPosition(position).toString();
+                if(condition.equals("All")){
+                    userInfoEditor.putString("CONDITION", "none");
+
+                }else {
+                    for (int i = 0; i < 4; i++) {
+                        if (condition.equals(conditions[i])) {
+                            userInfoEditor.putString("CONDITION", Integer.toString(i + 3));
+                        }
+                    }
+                }
+                if(!initial) {
+                    new FetchBooks().execute();
+                    updateUI();
+                    Log.d("sizembooks", Integer.toString(mBooks.size()));
+                }
+                userInfoEditor.commit();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                SharedPreferences userInfo = getActivity().getSharedPreferences("userInfo", MODE_PRIVATE);
+                SharedPreferences.Editor userInfoEditor = userInfo.edit();
+                userInfoEditor.putString("CONDITION", "none");
+                if(!initial) {
+                    new FetchBooks().execute();
+                }
+                userInfoEditor.commit();
+
+
+            }
+        });
+        Spinner locationSpin = (Spinner) view.findViewById((R.id.editlocation));
+        adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.locationsSearch_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationSpin.setAdapter(adapter);
@@ -231,18 +274,21 @@ public class BookListFragment extends Fragment {
             String curCondition;
 
             String locCheck = "none";
+            String condCheck = "none";
             SharedPreferences userInfo = getActivity().getSharedPreferences("userInfo", MODE_PRIVATE);
             Log.d("contains", Boolean.toString(userInfo.contains("LOCATION")));
             if (userInfo.contains("LOCATION")) {
                 locCheck = userInfo.getString("LOCATION", "none");
-                Log.d("locCehck", locCheck);
+                Log.d("locCheck", locCheck);
             }
             Log.d("locCheck", locCheck);
+            if(userInfo.contains("CONDITION")){
+                condCheck = userInfo.getString("CONDITION", "none");
+            }
 
             //iterate through JSON to read the title of nodes
             for(int i=0;i<result.length();i++){
                 try {
-                    Log.d("TEST22", "TRY");
                     JSONObject item = (JSONObject) result.get(i);
                     JSONArray title = (JSONArray) item.get("title");
                     JSONArray vid = (JSONArray) item.get("vid");
@@ -261,7 +307,8 @@ public class BookListFragment extends Fragment {
                     curCondition = valueCondition.get("target_id").toString();
                     currentBook = new BookPost(curId, curTitle, curEmail, curCondition);
                     updateUI();
-                    if (curLoc.equals(locCheck) || locCheck.equals("none")) {
+                    if ((curLoc.equals(locCheck) || locCheck.equals("none")) && (curCondition.equals(condCheck) || condCheck.equals("none"))) {
+                        Log.d("TEST22", condCheck);
                         boolean addBook = false;
                         switch(BookListFragment.this.option){
                             case "ISBN":
@@ -285,7 +332,6 @@ public class BookListFragment extends Fragment {
                     TextView numberOfResults = getActivity().findViewById(R.id.numberOfResults);
                     numberOfResults.setText(Integer.toString(mBooks.size())+" results found");
                 } catch (Exception e) {
-                    Log.d("TEST22", "ERROR");
                     Log.v("Error adding database", e.getMessage());
                 }
             }
