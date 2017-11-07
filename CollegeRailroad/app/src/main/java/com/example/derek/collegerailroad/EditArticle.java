@@ -100,7 +100,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
         }
         Log.i("basic auth", basicauth);
         setContentView(R.layout.activity_add_article);
-        new FetchBook().execute();
+        new FetchBook(this).execute();
         locationSpin = (Spinner) findViewById((R.id.editlocation));
         adapter = ArrayAdapter.createFromResource(this,
                 R.array.locations_array, android.R.layout.simple_spinner_item);
@@ -448,6 +448,10 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
     }
 
     private class FetchBook extends AsyncTask<String, Void, JSONObject> {
+        EditArticle mActivity;
+        public FetchBook(EditArticle a){
+            this.mActivity = a;
+        }
 
         protected JSONObject doInBackground(String... params) {
 
@@ -502,6 +506,8 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             String curSubject;
             String curLocation;
             String curURL;
+            String curLatitude;
+            String curLongitude;
             String curUID;
             //iterate through JSON to read the title of nodes
             for(int i=0;i<result.length();i++){
@@ -515,10 +521,24 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                     JSONArray subject = (JSONArray) item.get("field_subject");
                     JSONArray url = (JSONArray) item.get("field_title");
                     JSONArray location = (JSONArray) item.get("field_state");
+                    JSONArray latitude = (JSONArray) item.get("field_lat");
+                    JSONArray longitude = (JSONArray) item.get("field_long");
                     JSONArray user= (JSONArray) item.get("uid");
                     JSONObject valueUID = (JSONObject) user.get(0);
                     curUID = valueUID.get("target_id").toString();
                     JSONObject valueVid = (JSONObject) vid.get(0);
+                    if (url.length() > 0 ){
+                        JSONObject valueURL = (JSONObject) url.get(0);
+                        curURL = valueURL.get("value").toString();
+                        if(curURL.length() > 0 && curURL.contains("imgur")) {
+                            imageURL = curURL;
+                            new loadImage().execute();
+                        }else{
+                            imageURL = "none";
+                        }
+                    }else{
+                        imageURL = "none";
+                    }
                     if (title.length() > 0){
                         JSONObject valueTitle = (JSONObject) title.get(0);
                         curTitle = valueTitle.get("value").toString();
@@ -561,17 +581,20 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                         }
 
                     }
-                    if (url.length() > 0 ){
-                        JSONObject valueURL = (JSONObject) url.get(0);
-                        curURL = valueURL.get("value").toString();
-                        if(curURL.length() > 0 && curURL.contains("imgur")) {
-                            imageURL = curURL;
-                            new loadImage().execute();
-                        }else{
-                            imageURL = "none";
+                    if(latitude.length() > 0 && longitude.length() > 0){
+                        JSONObject valueLatitude = (JSONObject) latitude.get(0);
+                        JSONObject valueLongitude = (JSONObject) longitude.get(0);
+                        curLatitude = valueLatitude.get("value").toString();
+                        curLongitude = valueLongitude.get("value").toString();
+                        String cityState = Location2.getCityState(EditArticle.this, new LatLng(Double.parseDouble(curLatitude), Double.parseDouble(curLongitude)));
+                        String state = cityState.substring(cityState.indexOf(",")+2, cityState.length());
+                        usedCurLoc = true;
+                        locationSpin.setSelection(adapter.getPosition(state));
+                        try{
+                            mActivity.setLatLng(new LatLng(Double.parseDouble(curLatitude), Double.parseDouble(curLongitude)));
+                        }catch (Exception e){
+
                         }
-                    }else{
-                        imageURL = "none";
                     }
                     if (location.length() > 0) {
                         JSONObject locationSubject = (JSONObject) location.get(0);
@@ -667,5 +690,9 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             pdLoading.dismiss();
             return null;
         }
+    }
+    public void setLatLng(LatLng latLng){
+        latitude = latLng.latitude;
+        longitude = latLng.longitude;
     }
 }
