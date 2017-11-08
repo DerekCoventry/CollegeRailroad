@@ -2,6 +2,7 @@ package com.example.derek.collegerailroad;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,10 +30,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
@@ -40,14 +43,19 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -62,12 +70,15 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
     public String location = "Alabama";
     public String condition = "New";
     public String basicauth = "none";
+    public String imageURL;
     public double latitude = 0, longitude = 0;
+    private String uploadedImageUrl;
     private boolean usedCurLoc = false;
     Spinner locationSpin;
     ArrayAdapter<CharSequence> adapter;
     public String user_id;
     public String book_id;
+    public String oldURL;
 
 
 
@@ -78,7 +89,6 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             basicauth = savedInstanceState.getString("basic_auth");
         }
         Bundle extras = getIntent().getExtras();
-
         if (extras != null) {
             book_id = extras.getString("BOOK_ID");
             //The key argument here must match that used in the other activity
@@ -90,7 +100,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
         }
         Log.i("basic auth", basicauth);
         setContentView(R.layout.activity_add_article);
-        new FetchBook().execute();
+        new FetchBook(this).execute();
         locationSpin = (Spinner) findViewById((R.id.editlocation));
         adapter = ArrayAdapter.createFromResource(this,
                 R.array.locations_array, android.R.layout.simple_spinner_item);
@@ -183,24 +193,26 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
         float displayWidth = mWinMgr.getDefaultDisplay().getWidth();
         float displayHeight = mWinMgr.getDefaultDisplay().getHeight();
         int newImageWidth = imageView.getWidth() * 2;
-        int newImageHeight = imageView.getHeight() * 2;;
-        Bitmap bitmap2 = LoadAndResizeBitmap(_file.getAbsolutePath(), newImageWidth, newImageHeight);
-        ImageView imageView2 = new ImageView(this);
-        imageView2.setImageBitmap(bitmap2);
-        Dialog builder = new Dialog(this);
-        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        builder.getWindow().setBackgroundDrawable(
-                new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                //nothing;
-            }
-        });
-        builder.addContentView(imageView2, new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
-        builder.show();
+        int newImageHeight = imageView.getHeight() * 2;
+        if(_file != null) {
+            Bitmap bitmap2 = LoadAndResizeBitmap(_file.getAbsolutePath(), newImageWidth, newImageHeight);
+            ImageView imageView2 = new ImageView(this);
+            imageView2.setImageBitmap(bitmap2);
+            Dialog builder = new Dialog(this);
+            builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            builder.getWindow().setBackgroundDrawable(
+                    new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    //nothing;
+                }
+            });
+            builder.addContentView(imageView2, new RelativeLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+            builder.show();
+        }
     }
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
@@ -221,27 +233,60 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
         //initiate the background process to post the article to the Drupal endpoint.
         //pass session_name and session_id
         new DeleteBook().execute();
-        new addArticleTask().execute(session_name,session_id);
+        String fileName = "";
+        if(_file != null) {
+            fileName = _file.toString();
+        }
+        new addArticleTask().execute(session_name, session_id, fileName);
     }
 
 
     //asynchronous task to add the article into Drupal
     private class addArticleTask extends AsyncTask<String, Void, Integer> {
-
+        ProgressDialog mProgressDialog;
+        @Override
+        protected void onPreExecute() {
+            mProgressDialog = ProgressDialog.show(EditArticle.this, "Loading", "Adding book...");
+        }
         protected Integer doInBackground(String... params) {
-
             //read session_name and session_id from passed parameters
             String session_name=params[0];
             String session_id=params[1];
+            final String upload_to = "https://api.imgur.com/3/upload";
 
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpContext localContext = new BasicHttpContext();
+            HttpPost httpPost = new HttpPost(upload_to);
+            try {
+                HttpEntity entity = MultipartEntityBuilder.create()
+                        .addPart("image", new FileBody(new File(params[2])))
+                        .build();
+                httpPost.setHeader("Authorization", "Client-ID 677813e7b6b7d5e");
+                httpPost.setEntity(entity);
 
+                final HttpResponse response = httpClient.execute(httpPost,
+                        localContext);
+
+                final String response_string = EntityUtils.toString(response
+                        .getEntity());
+
+                final JSONObject json = new JSONObject(response_string);
+
+                Log.d("tag", json.toString());
+
+                JSONObject data = json.optJSONObject("data");
+                uploadedImageUrl = data.optString("link");
+                Log.d("tag", "uploaded image url : " + uploadedImageUrl);
+            } catch (Exception e) {
+                uploadedImageUrl = "No image";
+                e.printStackTrace();
+            }
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost("http://collegerailroad.com/entity/node?_format=hal_json");
 
 
 
             try {
-
                 //get title and body UI elements
                 TextView txtTitle = (TextView) findViewById(R.id.editTitle);
                 TextView txtAuthor = (TextView) findViewById(R.id.editAuthor);
@@ -284,6 +329,11 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                         "\"field_long\": ["+
                         "{"+
                         " \"value\": \""+longitude+"\""+
+                        "}"+
+                        "],"+
+                        "\"field_title\": ["+
+                        "{"+
+                        " \"value\": \""+uploadedImageUrl+"\""+
                         "}"+
                         "],"+
                         "\"field_email\": [\n" +
@@ -351,6 +401,8 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
 
             //start the List Activity and pass back the session_id and session_name
             Intent intent = new Intent(EditArticle.this, BookListActivitySelf.class);
+            mProgressDialog.dismiss();
+            Toast.makeText(EditArticle.this, "Book updated!", Toast.LENGTH_SHORT).show();
             //intent.putExtra("SESSION_ID", session_id);
             //intent.putExtra("SESSION_NAME", session_name);
             startActivity(intent);
@@ -396,6 +448,10 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
     }
 
     private class FetchBook extends AsyncTask<String, Void, JSONObject> {
+        EditArticle mActivity;
+        public FetchBook(EditArticle a){
+            this.mActivity = a;
+        }
 
         protected JSONObject doInBackground(String... params) {
 
@@ -415,6 +471,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
 
                 //read the response and convert it into JSON array
                 json = new JSONObject(EntityUtils.toString(response.getEntity()));
+                Log.d("TEST22", json.toString());
                 //return the JSON array for post processing to onPostExecute function
                 return json;
 
@@ -448,6 +505,9 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             String curCondition;
             String curSubject;
             String curLocation;
+            String curURL;
+            String curLatitude;
+            String curLongitude;
             String curUID;
             //iterate through JSON to read the title of nodes
             for(int i=0;i<result.length();i++){
@@ -459,11 +519,26 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                     JSONArray author = (JSONArray) item.get("field_author");
                     JSONArray condition = (JSONArray) item.get("field_condition");
                     JSONArray subject = (JSONArray) item.get("field_subject");
+                    JSONArray url = (JSONArray) item.get("field_title");
                     JSONArray location = (JSONArray) item.get("field_state");
+                    JSONArray latitude = (JSONArray) item.get("field_lat");
+                    JSONArray longitude = (JSONArray) item.get("field_long");
                     JSONArray user= (JSONArray) item.get("uid");
                     JSONObject valueUID = (JSONObject) user.get(0);
                     curUID = valueUID.get("target_id").toString();
                     JSONObject valueVid = (JSONObject) vid.get(0);
+                    if (url.length() > 0 ){
+                        JSONObject valueURL = (JSONObject) url.get(0);
+                        curURL = valueURL.get("value").toString();
+                        if(curURL.length() > 0 && curURL.contains("imgur")) {
+                            imageURL = curURL;
+                            new loadImage().execute();
+                        }else{
+                            imageURL = "none";
+                        }
+                    }else{
+                        imageURL = "none";
+                    }
                     if (title.length() > 0){
                         JSONObject valueTitle = (JSONObject) title.get(0);
                         curTitle = valueTitle.get("value").toString();
@@ -505,6 +580,21 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                             //mSubjectTextView.setText(curSubject);
                         }
 
+                    }
+                    if(latitude.length() > 0 && longitude.length() > 0){
+                        JSONObject valueLatitude = (JSONObject) latitude.get(0);
+                        JSONObject valueLongitude = (JSONObject) longitude.get(0);
+                        curLatitude = valueLatitude.get("value").toString();
+                        curLongitude = valueLongitude.get("value").toString();
+                        String cityState = Location2.getCityState(EditArticle.this, new LatLng(Double.parseDouble(curLatitude), Double.parseDouble(curLongitude)));
+                        String state = cityState.substring(cityState.indexOf(",")+2, cityState.length());
+                        usedCurLoc = true;
+                        locationSpin.setSelection(adapter.getPosition(state));
+                        try{
+                            mActivity.setLatLng(new LatLng(Double.parseDouble(curLatitude), Double.parseDouble(curLongitude)));
+                        }catch (Exception e){
+
+                        }
                     }
                     if (location.length() > 0) {
                         JSONObject locationSubject = (JSONObject) location.get(0);
@@ -570,5 +660,39 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
 
         }
     }
+    class loadImage extends AsyncTask<Void, Void, Void> {
+        ProgressDialog pdLoading = new ProgressDialog(EditArticle.this);
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pdLoading.setMessage("Loading Image...");
+            pdLoading.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            final ImageView mURLImageView = (ImageView) findViewById(R.id.book_photo);
+            try {
+                InputStream i = (InputStream)new URL(imageURL).getContent();
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                final Bitmap bitmap = BitmapFactory.decodeStream(i, null, options);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mURLImageView.setImageBitmap(bitmap);
+                    }
+                });
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            pdLoading.dismiss();
+            return null;
+        }
+    }
+    public void setLatLng(LatLng latLng){
+        latitude = latLng.latitude;
+        longitude = latLng.longitude;
+    }
 }
