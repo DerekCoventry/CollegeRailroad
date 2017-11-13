@@ -171,13 +171,18 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
         locButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Location2 location2 = new Location2(AddArticle.this, getApplicationContext());
-                location = location2.getState();
-                latitude = location2.getLocation().latitude;
-                longitude = location2.getLocation().longitude;
-                if(!location.equals("")) {
-                    usedCurLoc = true;
-                    locationSpin.setSelection(adapter.getPosition(location));
+                try {
+                    Location2 location2 = new Location2(AddArticle.this, getApplicationContext());
+                    location = location2.getState();
+                    latitude = location2.getLocation().latitude;
+                    longitude = location2.getLocation().longitude;
+                    if (!location.equals("")) {
+                        usedCurLoc = true;
+                        locationSpin.setSelection(adapter.getPosition(location));
+                    }
+                }
+                catch(Exception e){
+                    Toast.makeText(AddArticle.this, "Error getting location", Toast.LENGTH_SHORT).show();
                 }
             }
         });
