@@ -182,6 +182,7 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
                     }
                 }
                 catch(Exception e){
+                    e.printStackTrace();
                     Toast.makeText(AddArticle.this, "Error getting location", Toast.LENGTH_SHORT).show();
                 }
             }

@@ -5,8 +5,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
@@ -33,7 +38,36 @@ public class Location2 {
                 ActivityCompat.requestPermissions(activity , new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                         12);
             }
-            android.location.Location coordinates = mLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+            final LocationListener gpsLocationListener =new LocationListener(){
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                    switch (status) {
+                        case LocationProvider.AVAILABLE:
+                            break;
+                        case LocationProvider.OUT_OF_SERVICE:
+                            break;
+                        case LocationProvider.TEMPORARILY_UNAVAILABLE:
+                            break;
+                    }
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+                }
+
+                @Override
+                public void onLocationChanged(Location location) {
+                }
+            };
+            Criteria criteria = new Criteria();
+            String bestProvider = mLocationManager.getBestProvider(criteria, false);
+            mLocationManager.requestLocationUpdates(bestProvider, 0, 0, gpsLocationListener);
+            Location coordinates = mLocationManager.getLastKnownLocation(bestProvider);
             double lat = coordinates.getLatitude();
             double lng = coordinates.getLongitude();
             LatLng location = new LatLng(lat, lng);
@@ -44,6 +78,8 @@ public class Location2 {
             String state = null;
             //String currentLocation = "Current Location";
             try {
+                Log.d("TEST latitude", Double.toString(lat));
+                Log.d("TEST longitude", Double.toString(lng));
                 addresses = gcd.getFromLocation(lat, lng, 1);
                 if (addresses.size() > 0) {
                     // Get the current city
@@ -73,7 +109,6 @@ public class Location2 {
             this.location = null;
         }
     }
-
     public String getCity(){
         return this.city;
     }
