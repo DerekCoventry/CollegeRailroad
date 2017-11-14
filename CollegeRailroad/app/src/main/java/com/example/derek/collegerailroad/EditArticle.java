@@ -282,7 +282,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                 uploadedImageUrl = data.optString("link");
                 Log.d("tag", "uploaded image url : " + uploadedImageUrl);
             } catch (Exception e) {
-                uploadedImageUrl = "No image";
+                uploadedImageUrl = imageURL;
                 e.printStackTrace();
             }
             HttpClient httpclient = new DefaultHttpClient();
@@ -475,7 +475,6 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
 
                 //read the response and convert it into JSON array
                 json = new JSONObject(EntityUtils.toString(response.getEntity()));
-                Log.d("TEST22", json.toString());
                 //return the JSON array for post processing to onPostExecute function
                 return json;
 
@@ -534,7 +533,6 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                     if (url.length() > 0 ){
                         JSONObject valueURL = (JSONObject) url.get(0);
                         curURL = valueURL.get("value").toString();
-                        Log.d("TEST", curURL);
                         if(curURL.length() > 0 && curURL.contains("imgur")) {
                             imageURL = curURL;
                             new loadImage().execute();
