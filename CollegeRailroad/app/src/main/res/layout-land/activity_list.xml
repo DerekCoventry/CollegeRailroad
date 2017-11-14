@@ -1,0 +1,35 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".DisplayMessageActivity"
+    android:orientation="horizontal">
+<!--
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="List of Articles"
+        android:id="@+id/textView"
+        android:layout_gravity="center"/>
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="332dp"
+        android:id="@+id/listView"
+        android:smoothScrollbar="true"
+        android:fastScrollAlwaysVisible="false"
+        android:layout_alignBottom="@+id/editText"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:background="#e7dece"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add"
+        android:id="@+id/add_but"
+        />-->
+
+</LinearLayout>

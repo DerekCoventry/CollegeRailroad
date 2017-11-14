@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/bookLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Title:"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/book_title"
+        android:layout_width="234dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:text="N/A"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/authorLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Book Author:"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/book_author"
+        android:layout_width="234dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:text="N/A"
+        android:textSize="18sp" />
+
+
+    <TextView
+        android:id="@+id/emailLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Email:"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/book_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:text="N/A"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/locationlabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Location:"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/book_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:text="N/A"
+        android:textSize="18sp" />
+
+
+    <TextView
+        android:id="@+id/conditionLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Condition:"
+        android:textAlignment="textStart"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="start" />
+
+
+    <TextView
+        android:id="@+id/book_condition"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:text="N/A"
+        android:textSize="18sp" />
+
+
+    <TextView
+        android:id="@+id/photoLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="textStart"
+        android:text="Photo:"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="start" />
+
+    <ImageView
+        android:id="@+id/book_photo"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@android:color/darker_gray"
+        android:cropToPadding="true"
+        android:scaleType="centerInside" />
+    <TextView
+        android:id="@+id/no_photo"
+        android:text="No photo found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/edit_but"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/darker_gray"
+        android:text="Edit"
+        android:textColor="@color/cast_expanded_controller_progress_text_color"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/delete_but"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/holo_red_dark"
+        android:text="Delete"
+        android:textColor="@color/cast_expanded_controller_progress_text_color"
+        android:visibility="gone" />
+</LinearLayout>
