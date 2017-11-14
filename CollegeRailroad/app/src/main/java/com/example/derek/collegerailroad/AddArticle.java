@@ -149,8 +149,11 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
                     _dir = new File(
                             Environment.getExternalStoragePublicDirectory(
                                     Environment.DIRECTORY_PICTURES), "AddArticle");
-
-                    _file = new File(_dir, "bookPhoto/" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()));
+                    File dir2 = new File(Environment.getExternalStorageDirectory() + "/bookPhoto");
+                    if(!dir2.exists()){
+                        dir2.mkdir();
+                    }
+                    _file = new File(Environment.getExternalStorageDirectory(), "bookPhoto/" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()));
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(_file));
 
                     startActivityForResult(intent, 0);
