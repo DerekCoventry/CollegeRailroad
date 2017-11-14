@@ -147,11 +147,11 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                _dir = new File(
-                        Environment.getExternalStoragePublicDirectory(
-                                Environment.DIRECTORY_PICTURES), "AddArticle");
-
-                _file = new File(_dir, "bookPhoto/" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()));
+                _dir = new File(Environment.getExternalStorageDirectory() + "/bookPhoto");
+                if(!_dir.exists()){
+                    _dir.mkdir();
+                }
+                _file = new File(Environment.getExternalStorageDirectory(), "bookPhoto/" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()));
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(_file));
 
                 startActivityForResult(intent, 0);
@@ -168,13 +168,17 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
         locButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Location2 location2 = new Location2(EditArticle.this, getApplicationContext());
-                location = location2.getState();
-                latitude = location2.getLocation().latitude;
-                longitude = location2.getLocation().longitude;
-                if(!location.equals("")) {
-                    usedCurLoc = true;
-                    locationSpin.setSelection(adapter.getPosition(location));
+                try {
+                    Location2 location2 = new Location2(EditArticle.this, getApplicationContext());
+                    location = location2.getState();
+                    latitude = location2.getLocation().latitude;
+                    longitude = location2.getLocation().longitude;
+                    if (!location.equals("")) {
+                        usedCurLoc = true;
+                        locationSpin.setSelection(adapter.getPosition(location));
+                    }
+                }catch(Exception e){
+                    Toast.makeText(EditArticle.this, "Error getting location", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -530,6 +534,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                     if (url.length() > 0 ){
                         JSONObject valueURL = (JSONObject) url.get(0);
                         curURL = valueURL.get("value").toString();
+                        Log.d("TEST", curURL);
                         if(curURL.length() > 0 && curURL.contains("imgur")) {
                             imageURL = curURL;
                             new loadImage().execute();
