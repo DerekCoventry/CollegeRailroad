@@ -680,7 +680,12 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                 InputStream i = (InputStream)new URL(imageURL).getContent();
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.RGB_565;
-                final Bitmap bitmap = BitmapFactory.decodeStream(i, null, options);
+                try {
+                    bitmap = BitmapFactory.decodeStream(i, null, options);
+                }catch(OutOfMemoryError e){
+                    Toast.makeText(EditArticle.this, "Out of memory", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
