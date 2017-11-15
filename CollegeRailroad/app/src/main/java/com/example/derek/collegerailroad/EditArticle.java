@@ -185,7 +185,6 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
     }
 
     public void showImage() {
-        WindowManager mWinMgr = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
         int newImageWidth = imageView.getWidth() * 2;
         int newImageHeight = imageView.getHeight() * 2;
         if(_file != null) {
@@ -359,9 +358,9 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             return Integer.toString(12);
         }
         protected String getTaxCondition(String location) {
-            String[] states = new String[]{"New", "Good",  "Worn","Damaged"};
-            for (int i = 0; i< 3; i++) {
-                if (location.equals(states[i])) {
+            String[] conditions = new String[]{"New", "Good",  "Worn", "Damaged"};
+            for (int i = 0; i < 4; i++) {
+                if (location.equals(conditions[i])) {
                     return Integer.toString((i + 3));
                 }
             }
