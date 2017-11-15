@@ -224,23 +224,25 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
         int newImageWidth = imageView.getWidth() * 2;
         int newImageHeight = imageView.getHeight() * 2;;
         if(_file != null) {
-            Bitmap bitmap2 = LoadAndResizeBitmap(_file.getAbsolutePath(), newImageWidth, newImageHeight);
-            ImageView imageView2 = new ImageView(this);
-            imageView2.setImageBitmap(bitmap2);
-            Dialog builder = new Dialog(this);
-            builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            builder.getWindow().setBackgroundDrawable(
-                    new ColorDrawable(android.graphics.Color.TRANSPARENT));
-            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialogInterface) {
-                    //nothing;
-                }
-            });
-            builder.addContentView(imageView2, new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT));
-            builder.show();
+            try {
+                Bitmap bitmap2 = LoadAndResizeBitmap(_file.getAbsolutePath(), newImageWidth, newImageHeight);
+                ImageView imageView2 = new ImageView(this);
+                imageView2.setImageBitmap(bitmap2);
+                Dialog builder = new Dialog(this);
+                builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                builder.getWindow().setBackgroundDrawable(
+                        new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        //nothing;
+                    }
+                });
+                builder.addContentView(imageView2, new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+                builder.show();
+            }catch(Exception e){}
         }
     }
     public void onItemSelected(AdapterView<?> parent, View view,
