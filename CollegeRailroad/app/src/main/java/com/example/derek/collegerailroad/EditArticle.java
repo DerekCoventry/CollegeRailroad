@@ -63,7 +63,6 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
     public static File _file;
     public static File _dir;
     public static Bitmap bitmap;
-    public String[] states = new String[]{"Alabama","Alaska","Alaska Fairbanks","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"};
     ImageView imageView;
     public String session_id;
     public String session_name;
@@ -75,12 +74,11 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
     private String uploadedImageUrl;
     private boolean usedCurLoc = false;
     Spinner locationSpin;
+    Spinner conditionSpin;
     ArrayAdapter<CharSequence> adapter;
+    ArrayAdapter<CharSequence> adapterc;
     public String user_id;
     public String book_id;
-    public String oldURL;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,14 +117,12 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
-        Spinner conditionSpin = (Spinner) findViewById((R.id.editcondition));
-        ArrayAdapter<CharSequence> adapterc = ArrayAdapter.createFromResource(this,
+        conditionSpin = (Spinner) findViewById((R.id.editcondition));
+        adapterc = ArrayAdapter.createFromResource(this,
                 R.array.conditions_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapterc.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         conditionSpin.setAdapter(adapterc);
         conditionSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
@@ -135,9 +131,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
         // Camera functionality
         ImageButton cameraButton = (ImageButton) findViewById(R.id.book_camera);
@@ -191,11 +185,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
     }
 
     public void showImage() {
-        //ImageView imageView2 = new ImageView(this);
-        //imageView2.setImageURI(Uri.fromFile(_file));
         WindowManager mWinMgr = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
-        float displayWidth = mWinMgr.getDefaultDisplay().getWidth();
-        float displayHeight = mWinMgr.getDefaultDisplay().getHeight();
         int newImageWidth = imageView.getWidth() * 2;
         int newImageHeight = imageView.getHeight() * 2;
         if(_file != null) {
@@ -209,9 +199,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                         new ColorDrawable(android.graphics.Color.TRANSPARENT));
                 builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
-                    public void onDismiss(DialogInterface dialogInterface) {
-                        //nothing;
-                    }
+                    public void onDismiss(DialogInterface dialogInterface) {}
                 });
                 builder.addContentView(imageView2, new RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -230,15 +218,13 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
         location = "Alabama";
     }
 
-    //click listener for addArticle button
+    //click listener for edit button
     public void addArticleButton_click(View view){
         if(latitude == 0 && longitude == 0){
             LatLng latLng = Location2.getStateCoordinates(EditArticle.this, location);
             latitude = latLng.latitude;
             longitude = latLng.longitude;
         }
-        //initiate the background process to post the article to the Drupal endpoint.
-        //pass session_name and session_id
         new DeleteBook().execute();
         String fileName = "";
         if(_file != null) {
@@ -256,9 +242,6 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             mProgressDialog = ProgressDialog.show(EditArticle.this, "Loading", "Adding book...");
         }
         protected Integer doInBackground(String... params) {
-            //read session_name and session_id from passed parameters
-            String session_name=params[0];
-            String session_id=params[1];
             final String upload_to = "https://api.imgur.com/3/upload";
 
             HttpClient httpClient = new DefaultHttpClient();
@@ -303,10 +286,6 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                 String title=txtTitle.getText().toString().trim();
                 String email=txtEmail.getText().toString().trim();
                 String author = txtAuthor.getText().toString().trim();
-                //add raw json to be sent along with the HTTP POST request
-                //StringEntity se = new StringEntity( "{\"_links\": {\"type\":{"+
-                //        "\"href\": \"http://collegerailroad.com/rest/type/node/basic_post\"}},\"title\": [{\"value\": \""+ title + "\""+
-                //        "}],\"type\": [{\"target_id\": \"basic_post\"}],\"field_email\": [{\"value\": \""+email+"\"}]}");
                 StringEntity se = new StringEntity("{\n" +
                         "\"_links\": {\n" +
                         "\"type\":{\n" +
@@ -361,23 +340,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                 httppost.setHeader("Accept", "application/hal+json");
                 httppost.setHeader("Content-Type", "application/hal+json");
                 httppost.setHeader("Authorization", "basic " + basicauth);
-
-
-
-                BasicHttpContext mHttpContext = new BasicHttpContext();
-                CookieStore mCookieStore      = new BasicCookieStore();
-
-                //create the session cookie
-                /*BasicClientCookie cookie = new BasicClientCookie(session_name, session_id);
-                cookie.setVersion(0);
-                cookie.setDomain(".collegerailroad.com");
-                cookie.setPath("/");
-                mCookieStore.addCookie(cookie);
-                cookie = new BasicClientCookie("has_js", "1");
-                mCookieStore.addCookie(cookie);
-                mHttpContext.setAttribute(ClientContext.COOKIE_STORE, mCookieStore);*/
                 httpclient.execute(httppost);
-                //httpclient.execute(httppost,mHttpContext);
                 return 0;
 
             }catch (Exception e) {
@@ -410,11 +373,7 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             Intent intent = new Intent(EditArticle.this, BookListActivitySelf.class);
             mProgressDialog.dismiss();
             Toast.makeText(EditArticle.this, "Book updated!", Toast.LENGTH_SHORT).show();
-            //intent.putExtra("SESSION_ID", session_id);
-            //intent.putExtra("SESSION_NAME", session_name);
             startActivity(intent);
-
-            //stop the current activity
             finish();
         }
     }
@@ -463,34 +422,18 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
         }
 
         protected JSONObject doInBackground(String... params) {
-
-
             HttpClient httpclient = new DefaultHttpClient();
-
             HttpGet httpget = new HttpGet("http://collegerailroad.com/node/"+book_id+"?_format=json");
-            //set header to tell REST endpoint the request and response content types
-            //httpget.setHeader("Accept", "application/json");
-            //httpget.setHeader("Content-type", "application/json");
-
             JSONObject json = new JSONObject();
-
             try {
-
                 HttpResponse response = httpclient.execute(httpget);
-
                 //read the response and convert it into JSON array
                 json = new JSONObject(EntityUtils.toString(response.getEntity()));
                 //return the JSON array for post processing to onPostExecute function
                 return json;
-
-
-
             }catch (Exception e) {
                 Log.v("Error adding article",e.getMessage());
             }
-
-
-
             return json;
         }
 
@@ -500,39 +443,24 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             EditText mTitleTextView;
             EditText mEmailTextView;
             EditText mAuthorTextView;
-            EditText mLocationTextView;
-            EditText mSubjectTextView;
             Spinner mConditionTextView;
 
-
-            BookPost currentBook;
-            String curId;
             String curTitle;
             String curAuthor;
             String curEmail;
             String curCondition;
-            String curSubject;
-            String curLocation;
             String curURL;
             String curLatitude;
             String curLongitude;
-            String curUID;
             try {
                 JSONObject item = result;
                 JSONArray title = (JSONArray) item.get("title");
-                JSONArray vid = (JSONArray) item.get("vid");
                 JSONArray email = (JSONArray) item.get("field_email");
                 JSONArray author = (JSONArray) item.get("field_author");
                 JSONArray condition = (JSONArray) item.get("field_condition");
-                JSONArray subject = (JSONArray) item.get("field_subject");
                 JSONArray url = (JSONArray) item.get("field_title");
-                JSONArray location = (JSONArray) item.get("field_state");
                 JSONArray latitude = (JSONArray) item.get("field_lat");
                 JSONArray longitude = (JSONArray) item.get("field_long");
-                JSONArray user= (JSONArray) item.get("uid");
-                JSONObject valueUID = (JSONObject) user.get(0);
-                curUID = valueUID.get("target_id").toString();
-                JSONObject valueVid = (JSONObject) vid.get(0);
                 if (title.length() > 0){
                     JSONObject valueTitle = (JSONObject) title.get(0);
                     curTitle = valueTitle.get("value").toString();
@@ -561,19 +489,10 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
                 if (condition.length() > 0) {
                     JSONObject valueCondition = (JSONObject) condition.get(0);
                     curCondition = valueCondition.get("target_id").toString();
+                    String[] conditions = new String[]{"New", "Good",  "Worn","Damaged"};
                     if(curCondition.length() > 0 ) {
-                        mConditionTextView =  findViewById(R.id.editcondition);
-                        //mConditionTextView.set
+                        conditionSpin.setSelection(adapterc.getPosition(conditions[Integer.parseInt(curCondition) - 3]));
                     }
-                }
-                if (subject.length() > 0) {
-                    JSONObject valueSubject = (JSONObject) subject.get(0);
-                    curSubject = valueSubject.get("value").toString();
-                    if(curSubject.length() > 0 ) {
-                        //mSubjectTextView = (EditText) findViewById(R.id.edit);
-                        //mSubjectTextView.setText(curSubject);
-                    }
-
                 }
                 if(latitude.length() > 0 && longitude.length() > 0){
                     JSONObject valueLatitude = (JSONObject) latitude.get(0);
@@ -590,17 +509,6 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
 
                     }
                 }
-                if (location.length() > 0) {
-                    JSONObject locationSubject = (JSONObject) location.get(0);
-                    curLocation = locationSubject.get("target_id").toString();
-                    if(curLocation.length() > 0 ) {
-                        //mSubjectTextView = (EditText) findViewById(R.id.book_location);
-                        //mSubjectTextView.setText(states[Integer.parseInt(curLocation)-12]);
-                    }
-
-                }
-                curId = valueVid.get("value").toString();
-
 
                 if (url.length() > 0 ){
                     JSONObject valueURL = (JSONObject) url.get(0);
@@ -625,45 +533,23 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
     private class DeleteBook extends AsyncTask<String, Void, JSONObject> {
 
         protected JSONObject doInBackground(String... params) {
-
-
             HttpClient httpclient = new DefaultHttpClient();
-
             HttpDelete httpget = new HttpDelete("http://collegerailroad.com/node/"+book_id+"?_format=hal_json");
-            //set header to tell REST endpoint the request and response content types
-            //httpget.setHeader("Accept", "application/json");
             httpget.setHeader("Content-Type", "application/hal+json");
             httpget.setHeader("Authorization", "basic " + basicauth);
-
             JSONObject json = new JSONObject();
-
             try {
-
                 httpclient.execute(httpget);
-
-                //read the response and convert it into JSON array
-                //return the JSON array for post processing to onPostExecute function
                 return json;
-
-
-
             }catch (Exception e) {
                 Log.v("Error adding article",e.getMessage());
             }
-
-
-
             return json;
         }
 
-
-        //executed after the background nodes fetching process is complete
-        protected void onPostExecute(JSONObject result) {
-
-
-
-        }
+        protected void onPostExecute(JSONObject result) {}
     }
+
     class loadImage extends AsyncTask<Void, Void, Void> {
         ProgressDialog pdLoading = new ProgressDialog(EditArticle.this);
 

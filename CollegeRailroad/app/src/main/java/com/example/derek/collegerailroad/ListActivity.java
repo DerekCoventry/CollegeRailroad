@@ -34,37 +34,6 @@ public class ListActivity extends  SingleFragmentActivity {
     protected Fragment createFragment() {
         return new BookListFragment();
     }
-    /*protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_list);
-        setContentView(R.layout.activity_fragment);
-
-        Bundle extras = getIntent().getExtras();
-
-        //read the session_id and session_name variables
-        *//*if (extras != null) {
-            session_id = extras.getString("SESSION_ID");
-            session_name = extras.getString("SESSION_NAME");
-        }
-        Button addButton = (Button) findViewById(R.id.add_but);
-        FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-
-        if (fragment == null) {
-            fragment = new ListFragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment)
-                    .commit();
-        }
-        addButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                startActivity(new Intent(ListActivity.this, AddArticle.class));
-            }
-        });
-        //initiate the background process to fetch the latest items on Drupal site
-        new FetchItems().execute();*//*
-    }*/
-
     private class FetchItems extends AsyncTask<String, Void, JSONArray> {
 
         protected JSONArray doInBackground(String... params) {
