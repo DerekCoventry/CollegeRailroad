@@ -512,111 +512,107 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             String curLatitude;
             String curLongitude;
             String curUID;
-            //iterate through JSON to read the title of nodes
-            for(int i=0;i<result.length();i++){
-                try {
-                    JSONObject item = result;
-                    JSONArray title = (JSONArray) item.get("title");
-                    JSONArray vid = (JSONArray) item.get("vid");
-                    JSONArray email = (JSONArray) item.get("field_email");
-                    JSONArray author = (JSONArray) item.get("field_author");
-                    JSONArray condition = (JSONArray) item.get("field_condition");
-                    JSONArray subject = (JSONArray) item.get("field_subject");
-                    JSONArray url = (JSONArray) item.get("field_title");
-                    JSONArray location = (JSONArray) item.get("field_state");
-                    JSONArray latitude = (JSONArray) item.get("field_lat");
-                    JSONArray longitude = (JSONArray) item.get("field_long");
-                    JSONArray user= (JSONArray) item.get("uid");
-                    JSONObject valueUID = (JSONObject) user.get(0);
-                    curUID = valueUID.get("target_id").toString();
-                    JSONObject valueVid = (JSONObject) vid.get(0);
-                    if (url.length() > 0 ){
-                        JSONObject valueURL = (JSONObject) url.get(0);
-                        curURL = valueURL.get("value").toString();
-                        if(curURL.length() > 0 && curURL.contains("imgur")) {
-                            imageURL = curURL;
-                            new loadImage().execute();
-                        }else{
-                            imageURL = "none";
-                        }
+            try {
+                JSONObject item = result;
+                JSONArray title = (JSONArray) item.get("title");
+                JSONArray vid = (JSONArray) item.get("vid");
+                JSONArray email = (JSONArray) item.get("field_email");
+                JSONArray author = (JSONArray) item.get("field_author");
+                JSONArray condition = (JSONArray) item.get("field_condition");
+                JSONArray subject = (JSONArray) item.get("field_subject");
+                JSONArray url = (JSONArray) item.get("field_title");
+                JSONArray location = (JSONArray) item.get("field_state");
+                JSONArray latitude = (JSONArray) item.get("field_lat");
+                JSONArray longitude = (JSONArray) item.get("field_long");
+                JSONArray user= (JSONArray) item.get("uid");
+                JSONObject valueUID = (JSONObject) user.get(0);
+                curUID = valueUID.get("target_id").toString();
+                JSONObject valueVid = (JSONObject) vid.get(0);
+                if (title.length() > 0){
+                    JSONObject valueTitle = (JSONObject) title.get(0);
+                    curTitle = valueTitle.get("value").toString();
+                    mTitleTextView = (EditText) findViewById(R.id.editTitle);
+                    if(curTitle.length() > 0 ){
+                        mTitleTextView.setText(curTitle);
+                    }
+                }
+                if (author.length() > 0){
+                    JSONObject valueAuthor = (JSONObject) author.get(0);
+                    curAuthor = valueAuthor.get("value").toString();
+                    mAuthorTextView = (EditText) findViewById(R.id.editAuthor);
+                    if(curAuthor.length() > 0 ){
+                        mAuthorTextView.setText(curAuthor);
+                    }
+                }
+                if (email.length() > 0 ){
+                    JSONObject valueEmail = (JSONObject) email.get(0);
+                    curEmail = valueEmail.get("value").toString();
+                    mEmailTextView = (EditText) findViewById(R.id.editEmail);
+                    if(curEmail.length() > 0 ) {
+                        mEmailTextView.setText(curEmail);
+                    }
+
+                }
+                if (condition.length() > 0) {
+                    JSONObject valueCondition = (JSONObject) condition.get(0);
+                    curCondition = valueCondition.get("target_id").toString();
+                    if(curCondition.length() > 0 ) {
+                        mConditionTextView =  findViewById(R.id.editcondition);
+                        //mConditionTextView.set
+                    }
+                }
+                if (subject.length() > 0) {
+                    JSONObject valueSubject = (JSONObject) subject.get(0);
+                    curSubject = valueSubject.get("value").toString();
+                    if(curSubject.length() > 0 ) {
+                        //mSubjectTextView = (EditText) findViewById(R.id.edit);
+                        //mSubjectTextView.setText(curSubject);
+                    }
+
+                }
+                if(latitude.length() > 0 && longitude.length() > 0){
+                    JSONObject valueLatitude = (JSONObject) latitude.get(0);
+                    JSONObject valueLongitude = (JSONObject) longitude.get(0);
+                    curLatitude = valueLatitude.get("value").toString();
+                    curLongitude = valueLongitude.get("value").toString();
+                    String cityState = Location2.getCityState(EditArticle.this, new LatLng(Double.parseDouble(curLatitude), Double.parseDouble(curLongitude)));
+                    String state = cityState.substring(cityState.indexOf(",")+2, cityState.length());
+                    usedCurLoc = true;
+                    locationSpin.setSelection(adapter.getPosition(state));
+                    try{
+                        mActivity.setLatLng(new LatLng(Double.parseDouble(curLatitude), Double.parseDouble(curLongitude)));
+                    }catch (Exception e){
+
+                    }
+                }
+                if (location.length() > 0) {
+                    JSONObject locationSubject = (JSONObject) location.get(0);
+                    curLocation = locationSubject.get("target_id").toString();
+                    if(curLocation.length() > 0 ) {
+                        //mSubjectTextView = (EditText) findViewById(R.id.book_location);
+                        //mSubjectTextView.setText(states[Integer.parseInt(curLocation)-12]);
+                    }
+
+                }
+                curId = valueVid.get("value").toString();
+
+
+                if (url.length() > 0 ){
+                    JSONObject valueURL = (JSONObject) url.get(0);
+                    curURL = valueURL.get("value").toString();
+                    if(curURL.length() > 0 && curURL.contains("imgur")) {
+                        imageURL = curURL;
+                        new loadImage().execute();
                     }else{
                         imageURL = "none";
                     }
-                    if (title.length() > 0){
-                        JSONObject valueTitle = (JSONObject) title.get(0);
-                        curTitle = valueTitle.get("value").toString();
-                        mTitleTextView = (EditText) findViewById(R.id.editTitle);
-                        if(curTitle.length() > 0 ){
-                            mTitleTextView.setText(curTitle);
-                        }
-                    }
-                    if (author.length() > 0){
-                        JSONObject valueAuthor = (JSONObject) author.get(0);
-                        curAuthor = valueAuthor.get("value").toString();
-                        mAuthorTextView = (EditText) findViewById(R.id.editAuthor);
-                        if(curAuthor.length() > 0 ){
-                            mAuthorTextView.setText(curAuthor);
-                        }
-                    }
-                    if (email.length() > 0 ){
-                        JSONObject valueEmail = (JSONObject) email.get(0);
-                        curEmail = valueEmail.get("value").toString();
-                        mEmailTextView = (EditText) findViewById(R.id.editEmail);
-                        if(curEmail.length() > 0 ) {
-                            mEmailTextView.setText(curEmail);
-                        }
-
-                    }
-                    if (condition.length() > 0) {
-                        JSONObject valueCondition = (JSONObject) condition.get(0);
-                        curCondition = valueCondition.get("target_id").toString();
-                        if(curCondition.length() > 0 ) {
-                            mConditionTextView =  findViewById(R.id.editcondition);
-                            //mConditionTextView.set
-                        }
-                    }
-                    if (subject.length() > 0) {
-                        JSONObject valueSubject = (JSONObject) subject.get(0);
-                        curSubject = valueSubject.get("value").toString();
-                        if(curSubject.length() > 0 ) {
-                            //mSubjectTextView = (EditText) findViewById(R.id.edit);
-                            //mSubjectTextView.setText(curSubject);
-                        }
-
-                    }
-                    if(latitude.length() > 0 && longitude.length() > 0){
-                        JSONObject valueLatitude = (JSONObject) latitude.get(0);
-                        JSONObject valueLongitude = (JSONObject) longitude.get(0);
-                        curLatitude = valueLatitude.get("value").toString();
-                        curLongitude = valueLongitude.get("value").toString();
-                        String cityState = Location2.getCityState(EditArticle.this, new LatLng(Double.parseDouble(curLatitude), Double.parseDouble(curLongitude)));
-                        String state = cityState.substring(cityState.indexOf(",")+2, cityState.length());
-                        usedCurLoc = true;
-                        locationSpin.setSelection(adapter.getPosition(state));
-                        try{
-                            mActivity.setLatLng(new LatLng(Double.parseDouble(curLatitude), Double.parseDouble(curLongitude)));
-                        }catch (Exception e){
-
-                        }
-                    }
-                    if (location.length() > 0) {
-                        JSONObject locationSubject = (JSONObject) location.get(0);
-                        curLocation = locationSubject.get("target_id").toString();
-                        if(curLocation.length() > 0 ) {
-                            //mSubjectTextView = (EditText) findViewById(R.id.book_location);
-                            //mSubjectTextView.setText(states[Integer.parseInt(curLocation)-12]);
-                        }
-
-                    }
-                    curId = valueVid.get("value").toString();
-
-
-
-
-
-                } catch (Exception e) {
-                    Log.v("Error adding database", e.getMessage());
+                }else{
+                    imageURL = "none";
                 }
+
+
+            } catch (Exception e) {
+                Log.v("Error adding database", e.getMessage());
             }
 
         }
