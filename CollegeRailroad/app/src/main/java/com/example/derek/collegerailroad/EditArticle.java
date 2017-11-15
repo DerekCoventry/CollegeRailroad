@@ -199,23 +199,26 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
         int newImageWidth = imageView.getWidth() * 2;
         int newImageHeight = imageView.getHeight() * 2;
         if(_file != null) {
-            Bitmap bitmap2 = LoadAndResizeBitmap(_file.getAbsolutePath(), newImageWidth, newImageHeight);
-            ImageView imageView2 = new ImageView(this);
-            imageView2.setImageBitmap(bitmap2);
-            Dialog builder = new Dialog(this);
-            builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            builder.getWindow().setBackgroundDrawable(
-                    new ColorDrawable(android.graphics.Color.TRANSPARENT));
-            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialogInterface) {
-                    //nothing;
-                }
-            });
-            builder.addContentView(imageView2, new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT));
-            builder.show();
+            try {
+                Bitmap bitmap2 = LoadAndResizeBitmap(_file.getAbsolutePath(), newImageWidth, newImageHeight);
+                ImageView imageView2 = new ImageView(this);
+                imageView2.setImageBitmap(bitmap2);
+                Dialog builder = new Dialog(this);
+                builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                builder.getWindow().setBackgroundDrawable(
+                        new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        //nothing;
+                    }
+                });
+                builder.addContentView(imageView2, new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+                builder.show();
+            }catch(Exception e){
+            }
         }
     }
     public void onItemSelected(AdapterView<?> parent, View view,
@@ -418,16 +421,18 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri contentUri = Uri.fromFile(_file);
-        mediaScanIntent.setData(contentUri);
-        sendBroadcast(mediaScanIntent);
-        int height = imageView.getWidth();
-        int width = imageView.getHeight();
-        bitmap = LoadAndResizeBitmap(_file.getAbsolutePath(), width, height);
-        if (bitmap != null) {
-            imageView.setImageBitmap (bitmap);
-            bitmap = null;
+        if(resultCode == RESULT_OK) {
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            Uri contentUri = Uri.fromFile(_file);
+            mediaScanIntent.setData(contentUri);
+            sendBroadcast(mediaScanIntent);
+            int height = imageView.getWidth();
+            int width = imageView.getHeight();
+            bitmap = LoadAndResizeBitmap(_file.getAbsolutePath(), width, height);
+            if (bitmap != null) {
+                imageView.setImageBitmap(bitmap);
+                bitmap = null;
+            }
         }
     }
 
