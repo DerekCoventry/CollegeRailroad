@@ -87,7 +87,11 @@ public class BookPost implements Parcelable{
     public String getCondition() {
 
         String[] conditions = new String[]{"New", "Good",  "Worn","Damaged"};
-        return conditions[Integer.parseInt(bCondition)-3];
+        try {
+            return conditions[Integer.parseInt(bCondition) - 3];
+        }catch(Exception e){
+            return "None";
+        }
     }
     public LatLng getLatLng() {
         return new LatLng(bLatitude, bLongitude);
