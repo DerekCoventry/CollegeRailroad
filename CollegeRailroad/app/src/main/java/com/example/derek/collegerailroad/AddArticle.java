@@ -54,8 +54,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class AddArticle extends FragmentActivity implements AdapterView.OnItemSelectedListener, SearchFragment.OnFragmentInteractionListener {
-    public static File _file;
-    public static Bitmap bitmap;
+    public File _file;
+    public Bitmap bitmap;
     ImageView imageView;
     public String session_id;
     public String session_name;
@@ -70,6 +70,9 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
     ArrayAdapter<CharSequence> adapter;
     private final String SAVED_SEARCH = "saved_search";
     private String saved_search = "";
+    private final String DIALOG = "dialog";
+    private boolean showDialog = false;
+    ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,11 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
         if (savedInstanceState != null){
             basicauth = savedInstanceState.getString("basic_auth");
             saved_search = savedInstanceState.getString(SAVED_SEARCH, "");
+            showDialog = savedInstanceState.getBoolean(DIALOG, false);
+        }
+        if(showDialog) {
+            mProgressDialog = ProgressDialog.show(AddArticle.this, "Loading", "Adding book...");
+            showDialog = true;
         }
         SharedPreferences userInfo = getSharedPreferences("userInfo", MODE_PRIVATE);
         basicauth = userInfo.getString("BASIC_AUTH", "none");
@@ -252,6 +260,8 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
             Toast.makeText(this, "Author can't be empty", Toast.LENGTH_SHORT).show();
         }else if(txtEmail.getText().toString().trim().isEmpty()){
             Toast.makeText(this, "Email can't be empty", Toast.LENGTH_SHORT).show();
+        }else if(!txtEmail.getText().toString().trim().matches("[^\\s]+@[^\\s]+")){
+            Toast.makeText(this, "Invalid email address", Toast.LENGTH_SHORT).show();
         }else {
             if(latitude == 0 && longitude == 0){
                 LatLng latLng = Location2.getStateCoordinates(AddArticle.this, location);
@@ -266,13 +276,12 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
         }
     }
 
-
     //asynchronous task to add the article into Drupal
     private class addArticleTask extends AsyncTask<String, Void, Integer> {
-        ProgressDialog mProgressDialog;
         @Override
         protected void onPreExecute() {
             mProgressDialog = ProgressDialog.show(AddArticle.this, "Loading", "Adding book...");
+            showDialog = true;
         }
         protected Integer doInBackground(String... params) {
             final String upload_to = "https://api.imgur.com/3/upload";
@@ -408,7 +417,12 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
 
             //start the List Activity and pass back the session_id and session_name
             Intent intent = new Intent(AddArticle.this, HomeActivity.class);
-            mProgressDialog.dismiss();
+            try {
+                mProgressDialog.dismiss();
+            }catch (Exception e){
+
+            }
+            showDialog = false;
             Toast.makeText(AddArticle.this, "Book listed!", Toast.LENGTH_SHORT).show();
             startActivity(intent);
 
@@ -442,6 +456,7 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
         super.onSaveInstanceState(savedInstanceState);
         EditText search = (EditText)findViewById(R.id.search);
         savedInstanceState.putString(SAVED_SEARCH, search.getText().toString());
+        savedInstanceState.putBoolean(DIALOG, showDialog);
     }
 
     public static Bitmap LoadAndResizeBitmap(String fileName, int width, int height)
@@ -462,6 +477,17 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
         Matrix matrix = new Matrix();
         matrix.postRotate(90);
         return Bitmap.createBitmap(resizedBitmap, 0, 0, resizedBitmap.getWidth(), resizedBitmap.getHeight(), matrix, true);
+    }
+    @Override
+    public void onStop(){
+        super.onStop();
+        if(mProgressDialog != null){
+            try {
+                mProgressDialog.dismiss();
+            }catch(Exception e){
+
+            }
+        }
     }
     @Override
     public void onFragmentInteraction(Uri uri){
