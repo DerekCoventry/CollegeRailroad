@@ -60,9 +60,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class EditArticle extends Activity implements AdapterView.OnItemSelectedListener {
-    public static File _file;
-    public static File _dir;
-    public static Bitmap bitmap;
+    public File _file;
+    public File _dir;
+    public Bitmap bitmap;
     ImageView imageView;
     public String session_id;
     public String session_name;
@@ -79,12 +79,20 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
     ArrayAdapter<CharSequence> adapterc;
     public String user_id;
     public String book_id;
+    private final String DIALOG = "dialog";
+    private boolean showDialog = false;
+    ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null){
             basicauth = savedInstanceState.getString("basic_auth");
+            showDialog = savedInstanceState.getBoolean(DIALOG, false);
+        }
+        if(showDialog){
+            mProgressDialog = mProgressDialog.show(EditArticle.this, "Loading", "Editing book...");
+            showDialog = true;
         }
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -219,17 +227,31 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
 
     //click listener for edit button
     public void addArticleButton_click(View view){
-        if(latitude == 0 && longitude == 0){
-            LatLng latLng = Location2.getStateCoordinates(EditArticle.this, location);
-            latitude = latLng.latitude;
-            longitude = latLng.longitude;
+        TextView txtTitle = (TextView) findViewById(R.id.editTitle);
+        TextView txtAuthor = (TextView) findViewById(R.id.editAuthor);
+        TextView txtEmail = (TextView) findViewById(
+                R.id.editEmail);
+        if(txtTitle.getText().toString().trim().isEmpty()){
+            Toast.makeText(this, "Title can't be empty", Toast.LENGTH_SHORT).show();
+        }else if(txtAuthor.getText().toString().trim().isEmpty()){
+            Toast.makeText(this, "Author can't be empty", Toast.LENGTH_SHORT).show();
+        }else if(txtEmail.getText().toString().trim().isEmpty()){
+            Toast.makeText(this, "Email can't be empty", Toast.LENGTH_SHORT).show();
+        }else if(!txtEmail.getText().toString().trim().matches("[^\\s]+@[^\\s]+")){
+            Toast.makeText(this, "Invalid email address", Toast.LENGTH_SHORT).show();
+        }else {
+            if (latitude == 0 && longitude == 0) {
+                LatLng latLng = Location2.getStateCoordinates(EditArticle.this, location);
+                latitude = latLng.latitude;
+                longitude = latLng.longitude;
+            }
+            new DeleteBook().execute();
+            String fileName = "";
+            if (_file != null) {
+                fileName = _file.toString();
+            }
+            new addArticleTask().execute(session_name, session_id, fileName);
         }
-        new DeleteBook().execute();
-        String fileName = "";
-        if(_file != null) {
-            fileName = _file.toString();
-        }
-        new addArticleTask().execute(session_name, session_id, fileName);
     }
 
 
@@ -238,7 +260,8 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
         ProgressDialog mProgressDialog;
         @Override
         protected void onPreExecute() {
-            mProgressDialog = ProgressDialog.show(EditArticle.this, "Loading", "Adding book...");
+            mProgressDialog = ProgressDialog.show(EditArticle.this, "Loading", "Editing book...");
+            showDialog = true;
         }
         protected Integer doInBackground(String... params) {
             final String upload_to = "https://api.imgur.com/3/upload";
@@ -370,7 +393,12 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
 
             //start the List Activity and pass back the session_id and session_name
             Intent intent = new Intent(EditArticle.this, BookListActivitySelf.class);
-            mProgressDialog.dismiss();
+            try{
+                mProgressDialog.dismiss();
+            }catch (Exception e){
+
+            }
+            showDialog = false;
             Toast.makeText(EditArticle.this, "Book updated!", Toast.LENGTH_SHORT).show();
             startActivity(intent);
             finish();
@@ -585,6 +613,23 @@ public class EditArticle extends Activity implements AdapterView.OnItemSelectedL
             return null;
         }
     }
+    @Override
+    public void onStop(){
+        super.onStop();
+        if(mProgressDialog != null){
+            try {
+                mProgressDialog.dismiss();
+            }catch(Exception e){
+
+            }
+        }
+    }
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putBoolean(DIALOG, showDialog);
+    }
+
     public void setLatLng(LatLng latLng){
         latitude = latLng.latitude;
         longitude = latLng.longitude;
