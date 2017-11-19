@@ -29,14 +29,17 @@ import static com.google.android.gms.internal.zzahg.runOnUiThread;
 
 public class SearchFragment extends Fragment {
     boolean searched = false;
+    public static final String SEARCH = "saved_search";
+    private String saved_search;
     String option = "ISBN";
     private OnFragmentInteractionListener mListener;
     ProgressDialog mProgressDialog;
     public SearchFragment() {}
 
-    public static SearchFragment newInstance() {
+    public static SearchFragment newInstance(String search) {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
+        args.putString(SEARCH, search);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,6 +54,12 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         final EditText mEditText= (EditText) view.findViewById(R.id.search);
+        if(getArguments() != null){
+            saved_search = getArguments().getString(SEARCH);
+        }
+        if(saved_search != null){
+            mEditText.setText(saved_search);
+        }
         mEditText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {

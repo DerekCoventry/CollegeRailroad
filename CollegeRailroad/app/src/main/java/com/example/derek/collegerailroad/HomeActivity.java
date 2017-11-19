@@ -13,19 +13,23 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class HomeActivity extends BaseAppCompatActivity implements SearchFragment.OnFragmentInteractionListener{
     private static String OPTION = "option";
+    private final String SAVED_SEARCH = "saved_search";
     private String starting_opt;
     private String search_opt;
+    private String saved_search = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
             starting_opt = savedInstanceState.getString(OPTION, "ISBN");
+            saved_search = savedInstanceState.getString(SAVED_SEARCH, "");
         }
     }
 
@@ -35,7 +39,7 @@ public class HomeActivity extends BaseAppCompatActivity implements SearchFragmen
         setContentView(R.layout.activity_home);
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.search_layout, new SearchFragment()).commit();
+        transaction.replace(R.id.search_layout, SearchFragment.newInstance(saved_search)).commit();
         Spinner opt = (Spinner) findViewById((R.id.editcondition));
         ArrayAdapter adapter = ArrayAdapter.createFromResource(this,
                 R.array.search_array, android.R.layout.simple_spinner_item);
@@ -103,6 +107,8 @@ public class HomeActivity extends BaseAppCompatActivity implements SearchFragmen
     public void onSaveInstanceState(Bundle savedInstanceState){
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putString(OPTION, search_opt);
+        EditText search = (EditText)findViewById(R.id.search);
+        savedInstanceState.putString(SAVED_SEARCH, search.getText().toString());
     }
 
     @Override
