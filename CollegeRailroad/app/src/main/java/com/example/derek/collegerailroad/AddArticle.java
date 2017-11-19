@@ -1,10 +1,7 @@
 package com.example.derek.collegerailroad;
 
-import android.*;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,17 +19,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Base64;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -44,18 +38,15 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -64,7 +55,6 @@ import java.util.Date;
 
 public class AddArticle extends FragmentActivity implements AdapterView.OnItemSelectedListener, SearchFragment.OnFragmentInteractionListener {
     public static File _file;
-    public static File _dir;
     public static Bitmap bitmap;
     ImageView imageView;
     public String session_id;
@@ -78,12 +68,15 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
     private boolean usedCurLoc = false;
     Spinner locationSpin;
     ArrayAdapter<CharSequence> adapter;
+    private final String SAVED_SEARCH = "saved_search";
+    private String saved_search = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null){
             basicauth = savedInstanceState.getString("basic_auth");
+            saved_search = savedInstanceState.getString(SAVED_SEARCH, "");
         }
         SharedPreferences userInfo = getSharedPreferences("userInfo", MODE_PRIVATE);
         basicauth = userInfo.getString("BASIC_AUTH", "none");
@@ -91,7 +84,7 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
         setContentView(R.layout.activity_add_article);
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.autofill_layout, new SearchFragment()).commit();
+        transaction.replace(R.id.autofill_layout, SearchFragment.newInstance(saved_search)).commit();
         Bundle extras = getIntent().getExtras();
         locationSpin = (Spinner) findViewById((R.id.editlocation));
         adapter = ArrayAdapter.createFromResource(this,
@@ -216,11 +209,6 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
     }
 
     public void showImage() {
-        //ImageView imageView2 = new ImageView(this);
-        //imageView2.setImageURI(Uri.fromFile(_file));
-        WindowManager mWinMgr = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
-        float displayWidth = mWinMgr.getDefaultDisplay().getWidth();
-        float displayHeight = mWinMgr.getDefaultDisplay().getHeight();
         int newImageWidth = imageView.getWidth() * 2;
         int newImageHeight = imageView.getHeight() * 2;;
         if(_file != null) {
@@ -234,9 +222,7 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
                         new ColorDrawable(android.graphics.Color.TRANSPARENT));
                 builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
-                    public void onDismiss(DialogInterface dialogInterface) {
-                        //nothing;
-                    }
+                    public void onDismiss(DialogInterface dialogInterface) {}
                 });
                 builder.addContentView(imageView2, new RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -289,9 +275,6 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
             mProgressDialog = ProgressDialog.show(AddArticle.this, "Loading", "Adding book...");
         }
         protected Integer doInBackground(String... params) {
-            //read session_name and session_id from passed parameters
-            String session_name=params[0];
-            String session_id=params[1];
             final String upload_to = "https://api.imgur.com/3/upload";
 
             HttpClient httpClient = new DefaultHttpClient();
@@ -335,10 +318,6 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
                 String title=txtTitle.getText().toString().trim();
                 String email=txtEmail.getText().toString().trim();
                 String author = txtAuthor.getText().toString().trim();
-                //add raw json to be sent along with the HTTP POST request
-                //StringEntity se = new StringEntity( "{\"_links\": {\"type\":{"+
-                //        "\"href\": \"http://collegerailroad.com/rest/type/node/basic_post\"}},\"title\": [{\"value\": \""+ title + "\""+
-                //        "}],\"type\": [{\"target_id\": \"basic_post\"}],\"field_email\": [{\"value\": \""+email+"\"}]}");
                 StringEntity se = new StringEntity("{\n" +
                         "\"_links\": {\n" +
                         "\"type\":{\n" +
@@ -398,23 +377,7 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
                 httppost.setHeader("Accept", "application/hal+json");
                 httppost.setHeader("Content-Type", "application/hal+json");
                 httppost.setHeader("Authorization", "basic " + basicauth);
-
-
-
-                BasicHttpContext mHttpContext = new BasicHttpContext();
-                CookieStore mCookieStore      = new BasicCookieStore();
-
-                //create the session cookie
-                /*BasicClientCookie cookie = new BasicClientCookie(session_name, session_id);
-                cookie.setVersion(0);
-                cookie.setDomain(".collegerailroad.com");
-                cookie.setPath("/");
-                mCookieStore.addCookie(cookie);
-                cookie = new BasicClientCookie("has_js", "1");
-                mCookieStore.addCookie(cookie);
-                mHttpContext.setAttribute(ClientContext.COOKIE_STORE, mCookieStore);*/
                 httpclient.execute(httppost);
-                //httpclient.execute(httppost,mHttpContext);
                 return 0;
 
             }catch (Exception e) {
@@ -447,77 +410,13 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
             Intent intent = new Intent(AddArticle.this, HomeActivity.class);
             mProgressDialog.dismiss();
             Toast.makeText(AddArticle.this, "Book listed!", Toast.LENGTH_SHORT).show();
-            //intent.putExtra("SESSION_ID", session_id);
-            //intent.putExtra("SESSION_NAME", session_name);
             startActivity(intent);
 
             //stop the current activity
             finish();
         }
     }
-    /**
-    private class PostToImgur extends AsyncTask<String, Void, JSONObject> {
 
-        protected JSONObject doInBackground(String... params) {
-
-            //read session_name and session_id from passed parameters
-            String session_name=params[0];
-            String session_id=params[1];
-
-
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("https://api.imgur.com/3/image");
-
-            JSONObject json = new JSONObject();
-
-
-            try {
-
-                StringEntity se = new StringEntity("{\n" +
-                        "\"data\": {\n" +
-                        "\"image\""+ bitmap+
-                        "}}");
-                httppost.setEntity(se);
-                httppost.setHeader("Authorization", "Client-ID 677813e7b6b7d5e");
-
-
-
-                BasicHttpContext mHttpContext = new BasicHttpContext();
-                CookieStore mCookieStore      = new BasicCookieStore();
-                HttpResponse response = httpclient.execute(httppost);
-
-                //read the response and convert it into JSON array
-                json = new JSONObject(EntityUtils.toString(response.getEntity()));
-                //return the JSON array for post processing to onPostExecute function
-                return json;
-
-                //httpclient.execute(httppost,mHttpContext);
-
-
-            }catch (Exception e) {
-                Log.v("Error adding article",e.getMessage());
-            }
-            return json;
-
-
-        }
-        protected void onPostExecute(JSONObject result) {
-
-                try {
-                    JSONObject item = result;
-                    JSONObject title = (JSONObject) item.get("data");
-                    if (title.length() > 0) {
-                        link = title.get("link").toString();
-                    }
-
-
-                } catch (Exception e) {
-                    Log.v("Error adding database", e.getMessage());
-                }
-
-        }
-    }
-     **/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -536,6 +435,13 @@ public class AddArticle extends FragmentActivity implements AdapterView.OnItemSe
         }catch (Exception e){
             Toast.makeText(AddArticle.this, "Error uploading photo", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        EditText search = (EditText)findViewById(R.id.search);
+        savedInstanceState.putString(SAVED_SEARCH, search.getText().toString());
     }
 
     public static Bitmap LoadAndResizeBitmap(String fileName, int width, int height)
