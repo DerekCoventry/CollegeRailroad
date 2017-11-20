@@ -2,6 +2,7 @@ package com.example.derek.collegerailroad;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -62,7 +63,11 @@ public class HomeActivity extends BaseAppCompatActivity implements SearchFragmen
             opt.setSelection(position);
         }
         TextView intro = (TextView) findViewById(R.id.intro);
-        intro.setText("Welcome to College Railroad! This app allows students to buy/sell books with each other without the bookstore middleman markup. Current apps/websites exist for the sole purpose of making money. Businesses and bookstores make excessive amounts of money off of students, and for a very long time students have accepted this as a way of life. Additionally, Facebook pages, and craigslist posts try to accomplish our goal, but the market it waiting for an app to satisfy the need. Having an app be created by potential users allows for an alternative view on the textbook market.");
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            intro.setText("Welcome to College Railroad!");
+        }else {
+            intro.setText("Welcome to College Railroad! This app allows students to buy/sell books with each other without the bookstore middleman markup. Current apps/websites exist for the sole purpose of making money. Businesses and bookstores make excessive amounts of money off of students, and for a very long time students have accepted this as a way of life. Additionally, Facebook pages, and craigslist posts try to accomplish our goal, but the market it waiting for an app to satisfy the need. Having an app be created by potential users allows for an alternative view on the textbook market.");
+        }
         Button loginButton = (Button) findViewById(R.id.log_but);
         Button signupButton = (Button) findViewById(R.id.signup_but);
         final SharedPreferences userInfo = getSharedPreferences("userInfo", MODE_PRIVATE);
