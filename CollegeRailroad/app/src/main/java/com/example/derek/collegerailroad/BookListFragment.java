@@ -1,5 +1,6 @@
 package com.example.derek.collegerailroad;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -51,46 +52,39 @@ public class BookListFragment extends Fragment {
     public boolean initial = true;
     private String option = "", titleFilter = null, authorFilter = null;
     public String user_id = "none";
-    public String session_id;
-    public String session_name;
+    private Activity activity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity = getActivity();
         View view = inflater.inflate(R.layout.fragment_book_list, container, false);
         mBookRecyclerView = (RecyclerView) view
                 .findViewById(R.id.book_recycler_view);
-        mBookRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        SharedPreferences userInfo = getActivity().getSharedPreferences("userInfo", MODE_PRIVATE);
+        mBookRecyclerView.setLayoutManager(new LinearLayoutManager(activity));
+        SharedPreferences userInfo = activity.getSharedPreferences("userInfo", MODE_PRIVATE);
         if (userInfo.contains("USER_ID")) {
             user_id = userInfo.getString("USER_ID", "none");
         }
-        /**
-        Button addButton = (Button) view.findViewById(R.id.add_but);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), AddArticle.class));
-            }
-        });
-         **/
+
         Button mapButton = (Button) view.findViewById(R.id.map_but);
         mapButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MapsActivity.class);
+                Intent intent = new Intent(activity, MapsActivity.class);
                 intent.putExtra("BOOKS", mBooks);
                 startActivity(intent);
             }
         });
         Spinner conditionSpin = (Spinner) view.findViewById((R.id.editcondition));
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity,
                 R.array.conditionsSearch_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         conditionSpin.setAdapter(adapter);
         conditionSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                SharedPreferences userInfo = getActivity().getSharedPreferences("userInfo", MODE_PRIVATE);
+                SharedPreferences userInfo = activity.getSharedPreferences("userInfo", MODE_PRIVATE);
                 SharedPreferences.Editor userInfoEditor = userInfo.edit();
                 String condition = parent.getItemAtPosition(position).toString();
                 if(condition.equals("All")){
@@ -113,7 +107,7 @@ public class BookListFragment extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                SharedPreferences userInfo = getActivity().getSharedPreferences("userInfo", MODE_PRIVATE);
+                SharedPreferences userInfo = activity.getSharedPreferences("userInfo", MODE_PRIVATE);
                 SharedPreferences.Editor userInfoEditor = userInfo.edit();
                 userInfoEditor.putString("CONDITION", "none");
                 if(!initial) {
@@ -125,14 +119,14 @@ public class BookListFragment extends Fragment {
             }
         });
         Spinner locationSpin = (Spinner) view.findViewById((R.id.editlocation));
-        adapter = ArrayAdapter.createFromResource(getActivity(),
+        adapter = ArrayAdapter.createFromResource(activity,
                 R.array.locationsSearch_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationSpin.setAdapter(adapter);
         locationSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                SharedPreferences userInfo = getActivity().getSharedPreferences("userInfo", MODE_PRIVATE);
+                SharedPreferences userInfo = activity.getSharedPreferences("userInfo", MODE_PRIVATE);
                 SharedPreferences.Editor userInfoEditor = userInfo.edit();
                 String location = parent.getItemAtPosition(position).toString();
                 Log.d("loc", location);
@@ -157,7 +151,7 @@ public class BookListFragment extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                SharedPreferences userInfo = getActivity().getSharedPreferences("userInfo", MODE_PRIVATE);
+                SharedPreferences userInfo = activity.getSharedPreferences("userInfo", MODE_PRIVATE);
                 SharedPreferences.Editor userInfoEditor = userInfo.edit();
                 userInfoEditor.putString("LOCATION", "none");
                 if(!initial) {
@@ -183,7 +177,7 @@ public class BookListFragment extends Fragment {
 
         @Override
         public BookHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            LayoutInflater layoutInflater = LayoutInflater.from(activity);
 
             return new BookHolder(layoutInflater, parent);
         }
@@ -223,17 +217,13 @@ public class BookListFragment extends Fragment {
         }
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(getActivity(), BookDisplayActivity.class);
+            Intent intent = new Intent(activity, BookDisplayActivity.class);
             intent.putExtra("BOOK_ID", mBook.getId());
             startActivity(intent);
         }
     }
 
     private void updateUI() {
-
-        //BookLab bookLab = BookLab.get(getActivity());
-        //List<BookPost> books = bookLab.getBooks();
-
         mAdapter = new BookAdapter(mBooks);
         mBookRecyclerView.setAdapter(mAdapter);
 
@@ -292,7 +282,7 @@ public class BookListFragment extends Fragment {
 
             String locCheck = "none";
             String condCheck = "none";
-            SharedPreferences userInfo = getActivity().getSharedPreferences("userInfo", MODE_PRIVATE);
+            SharedPreferences userInfo = activity.getSharedPreferences("userInfo", MODE_PRIVATE);
             Log.d("contains", Boolean.toString(userInfo.contains("LOCATION")));
             if (userInfo.contains("LOCATION")) {
                 locCheck = userInfo.getString("LOCATION", "none");
@@ -364,7 +354,7 @@ public class BookListFragment extends Fragment {
                             mBooks.add(currentBook);
                         }
                     }
-                    TextView numberOfResults = getActivity().findViewById(R.id.numberOfResults);
+                    TextView numberOfResults = activity.findViewById(R.id.numberOfResults);
                     int numOfBooks = mBooks.size();
                     if(numOfBooks == 1){
                         numberOfResults.setText(Integer.toString(numOfBooks) + " result found");
@@ -399,69 +389,4 @@ public class BookListFragment extends Fragment {
 
 
 }
-
-/*    public void FetchBookList(){
-
-
-        HttpClient httpclient = new DefaultHttpClient();
-
-        HttpGet httpget = new HttpGet("http://collegerailroad.com/appview?_format=json");
-        //set header to tell REST endpoint the request and response content types
-        //httpget.setHeader("Accept", "application/json");
-        //httpget.setHeader("Content-type", "application/json");
-
-        JSONArray json = new JSONArray();
-
-        try {
-
-            HttpResponse response = httpclient.execute(httpget);
-
-            //read the response and convert it into JSON array
-            json = new JSONArray(EntityUtils.toString(response.getEntity()));
-
-        }catch (Exception e) {
-            Log.v("Error adding article",e.getMessage());
-        }
-
-        JSONArray result = json;
-        mBooks = new ArrayList<BookPost>();
-        BookPost currentBook;
-        String curId;
-        String curTitle;
-        String curEmail;
-        String curLoc;
-        String locCheck = "none";
-        SharedPreferences userInfo = getActivity().getSharedPreferences("userInfo", MODE_PRIVATE);
-        if (userInfo.contains("LOCATION")) {
-            locCheck = userInfo.getString("LOCATION", "none");
-            Log.d("locCehck", locCheck);
-        }
-        Log.d("locCheck", locCheck);
-
-        //iterate through JSON to read the title of nodes
-        for(int i=0;i<result.length();i++){
-            try {
-                JSONObject item = (JSONObject) result.get(i);
-                JSONArray title = (JSONArray) item.get("title");
-                JSONArray vid = (JSONArray) item.get("vid");
-                JSONArray email = (JSONArray) item.get("field_email");
-                JSONArray loc = (JSONArray) item.get("field_state");
-                JSONObject valueLoc = (JSONObject) loc.get(0);
-                JSONObject valueVid = (JSONObject) vid.get(0);
-                JSONObject valueTitle = (JSONObject) title.get(0);
-                JSONObject valueEmail = (JSONObject) email.get(0);
-                curLoc = valueVid.get("target_id").toString();
-                curId = valueVid.get("value").toString();
-                curTitle = valueTitle.get("value").toString();
-                curEmail = valueEmail.get("value").toString();
-                currentBook = new BookPost(curId, curTitle, curEmail);
-                if (curLoc.equals(locCheck) || locCheck.equals("none")) {
-                    mBooks.add(currentBook);
-                }
-            } catch (Exception e) {
-                Log.v("Error adding database", e.getMessage());
-            }
-        }
-
-    }*/
 

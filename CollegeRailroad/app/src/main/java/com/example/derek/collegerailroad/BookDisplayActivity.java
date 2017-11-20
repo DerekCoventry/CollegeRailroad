@@ -130,7 +130,11 @@ public class BookDisplayActivity extends Activity {
                 });
                 e.printStackTrace();
             }
-            pdLoading.dismiss();
+            try {
+                pdLoading.dismiss();
+            }catch (Exception e){
+
+            }
             return null;
         }
     }
