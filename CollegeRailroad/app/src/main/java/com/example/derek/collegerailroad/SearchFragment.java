@@ -1,5 +1,6 @@
 package com.example.derek.collegerailroad;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +35,7 @@ public class SearchFragment extends Fragment {
     String option = "ISBN";
     private OnFragmentInteractionListener mListener;
     ProgressDialog mProgressDialog;
+    Activity activity;
     public SearchFragment() {}
 
     public static SearchFragment newInstance(String search) {
@@ -60,6 +62,7 @@ public class SearchFragment extends Fragment {
         if(saved_search != null){
             mEditText.setText(saved_search);
         }
+        activity = getActivity();
         mEditText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -70,18 +73,18 @@ public class SearchFragment extends Fragment {
                     if (event.getAction() == MotionEvent.ACTION_UP) {
                         if (event.getRawX() >= (mEditText.getRight() - mEditText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
                             if (search_length == 0) {
-                                Toast.makeText(getActivity(), "Search can't be empty", Toast.LENGTH_LONG).show();
+                                Toast.makeText(activity, "Search can't be empty", Toast.LENGTH_LONG).show();
                                 return false;
                             } else {
                                 if(option.contains("ISBN")) {
                                     search = search.replaceAll("-", "");
                                 }
                                 if (!option.contains("ISBN") || ((search.length() == 10 || search.length() == 13) && search.matches("\\d+X?"))) {
-                                    mProgressDialog = ProgressDialog.show(getActivity(), "Loading", "Searching for book...");
+                                    mProgressDialog = ProgressDialog.show(activity, "Loading", "Searching for book...");
                                     getWebsite(search);
                                     return true;
                                 } else {
-                                    Toast.makeText(getActivity(), "ISBN must be 10 or 13 digits", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(activity, "ISBN must be 10 or 13 digits", Toast.LENGTH_LONG).show();
                                     return false;
                                 }
                             }
@@ -96,7 +99,7 @@ public class SearchFragment extends Fragment {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     try  {
-                        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(INPUT_METHOD_SERVICE);
+                        InputMethodManager imm = (InputMethodManager)activity.getSystemService(INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     } catch (Exception e) {
 
@@ -115,7 +118,7 @@ public class SearchFragment extends Fragment {
                 @Override
                 public void run() {
                     book_details.clear();
-                    final Intent goToList = new Intent(getActivity(), BookListActivity.class);
+                    final Intent goToList = new Intent(activity, BookListActivity.class);
                     String title = "", author = "", ISBN10 = "", ISBN13 = "", publisher = "", edition = "", language = "";
                     if(option.contains("ISBN")) {
                         try {
@@ -177,15 +180,23 @@ public class SearchFragment extends Fragment {
                             goToList.putExtra("PUBLISHER", book_details.get(4));
                             goToList.putExtra("EDITION", book_details.get(5));
                             goToList.putExtra("LANGUAGE", book_details.get(6));
-                            mProgressDialog.dismiss();
+                            try {
+                                mProgressDialog.dismiss();
+                            }catch (Exception e){
+
+                            }
                             if(option.equals("ISBN") || option.equals("Title") || option.equals("Author")) {
                                 if(book_details.get(0).isEmpty() && book_details.get(1).isEmpty()) {
-                                    Toast.makeText(getActivity(), "No book found with that ISBN", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(activity, "No book found with that ISBN", Toast.LENGTH_LONG).show();
                                 }else {
-                                    startActivity(goToList);
+                                    try {
+                                        startActivity(goToList);
+                                    }catch (Exception e){
+
+                                    }
                                 }
                             }else{
-                                ((AddArticle)getActivity()).setTitleAndAuthor(book_details.get(0), book_details.get(1));
+                                ((AddArticle)activity).setTitleAndAuthor(book_details.get(0), book_details.get(1));
                             }
                             searched = false;
                         }
